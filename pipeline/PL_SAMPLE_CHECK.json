@@ -62,6 +62,8 @@
 			{
 				"name": "Get Metadata1",
 				"type": "GetMetadata",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -74,7 +76,10 @@
 				"typeProperties": {
 					"dataset": {
 						"referenceName": "DelimitedText1",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"pfilename": "*.csv"
+						}
 					},
 					"fieldList": [
 						"exists",
@@ -91,8 +96,79 @@
 						"type": "DelimitedTextReadSettings"
 					}
 				}
+			},
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Get Metadata1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@variables('vAnimals')",
+						"type": "Expression"
+					},
+					"isSequential": false,
+					"batchCount": 3,
+					"activities": [
+						{
+							"name": "Get Metadata2",
+							"type": "GetMetadata",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "DelimitedText1",
+									"type": "DatasetReference",
+									"parameters": {
+										"pfilename": {
+											"value": "@item()",
+											"type": "Expression"
+										}
+									}
+								},
+								"fieldList": [
+									"columnCount",
+									"exists",
+									"itemName",
+									"itemType",
+									"structure"
+								],
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							}
+						}
+					]
+				}
 			}
 		],
+		"variables": {
+			"vAnimals": {
+				"type": "Array",
+				"defaultValue": [
+					"DimStore.csv",
+					"sample_data.csv"
+				]
+			}
+		},
 		"annotations": [],
 		"lastPublishTime": "2026-02-23T05:49:10Z"
 	},
