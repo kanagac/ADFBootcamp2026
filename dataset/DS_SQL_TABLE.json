@@ -1,0 +1,65 @@
+{
+	"name": "DS_SQL_TABLE",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AZURE_SQL",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"Ptablename": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "Education",
+				"type": "nvarchar"
+			},
+			{
+				"name": "JoiningYear",
+				"type": "smallint",
+				"precision": 5
+			},
+			{
+				"name": "City",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PaymentTier",
+				"type": "tinyint",
+				"precision": 3
+			},
+			{
+				"name": "Age",
+				"type": "tinyint",
+				"precision": 3
+			},
+			{
+				"name": "Gender",
+				"type": "nvarchar"
+			},
+			{
+				"name": "EverBenched",
+				"type": "bit"
+			},
+			{
+				"name": "ExperienceInCurrentDomain",
+				"type": "tinyint",
+				"precision": 3
+			},
+			{
+				"name": "LeaveOrNot",
+				"type": "bit"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": {
+				"value": "@dataset().Ptablename",
+				"type": "Expression"
+			}
+		}
+	}
+}
