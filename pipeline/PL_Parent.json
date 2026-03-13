@@ -1,0 +1,24 @@
+{
+	"name": "PL_Parent",
+	"properties": {
+		"activities": [
+			{
+				"name": "Exe child pipeline",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PL_SAMPLE_CHECK",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"annotations": []
+	}
+}
