@@ -1,0 +1,15 @@
+{
+	"name": "DS_WEB",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_WEB",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"typeProperties": {
+			"relativeUrl": "api/vehicles/GetVehicleTypesForMake/merc?format=json"
+		},
+		"schema": []
+	}
+}

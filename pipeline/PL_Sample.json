@@ -128,6 +128,8 @@
 			{
 				"name": "Validation1",
 				"type": "Validation",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"userProperties": [],
 				"typeProperties": {
@@ -138,6 +140,116 @@
 					"timeout": "0.12:00:00",
 					"sleep": 10
 				}
+			},
+			{
+				"name": "Copy data1",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "RestSource",
+						"httpRequestTimeout": "00:01:40",
+						"requestInterval": "00.00:00:00.010",
+						"requestMethod": "GET",
+						"paginationRules": {
+							"supportRFC5988": "true"
+						}
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"writeBehavior": "insert",
+						"sqlWriterUseTableLock": false,
+						"tableOption": "autoCreate",
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"path": "$['Count']"
+								},
+								"sink": {
+									"name": "Count"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Message']"
+								},
+								"sink": {
+									"name": "Message"
+								}
+							},
+							{
+								"source": {
+									"path": "$['SearchCriteria']"
+								},
+								"sink": {
+									"name": "SearchCriteria"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Results'][0]['MakeId']"
+								},
+								"sink": {
+									"name": "MakeId"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Results'][0]['MakeName']"
+								},
+								"sink": {
+									"name": "MakeName"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Results'][0]['VehicleTypeId']"
+								},
+								"sink": {
+									"name": "VehicleTypeId"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Results'][0]['VehicleTypeName']"
+								},
+								"sink": {
+									"name": "VehicleTypeName"
+								}
+							}
+						],
+						"collectionReference": "",
+						"mapComplexValuesToString": false
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "DS_WEB",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference",
+						"parameters": {
+							"pTablename": "dw_web"
+						}
+					}
+				]
 			}
 		],
 		"variables": {
