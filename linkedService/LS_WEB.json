@@ -4,7 +4,7 @@
 		"annotations": [],
 		"type": "RestService",
 		"typeProperties": {
-			"url": "https://vpic.nhtsa.dot.gov/api/vehicles",
+			"url": "https://vpic.nhtsa.dot.gov/",
 			"enableServerCertificateValidation": true,
 			"authenticationType": "Anonymous"
 		}
