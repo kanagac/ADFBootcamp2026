@@ -1,14 +1,6 @@
 {
 	"name": "LS_AZURE_SQL",
 	"properties": {
-		"parameters": {
-			"pSever": {
-				"type": "string"
-			},
-			"pDatabase": {
-				"type": "string"
-			}
-		},
 		"annotations": [],
 		"type": "AzureSqlDatabase",
 		"typeProperties": {
