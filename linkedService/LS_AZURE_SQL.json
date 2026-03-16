@@ -1,11 +1,19 @@
 {
 	"name": "LS_AZURE_SQL",
 	"properties": {
+		"parameters": {
+			"pSever": {
+				"type": "string"
+			},
+			"pDatabase": {
+				"type": "string"
+			}
+		},
 		"annotations": [],
 		"type": "AzureSqlDatabase",
 		"typeProperties": {
-			"server": "adfsqlbootcamp2026.database.windows.net",
-			"database": "ADF_Bootcamp_DB_2026",
+			"server": "@{linkedService().pSever}",
+			"database": "@{linkedService().pDatabase}",
 			"encrypt": "mandatory",
 			"trustServerCertificate": false,
 			"authenticationType": "SystemAssignedManagedIdentity"
