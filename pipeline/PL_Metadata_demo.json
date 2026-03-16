@@ -28,10 +28,7 @@
 						"referenceName": "DS_SQL_TABLE",
 						"type": "DatasetReference",
 						"parameters": {
-							"pTablename": {
-								"value": "meta_ingestion_config",
-								"type": "Expression"
-							}
+							"pTablename": "meta_ingestion_config"
 						}
 					},
 					"firstRowOnly": false
@@ -94,7 +91,7 @@
 												"type": "DatasetReference",
 												"parameters": {
 													"pTablename": {
-														"value": "meta_watermark",
+														"value": "@item().source_table",
 														"type": "Expression"
 													}
 												}
@@ -174,6 +171,10 @@
 										"userProperties": [],
 										"typeProperties": {
 											"storedProcedureName": "[dbo].[sp_update_meta_watermark]"
+										},
+										"linkedServiceName": {
+											"referenceName": "LS_AZURE_SQL",
+											"type": "LinkedServiceReference"
 										}
 									}
 								],
@@ -181,8 +182,6 @@
 									{
 										"name": "Copy data1",
 										"type": "Copy",
-										"state": "Inactive",
-										"onInactiveMarkAs": "Succeeded",
 										"dependsOn": [],
 										"policy": {
 											"timeout": "0.12:00:00",
@@ -207,11 +206,12 @@
 											"sink": {
 												"type": "AzureSqlSink",
 												"preCopyScript": {
-													"value": "@{concat('TRUNCATE TABLE ',item().target_table)}",
+													"value": "@{concat('DELETE FROM ',item().target_table)}",
 													"type": "Expression"
 												},
 												"writeBehavior": "insert",
 												"sqlWriterUseTableLock": false,
+												"tableOption": "autoCreate",
 												"disableMetricsCollection": false
 											},
 											"enableStaging": false,
