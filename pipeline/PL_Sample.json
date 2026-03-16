@@ -119,11 +119,7 @@
 					"secureOutput": false,
 					"secureInput": false
 				},
-				"userProperties": [],
-				"linkedServiceName": {
-					"referenceName": "LS_AZURE_SQL",
-					"type": "LinkedServiceReference"
-				}
+				"userProperties": []
 			},
 			{
 				"name": "Validation1",

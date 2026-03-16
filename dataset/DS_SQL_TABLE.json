@@ -1,10 +1,6 @@
 {
 	"name": "DS_SQL_TABLE",
 	"properties": {
-		"linkedServiceName": {
-			"referenceName": "LS_AZURE_SQL",
-			"type": "LinkedServiceReference"
-		},
 		"parameters": {
 			"pTablename": {
 				"type": "string"
