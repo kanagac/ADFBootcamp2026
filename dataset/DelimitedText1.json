@@ -10,7 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": "DimStore.csv",
+				"fileName": "Arjun.csv",
 				"container": "sample-test"
 			},
 			"columnDelimiter": ",",
