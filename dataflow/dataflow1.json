@@ -34,7 +34,7 @@
 				"          txn_id as short,",
 				"          account_id as short,",
 				"          amount as short,",
-				"          txn_date as date",
+				"          txn_date as date 'yyyy-MM-dd'",
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
