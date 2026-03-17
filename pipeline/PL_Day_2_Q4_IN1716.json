@@ -1,0 +1,73 @@
+{
+	"name": "PL_Day_2_Q4_IN1716",
+	"properties": {
+		"description": "Validation the whether the folder consists of only csv file if doesn't consists it skips the file.",
+		"activities": [
+			{
+				"name": "Get Metadata1",
+				"type": "GetMetadata",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "DelimitedText1",
+						"type": "DatasetReference"
+					},
+					"fieldList": [
+						"childItems"
+					],
+					"storeSettings": {
+						"type": "AzureBlobStorageReadSettings",
+						"enablePartitionDiscovery": false
+					},
+					"formatSettings": {
+						"type": "DelimitedTextReadSettings"
+					}
+				}
+			},
+			{
+				"name": "If Condition1",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Get Metadata1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@and(\r\n    greater(length(activity('Get Metadata1').output.childItems),0),\r\n    contains(toLower(string(activity('Get Metadata1').output.childItems)),'.csv')\r\n    )",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "Fail1",
+							"description": "Validating the file format",
+							"type": "Fail",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"message": "Validation failed due to mismatched file format",
+								"errorCode": "400"
+							}
+						}
+					]
+				}
+			}
+		],
+		"folder": {
+			"name": "PL_Day_2_IN1716"
+		},
+		"annotations": []
+	}
+}
