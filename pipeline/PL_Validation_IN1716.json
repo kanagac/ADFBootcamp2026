@@ -1,0 +1,197 @@
+{
+	"name": "PL_Validation_IN1716",
+	"properties": {
+		"description": "Complete Validating folder existence, file existence, file type, and file size",
+		"activities": [
+			{
+				"name": "Folder Validation",
+				"description": "Validating Folder atleast minimum file consists or not",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Get Metadata1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@greater(length(activity('Get Metadata1').output.childItems),0)",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "Fail1",
+							"description": "Validating the Folder",
+							"type": "Fail",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"message": "Validation failed Provide valid Folder",
+								"errorCode": "400"
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "File Validation",
+				"description": "Validating FIle Exists or not",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Folder Validation",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(activity('Get Metadata1').output.exists, true)",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "Fail2",
+							"description": "validating the file exists or not",
+							"type": "Fail",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"message": "Validation Failed no file present in that particular ADLS",
+								"errorCode": "400"
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "File Type Validation",
+				"description": "Validation File Format",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "File Validation",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@endswith(pipeline().parameters.PL_file_name, pipeline().parameters.PL_file_type)",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "Fail3",
+							"description": "Validating File Path ",
+							"type": "Fail",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"message": "Validation Failed due to Mismatch file format",
+								"errorCode": "400"
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "File Size Validation",
+				"description": "Validating File Size",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "File Type Validation",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@greater(activity('Get Metadata1').output.size, pipeline().parameters.PL_min_size)",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "Fail4",
+							"description": "Validating file size",
+							"type": "Fail",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"message": "Validation Failed Due to the file SIze limit",
+								"errorCode": "400"
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Get Metadata1",
+				"description": "Validating the Pipeline of the folder Structure and file exists or not and file format and file size",
+				"type": "GetMetadata",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "DelimitedText1",
+						"type": "DatasetReference",
+						"parameters": {
+							"ds_folder_path": "@pipeline().parameters.PL_folder_path",
+							"ds_file_name": "@pipeline().parameters.PL_file_name"
+						}
+					},
+					"fieldList": [
+						"childItems",
+						"exists"
+					],
+					"storeSettings": {
+						"type": "AzureBlobStorageReadSettings",
+						"enablePartitionDiscovery": false
+					},
+					"formatSettings": {
+						"type": "DelimitedTextReadSettings"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"PL_folder_path": {
+				"type": "string",
+				"defaultValue": "input/"
+			},
+			"PL_file_name": {
+				"type": "string",
+				"defaultValue": "Sales_20260214.csv"
+			},
+			"PL_file_type": {
+				"type": "string",
+				"defaultValue": ".csv"
+			},
+			"PL_min_size": {
+				"type": "int",
+				"defaultValue": 1024
+			}
+		},
+		"folder": {
+			"name": "PL_Day_2_IN1716"
+		},
+		"annotations": []
+	}
+}
