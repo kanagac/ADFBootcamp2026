@@ -25,6 +25,7 @@
 					],
 					"storeSettings": {
 						"type": "AzureBlobStorageReadSettings",
+						"recursive": true,
 						"enablePartitionDiscovery": false
 					},
 					"formatSettings": {
@@ -33,7 +34,8 @@
 				}
 			},
 			{
-				"name": "If Condition1",
+				"name": "Folder Validation",
+				"description": "Validating in Folder consits atleast one file or not",
 				"type": "IfCondition",
 				"dependsOn": [
 					{
