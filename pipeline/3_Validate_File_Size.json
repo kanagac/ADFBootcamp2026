@@ -45,7 +45,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@greaterOrEquals(activity('Get Metadata3').output.size, 10240)",
+						"value": "@greaterOrEquals(activity('Get Metadata3').output.size, 100)",
 						"type": "Expression"
 					},
 					"ifFalseActivities": [
