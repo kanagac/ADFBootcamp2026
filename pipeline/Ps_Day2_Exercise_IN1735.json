@@ -1,5 +1,5 @@
 {
-	"name": "Ps_Exercise_IN1735",
+	"name": "Ps_Day2_Exercise_IN1735",
 	"properties": {
 		"activities": [
 			{
@@ -239,6 +239,8 @@
 			{
 				"name": "Lookup_question10",
 				"type": "Lookup",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -264,6 +266,8 @@
 			{
 				"name": "If Condition1",
 				"type": "IfCondition",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Lookup_question10",
@@ -322,10 +326,25 @@
 						}
 					]
 				}
+			},
+			{
+				"name": "Validation2",
+				"type": "Validation",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "DS_Folder",
+						"type": "DatasetReference"
+					},
+					"timeout": "0.12:00:00",
+					"sleep": 10,
+					"childItems": true
+				}
 			}
 		],
 		"folder": {
-			"name": "Day 2 Exercise"
+			"name": "ADF Exercise"
 		},
 		"annotations": []
 	}
