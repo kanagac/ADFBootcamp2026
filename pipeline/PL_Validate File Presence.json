@@ -1,5 +1,5 @@
 {
-	"name": "PL_DAY2EXEC_IN1743",
+	"name": "PL_Validate File Presence",
 	"properties": {
 		"activities": [
 			{
@@ -64,7 +64,7 @@
 			}
 		],
 		"folder": {
-			"name": "DAY2 Exercise"
+			"name": "Ps_Exercise_IN1743"
 		},
 		"annotations": []
 	}
