@@ -12,6 +12,12 @@
 				"parameters": {
 					"Pfilename": "tg"
 				}
+			},
+			{
+				"pipelineReference": {
+					"referenceName": "PL_Sample",
+					"type": "PipelineReference"
+				}
 			}
 		],
 		"type": "ScheduleTrigger",
