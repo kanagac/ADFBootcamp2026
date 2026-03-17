@@ -50,10 +50,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"variableName": "FileNames",
-					"value": [
-						"@select(activity('Get Metadata1').output.childItems",
-						" item().name)"
-					]
+					"value": "[\"@select(activity('Get Metadata1').output.childItems\",\" item().name)\"]"
 				}
 			},
 			{
@@ -86,14 +83,6 @@
 				}
 			}
 		],
-		"variables": {
-			"FileNames": {
-				"type": "Array"
-			},
-			"filename 2": {
-				"type": "Array"
-			}
-		},
 		"folder": {
 			"name": "DAY2_IN1743/GetMetaDataActivity"
 		},
