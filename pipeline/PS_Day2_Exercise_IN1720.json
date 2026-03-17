@@ -5,9 +5,14 @@
 			{
 				"name": "Validate File Presence",
 				"type": "Validation",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Get Metadata1",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
 				"userProperties": [],
 				"typeProperties": {
 					"dataset": {
@@ -36,7 +41,7 @@
 						"type": "DatasetReference"
 					},
 					"fieldList": [
-						"size"
+						"itemName"
 					],
 					"storeSettings": {
 						"type": "AzureBlobStorageReadSettings",
