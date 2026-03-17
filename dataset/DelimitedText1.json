@@ -15,11 +15,8 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": {
-					"value": "@concat(dataset().pFilename)",
-					"type": "Expression"
-				},
-				"container": "metadatadriven"
+				"fileName": "DimStore.csv",
+				"container": "sample-test"
 			},
 			"columnDelimiter": ",",
 			"escapeChar": "\\",
