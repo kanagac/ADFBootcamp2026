@@ -1,0 +1,25 @@
+{
+	"name": "PL_Exercise_1733",
+	"properties": {
+		"activities": [
+			{
+				"name": "Validation1",
+				"type": "Validation",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "DelimitedText1",
+						"type": "DatasetReference"
+					},
+					"timeout": "0.00:01:00",
+					"sleep": 10
+				}
+			}
+		],
+		"folder": {
+			"name": "Day-2_Exercises"
+		},
+		"annotations": []
+	}
+}
