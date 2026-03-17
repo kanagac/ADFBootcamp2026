@@ -10,7 +10,6 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": "sample_daa.csv",
 				"container": "sample-test"
 			},
 			"columnDelimiter": ",",
