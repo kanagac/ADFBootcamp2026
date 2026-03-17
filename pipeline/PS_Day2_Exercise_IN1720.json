@@ -3,8 +3,8 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Validate File Presence",
-				"type": "Validation",
+				"name": "If Condition1",
+				"type": "IfCondition",
 				"dependsOn": [
 					{
 						"activity": "Get Metadata1",
@@ -15,12 +15,22 @@
 				],
 				"userProperties": [],
 				"typeProperties": {
-					"dataset": {
-						"referenceName": "DelimitedText1",
-						"type": "DatasetReference"
+					"expression": {
+						"value": "@activity('Get Metadata1').output.exists",
+						"type": "Expression"
 					},
-					"timeout": "0.12:00:00",
-					"sleep": 10
+					"ifFalseActivities": [
+						{
+							"name": "Fail1",
+							"type": "Fail",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"message": "File is missing",
+								"errorCode": "404"
+							}
+						}
+					]
 				}
 			},
 			{
@@ -41,7 +51,7 @@
 						"type": "DatasetReference"
 					},
 					"fieldList": [
-						"itemName"
+						"exists"
 					],
 					"storeSettings": {
 						"type": "AzureBlobStorageReadSettings",
