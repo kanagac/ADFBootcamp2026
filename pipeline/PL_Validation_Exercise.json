@@ -169,7 +169,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@endswith('Sales.csv', '.csv')",
+						"value": "@greater(activity('Get_File_Size').output.size, 0)",
 						"type": "Expression"
 					},
 					"ifFalseActivities": [
@@ -200,7 +200,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@endswith('Sales.csv', '.csv')",
+						"value": "@endswith(activity('Get_Folder_Metadata').output.childItems[0].name, '.csv')",
 						"type": "Expression"
 					},
 					"ifFalseActivities": [
