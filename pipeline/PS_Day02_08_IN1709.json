@@ -1,0 +1,45 @@
+{
+	"name": "PS_Day02_08_IN1709",
+	"properties": {
+		"activities": [
+			{
+				"name": "Lookup1",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "SELECT TOP 1 Education, City FROM Employee",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference",
+						"parameters": {
+							"pTablename": {
+								"value": "Employee",
+								"type": "Expression"
+							}
+						}
+					}
+				}
+			}
+		],
+		"folder": {
+			"name": "Day2"
+		},
+		"annotations": []
+	}
+}
