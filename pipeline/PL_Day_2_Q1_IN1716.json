@@ -34,7 +34,7 @@
 			},
 			{
 				"name": "If Condition1",
-				"description": "Validates Whether the file is Present or not",
+				"description": "Validates Whether the file is Present or not ",
 				"type": "IfCondition",
 				"dependsOn": [
 					{
