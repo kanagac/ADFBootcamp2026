@@ -5,6 +5,7 @@
 		"activities": [
 			{
 				"name": "Validation1",
+				"description": "Checking whether the file is present or not",
 				"type": "Validation",
 				"dependsOn": [],
 				"userProperties": [],
