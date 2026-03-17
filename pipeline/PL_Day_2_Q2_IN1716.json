@@ -5,7 +5,7 @@
 		"activities": [
 			{
 				"name": "Validation1",
-				"description": "Validating Whether the required folder exists in ADLS before processing",
+				"description": "Validating Whether the required folder exists in ADLS before processing ",
 				"type": "Validation",
 				"dependsOn": [],
 				"userProperties": [],
