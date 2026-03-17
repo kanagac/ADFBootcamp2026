@@ -11,7 +11,7 @@
 			"location": {
 				"type": "AzureBlobStorageLocation",
 				"fileName": "DimStore.csv",
-				"container": "sample-test"
+				"container": "sample-test1"
 			},
 			"columnDelimiter": ",",
 			"escapeChar": "\\",
