@@ -25,6 +25,7 @@
 					],
 					"storeSettings": {
 						"type": "AzureBlobStorageReadSettings",
+						"recursive": true,
 						"enablePartitionDiscovery": false
 					},
 					"formatSettings": {
@@ -33,7 +34,7 @@
 				}
 			},
 			{
-				"name": "If Condition1",
+				"name": "File Validation",
 				"description": "Validates Whether the file is Present or not ",
 				"type": "IfCondition",
 				"dependsOn": [
