@@ -27,6 +27,7 @@
 					],
 					"storeSettings": {
 						"type": "AzureBlobStorageReadSettings",
+						"recursive": true,
 						"enablePartitionDiscovery": false
 					},
 					"formatSettings": {
@@ -89,6 +90,7 @@
 								],
 								"storeSettings": {
 									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
 									"enablePartitionDiscovery": false
 								},
 								"formatSettings": {
@@ -147,7 +149,7 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"P_Filename": {
-											"value": "@activity('Get_Child_items').output.size",
+											"value": "@activity('Get_Child_items').output.childItems[0].name",
 											"type": "Expression"
 										}
 									}
@@ -157,6 +159,7 @@
 								],
 								"storeSettings": {
 									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
 									"enablePartitionDiscovery": false
 								},
 								"formatSettings": {
@@ -215,7 +218,7 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"P_Filename": {
-											"value": "@activity('File_size').output.itemType",
+											"value": "@activity('File_size').output.size",
 											"type": "Expression"
 										}
 									}
@@ -225,6 +228,7 @@
 								],
 								"storeSettings": {
 									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
 									"enablePartitionDiscovery": false
 								},
 								"formatSettings": {
