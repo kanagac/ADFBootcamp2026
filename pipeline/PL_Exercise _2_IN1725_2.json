@@ -51,6 +51,7 @@
 						"value": "@activity('Get Metadata1').output.childItems",
 						"type": "Expression"
 					},
+					"batchCount": 2,
 					"activities": [
 						{
 							"name": "Get Metadata2",
@@ -128,7 +129,7 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"p_file_name": {
-											"value": "@item().nameitem()",
+											"value": "@item().name",
 											"type": "Expression"
 										}
 									}
