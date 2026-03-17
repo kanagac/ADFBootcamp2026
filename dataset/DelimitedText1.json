@@ -5,12 +5,21 @@
 			"referenceName": "LS_AZURE_STORAGE",
 			"type": "LinkedServiceReference"
 		},
+		"parameters": {
+			"c_name": {
+				"type": "string",
+				"defaultValue": " "
+			}
+		},
 		"annotations": [],
 		"type": "DelimitedText",
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": "sample_data.csv",
+				"fileName": {
+					"value": "@dataset().c_name",
+					"type": "Expression"
+				},
 				"container": "sample-test"
 			},
 			"columnDelimiter": ",",
