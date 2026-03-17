@@ -1,5 +1,5 @@
 {
-	"name": "PL_Day_2_Validation_IN1716",
+	"name": "PL_Day_2_Q1_IN1716",
 	"properties": {
 		"description": "Validates input file existence in ADLS and stop pipeline execution if the file is missing.",
 		"activities": [
