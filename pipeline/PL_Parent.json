@@ -13,10 +13,6 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"pipeline": {
-						"referenceName": "PL_SAMPLE_CHECK",
-						"type": "PipelineReference"
-					},
 					"waitOnCompletion": true
 				}
 			},
