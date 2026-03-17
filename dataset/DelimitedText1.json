@@ -19,7 +19,7 @@
 					"value": "@concat(dataset().pFilename)",
 					"type": "Expression"
 				},
-				"container": "metadatadriven"
+				"container": "sample-test"
 			},
 			"columnDelimiter": ",",
 			"escapeChar": "\\",
