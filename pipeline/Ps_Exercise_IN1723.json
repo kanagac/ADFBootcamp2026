@@ -1,27 +1,42 @@
 {
-	"name": "pipeline1",
+	"name": "Ps_Exercise_IN1723",
 	"properties": {
 		"activities": [
 			{
-				"name": "Validation1",
-				"type": "Validation",
+				"name": "Get Metadata1",
+				"type": "GetMetadata",
 				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
 				"userProperties": [],
 				"typeProperties": {
 					"dataset": {
 						"referenceName": "DelimitedText1",
 						"type": "DatasetReference"
 					},
-					"timeout": "0.12:00:00",
-					"sleep": 10
+					"fieldList": [
+						"exists"
+					],
+					"storeSettings": {
+						"type": "AzureBlobStorageReadSettings",
+						"enablePartitionDiscovery": false
+					},
+					"formatSettings": {
+						"type": "DelimitedTextReadSettings"
+					}
 				}
 			},
 			{
-				"name": "If Condition1",
+				"name": "If Condition2",
 				"type": "IfCondition",
 				"dependsOn": [
 					{
-						"activity": "Validation1",
+						"activity": "Get Metadata1",
 						"dependencyConditions": [
 							"Completed"
 						]
@@ -30,18 +45,17 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@activity('Validation1').output.exists",
+						"value": "@activity('Get Metadata1').output.exists",
 						"type": "Expression"
 					},
 					"ifFalseActivities": [
 						{
-							"name": "Fail1",
-							"description": "",
+							"name": "Fail2",
 							"type": "Fail",
 							"dependsOn": [],
 							"userProperties": [],
 							"typeProperties": {
-								"message": "File does not exist.",
+								"message": "File not exists.",
 								"errorCode": "404"
 							}
 						}
