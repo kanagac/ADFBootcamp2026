@@ -1,9 +1,9 @@
 {
-	"name": "PL_Val_File_Presence",
+	"name": "PL_Validation_Exercise",
 	"properties": {
 		"activities": [
 			{
-				"name": "Get Metadata",
+				"name": "Get_File_Metadata",
 				"type": "GetMetadata",
 				"dependsOn": [],
 				"policy": {
@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataset": {
-						"referenceName": "DelimitedText1",
+						"referenceName": "Input_File_DS",
 						"type": "DatasetReference"
 					},
 					"fieldList": [
@@ -32,11 +32,11 @@
 				}
 			},
 			{
-				"name": "If Condition",
+				"name": "Checking_file_presence",
 				"type": "IfCondition",
 				"dependsOn": [
 					{
-						"activity": "Get Metadata",
+						"activity": "Get_File_Metadata",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -45,17 +45,172 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@activity('Get Metadata').output.exists",
+						"value": "@activity('Get_File_Metadata').output.exists",
 						"type": "Expression"
 					},
 					"ifFalseActivities": [
 						{
-							"name": "Fail",
+							"name": "Fail1",
 							"type": "Fail",
 							"dependsOn": [],
 							"userProperties": [],
 							"typeProperties": {
-								"message": "Pipeline Stopped - File Not Found",
+								"message": "File Not Found",
+								"errorCode": "404"
+							}
+						}
+					],
+					"ifTrueActivities": [
+						{
+							"name": "Get_Folder_Metadata",
+							"type": "GetMetadata",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "Input_Folder_DS",
+									"type": "DatasetReference"
+								},
+								"fieldList": [
+									"childItems"
+								],
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Checking_Files_Inside_Folder",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Checking_file_presence",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@greater(length(activity('Get_Folder_Metadata').output.childItems), 0)",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "Fail2",
+							"type": "Fail",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"message": "Folder is Empty",
+								"errorCode": "404"
+							}
+						}
+					],
+					"ifTrueActivities": [
+						{
+							"name": "Get_File_Size",
+							"type": "GetMetadata",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "Input_File_DS",
+									"type": "DatasetReference"
+								},
+								"fieldList": [
+									"size"
+								],
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Validating_File_Size",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Checking_Files_Inside_Folder",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@endswith('Sales.csv', '.csv')",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "Fail3",
+							"type": "Fail",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"message": "File size is too small ",
+								"errorCode": "404"
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Validating_File_Type",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Validating_File_Size",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@endswith('Sales.csv', '.csv')",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "Fail4",
+							"type": "Fail",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"message": "Invalid File Type",
 								"errorCode": "404"
 							}
 						}
