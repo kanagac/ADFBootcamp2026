@@ -17,7 +17,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataset": {
-						"referenceName": "DelimitedText1",
+						"referenceName": "DelimitedText2",
 						"type": "DatasetReference"
 					},
 					"fieldList": [
@@ -34,7 +34,8 @@
 				}
 			},
 			{
-				"name": "If Condition1",
+				"name": "File Size Validation",
+				"description": "Validating File Size",
 				"type": "IfCondition",
 				"dependsOn": [
 					{
