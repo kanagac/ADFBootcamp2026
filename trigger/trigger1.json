@@ -1,0 +1,27 @@
+{
+	"name": "trigger1",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "PL_Metadata_demo",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"Pfilename": "tg"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Minute",
+				"interval": 15,
+				"startTime": "2026-03-17T06:14:00",
+				"timeZone": "India Standard Time"
+			}
+		}
+	}
+}

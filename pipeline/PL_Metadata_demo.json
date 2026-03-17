@@ -256,6 +256,11 @@
 				}
 			}
 		],
+		"parameters": {
+			"Pfilename": {
+				"type": "string"
+			}
+		},
 		"annotations": []
 	}
 }
