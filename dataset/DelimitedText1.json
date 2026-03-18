@@ -7,10 +7,16 @@
 		},
 		"parameters": {
 			"ds_folder_path": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": " "
 			},
-			"ds_file_name": {
-				"type": "string"
+			"ds_dir_path": {
+				"type": "string",
+				"defaultValue": " "
+			},
+			"ds_container_path": {
+				"type": "string",
+				"defaultValue": " "
 			}
 		},
 		"annotations": [],
@@ -18,7 +24,18 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"container": "input"
+				"fileName": {
+					"value": "@dataset().ds_folder_path",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@dataset().ds_dir_path",
+					"type": "Expression"
+				},
+				"container": {
+					"value": "@dataset().ds_container_path",
+					"type": "Expression"
+				}
 			},
 			"columnDelimiter": ",",
 			"escapeChar": "\\",

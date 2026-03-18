@@ -18,7 +18,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@greater(length(activity('Get Metadata1').output.childItems),0)",
+						"value": "@activity('Get Metadata1').output.exists",
 						"type": "Expression"
 					},
 					"ifFalseActivities": [
@@ -31,6 +31,42 @@
 							"typeProperties": {
 								"message": "Validation failed Provide valid Folder",
 								"errorCode": "400"
+							}
+						}
+					],
+					"ifTrueActivities": [
+						{
+							"name": "Get Metadata4",
+							"type": "GetMetadata",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "DelimitedText1",
+									"type": "DatasetReference",
+									"parameters": {
+										"ds_folder_path": " ",
+										"ds_dir_path": " ",
+										"ds_container_path": "input"
+									}
+								},
+								"fieldList": [
+									"childItems"
+								],
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
 							}
 						}
 					]
@@ -51,7 +87,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@equals(activity('Get Metadata1').output.exists, true)",
+						"value": "@greater(length(activity('Get Metadata4').output.childItems),0)",
 						"type": "Expression"
 					},
 					"ifFalseActivities": [
@@ -66,70 +102,43 @@
 								"errorCode": "400"
 							}
 						}
-					]
-				}
-			},
-			{
-				"name": "File Type Validation",
-				"description": "Validation File Format",
-				"type": "IfCondition",
-				"dependsOn": [
-					{
-						"activity": "File Validation",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"expression": {
-						"value": "@endswith(pipeline().parameters.PL_file_name, pipeline().parameters.PL_file_type)",
-						"type": "Expression"
-					},
-					"ifFalseActivities": [
+					],
+					"ifTrueActivities": [
 						{
-							"name": "Fail3",
-							"description": "Validating File Path ",
-							"type": "Fail",
+							"name": "Get Metadata2",
+							"type": "GetMetadata",
 							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
 							"userProperties": [],
 							"typeProperties": {
-								"message": "Validation Failed due to Mismatch file format",
-								"errorCode": "400"
-							}
-						}
-					]
-				}
-			},
-			{
-				"name": "File Size Validation",
-				"description": "Validating File Size",
-				"type": "IfCondition",
-				"dependsOn": [
-					{
-						"activity": "File Type Validation",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"expression": {
-						"value": "@greater(activity('Get Metadata1').output.size, pipeline().parameters.PL_min_size)",
-						"type": "Expression"
-					},
-					"ifFalseActivities": [
-						{
-							"name": "Fail4",
-							"description": "Validating file size",
-							"type": "Fail",
-							"dependsOn": [],
-							"userProperties": [],
-							"typeProperties": {
-								"message": "Validation Failed Due to the file SIze limit",
-								"errorCode": "400"
+								"dataset": {
+									"referenceName": "DelimitedText1",
+									"type": "DatasetReference",
+									"parameters": {
+										"ds_folder_path": {
+											"value": "@activity('Get Metadata4').output.childItems[0].name",
+											"type": "Expression"
+										},
+										"ds_container_path": "input"
+									}
+								},
+								"fieldList": [
+									"size",
+									"itemName"
+								],
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
 							}
 						}
 					]
@@ -153,42 +162,44 @@
 						"referenceName": "DelimitedText1",
 						"type": "DatasetReference",
 						"parameters": {
-							"ds_folder_path": "@pipeline().parameters.PL_folder_path",
-							"ds_file_name": "@pipeline().parameters.PL_file_name"
+							"ds_folder_path": "  ",
+							"ds_dir_path": " ",
+							"ds_container_path": "input"
 						}
 					},
 					"fieldList": [
-						"childItems",
 						"exists"
 					],
 					"storeSettings": {
 						"type": "AzureBlobStorageReadSettings",
+						"recursive": true,
 						"enablePartitionDiscovery": false
 					},
 					"formatSettings": {
 						"type": "DelimitedTextReadSettings"
 					}
 				}
+			},
+			{
+				"name": "If Condition1",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "File Validation",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@endswith(activity('Get Metadata2').output.itemName,'.csv')",
+						"type": "Expression"
+					}
+				}
 			}
 		],
-		"parameters": {
-			"PL_folder_path": {
-				"type": "string",
-				"defaultValue": "input/"
-			},
-			"PL_file_name": {
-				"type": "string",
-				"defaultValue": "Sales_20260214.csv"
-			},
-			"PL_file_type": {
-				"type": "string",
-				"defaultValue": ".csv"
-			},
-			"PL_min_size": {
-				"type": "int",
-				"defaultValue": 1024
-			}
-		},
 		"folder": {
 			"name": "PL_Day_2_IN1716/IN1716_Validation"
 		},
