@@ -27,6 +27,7 @@
 					],
 					"storeSettings": {
 						"type": "AzureBlobStorageReadSettings",
+						"recursive": true,
 						"enablePartitionDiscovery": false
 					},
 					"formatSettings": {
@@ -88,7 +89,7 @@
 				"typeProperties": {
 					"variableName": "append_file",
 					"value": {
-						"value": "@activity('Retrieve_Child _Items').output.childItems",
+						"value": "@join(variables('append_file'), ', ')",
 						"type": "Expression"
 					}
 				}
