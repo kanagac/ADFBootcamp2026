@@ -1,5 +1,5 @@
 {
-	"name": "PL_Exercise_1733_VFP",
+	"name": "Validate_file_presence",
 	"properties": {
 		"activities": [
 			{
@@ -16,11 +16,17 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataset": {
-						"referenceName": "FileDS",
-						"type": "DatasetReference"
+						"referenceName": "DelimitedText1",
+						"type": "DatasetReference",
+						"parameters": {
+							"Container": "input",
+							"Folder": " ",
+							"File": " "
+						}
 					},
 					"fieldList": [
-						"exists"
+						"exists",
+						"childItems"
 					],
 					"storeSettings": {
 						"type": "AzureBlobStorageReadSettings",
@@ -45,7 +51,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@activity('Get File inside folder').output.exists",
+						"value": "@activity('Get Metadata1').output.exists",
 						"type": "Expression"
 					},
 					"ifFalseActivities": [
@@ -76,8 +82,13 @@
 							"userProperties": [],
 							"typeProperties": {
 								"dataset": {
-									"referenceName": "FolderDS",
-									"type": "DatasetReference"
+									"referenceName": "DelimitedText1",
+									"type": "DatasetReference",
+									"parameters": {
+										"Container": "input",
+										"Folder": " ",
+										"File": " "
+									}
 								},
 								"fieldList": [
 									"childItems"
@@ -138,11 +149,17 @@
 							"userProperties": [],
 							"typeProperties": {
 								"dataset": {
-									"referenceName": "FileDS",
-									"type": "DatasetReference"
+									"referenceName": "DelimitedText1",
+									"type": "DatasetReference",
+									"parameters": {
+										"Container": "input",
+										"Folder": " ",
+										"File": "@activity('Get Metadata1').output.childItems[0].name"
+									}
 								},
 								"fieldList": [
-									"size"
+									"size",
+									"itemName"
 								],
 								"storeSettings": {
 									"type": "AzureBlobStorageReadSettings",
@@ -200,11 +217,20 @@
 							"userProperties": [],
 							"typeProperties": {
 								"dataset": {
-									"referenceName": "FileDS",
-									"type": "DatasetReference"
+									"referenceName": "DelimitedText1",
+									"type": "DatasetReference",
+									"parameters": {
+										"Container": "input",
+										"Folder": " ",
+										"File": {
+											"value": "@activity('Size').output.itemName",
+											"type": "Expression"
+										}
+									}
 								},
 								"fieldList": [
-									"itemName"
+									"itemName",
+									"size"
 								],
 								"storeSettings": {
 									"type": "AzureBlobStorageReadSettings",
@@ -232,7 +258,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@endswith(activity('Get Metadata3').output.itemName,'csv')",
+						"value": "@endswith(activity('Get Metadata3').output.itemName,'.csv')",
 						"type": "Expression"
 					},
 					"ifFalseActivities": [
@@ -251,7 +277,7 @@
 			}
 		],
 		"folder": {
-			"name": "Day-2_Exercises"
+			"name": "Day-2_Exercises/PL_Exercise_1733"
 		},
 		"annotations": []
 	}
