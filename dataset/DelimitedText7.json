@@ -1,5 +1,5 @@
 {
-	"name": "DelimitedText1",
+	"name": "DelimitedText7",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "LS_AZURE_STORAGE",
@@ -19,8 +19,8 @@
 					"value": "@dataset().File_Name",
 					"type": "Expression"
 				},
-				"folderPath": "latest",
-				"container": "input"
+				"folderPath": "IN1734",
+				"container": "output"
 			},
 			"columnDelimiter": ",",
 			"escapeChar": "\\",
@@ -28,6 +28,5 @@
 			"quoteChar": "\""
 		},
 		"schema": []
-	},
-	"type": "Microsoft.DataFactory/factories/datasets"
+	}
 }
