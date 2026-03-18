@@ -16,11 +16,8 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataset": {
-						"referenceName": "DelimitedText1",
-						"type": "DatasetReference",
-						"parameters": {
-							"fileName": "@item().name"
-						}
+						"referenceName": "DelimitedText2",
+						"type": "DatasetReference"
 					},
 					"fieldList": [
 						"childItems"
@@ -136,11 +133,11 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"container": "output",
-										"directory": {
-											"value": "@{variables('extension')}",
+										"directory": "IN1742",
+										"filename": {
+											"value": "@item().name",
 											"type": "Expression"
-										},
-										"filename": "IN1742"
+										}
 									}
 								}
 							]

@@ -7,8 +7,7 @@
 		},
 		"parameters": {
 			"fileName": {
-				"type": "string",
-				"defaultValue": "@item().name"
+				"type": "string"
 			}
 		},
 		"annotations": [],
@@ -16,6 +15,10 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
+				"fileName": {
+					"value": "@dataset().fileName",
+					"type": "Expression"
+				},
 				"folderPath": "mixedfiles",
 				"container": "input"
 			},
