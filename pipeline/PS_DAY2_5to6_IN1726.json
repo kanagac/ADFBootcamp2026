@@ -25,11 +25,34 @@
 							"name": "Append variable1",
 							"type": "AppendVariable",
 							"dependsOn": [],
-							"userProperties": [],
 							"typeProperties": {
 								"variableName": "a",
 								"value": {
 									"value": "@item().name",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Set variable4",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Append variable1",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "resA",
+								"value": {
+									"value": "@variables('a')",
 									"type": "Expression"
 								}
 							}
@@ -62,21 +85,54 @@
 					],
 					"storeSettings": {
 						"type": "AzureBlobStorageReadSettings",
+						"recursive": true,
 						"enablePartitionDiscovery": false
 					},
 					"formatSettings": {
 						"type": "DelimitedTextReadSettings"
 					}
 				}
+			},
+			{
+				"name": "Set variable3",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "ForEach1",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "pipelineReturnValue",
+					"value": [
+						{
+							"key": "result",
+							"value": {
+								"type": "Array"
+							}
+						}
+					],
+					"setSystemVariable": true
+				}
 			}
 		],
 		"variables": {
 			"a": {
 				"type": "Array"
+			},
+			"resA": {
+				"type": "Array"
 			}
 		},
 		"folder": {
-			"name": "PS_Day2_Exercise_IN1720"
+			"name": "PS_Day2_Exercise_IN1726"
 		},
 		"annotations": []
 	}
