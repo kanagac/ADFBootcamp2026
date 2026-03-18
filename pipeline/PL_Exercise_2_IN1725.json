@@ -20,7 +20,9 @@
 						"referenceName": "DelimitedText1",
 						"type": "DatasetReference",
 						"parameters": {
-							"p_file_name": " "
+							"p_file_name": " ",
+							"P_directory": " ",
+							"P_container": "sample-test"
 						}
 					},
 					"fieldList": [
@@ -28,6 +30,7 @@
 					],
 					"storeSettings": {
 						"type": "AzureBlobStorageReadSettings",
+						"recursive": true,
 						"enablePartitionDiscovery": false
 					},
 					"formatSettings": {
@@ -82,11 +85,16 @@
 									"referenceName": "DelimitedText1",
 									"type": "DatasetReference",
 									"parameters": {
-										"p_file_name": " "
+										"p_file_name": " ",
+										"P_directory": " ",
+										"P_container": "sample-test"
 									}
 								},
 								"fieldList": [
-									"childItems"
+									{
+										"value": "childItems",
+										"type": "Expression"
+									}
 								],
 								"storeSettings": {
 									"type": "AzureBlobStorageReadSettings",
@@ -150,7 +158,9 @@
 										"p_file_name": {
 											"value": "@activity('Get Metadata2').output.childItems[0].name",
 											"type": "Expression"
-										}
+										},
+										"P_directory": " ",
+										"P_container": "sample-test"
 									}
 								},
 								"fieldList": [
@@ -159,6 +169,7 @@
 								],
 								"storeSettings": {
 									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
 									"enablePartitionDiscovery": false
 								},
 								"formatSettings": {
@@ -183,7 +194,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@greater(activity('Get Metadata3').output.size,1024)",
+						"value": "@greater(activity('Get Metadata3').output.size,1)",
 						"type": "Expression"
 					},
 					"ifFalseActivities": [
@@ -219,7 +230,9 @@
 										"p_file_name": {
 											"value": "@activity('Get Metadata3').output.itemName",
 											"type": "Expression"
-										}
+										},
+										"P_directory": " ",
+										"P_container": "sample-test"
 									}
 								},
 								"fieldList": [
@@ -227,6 +240,7 @@
 								],
 								"storeSettings": {
 									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
 									"enablePartitionDiscovery": false
 								},
 								"formatSettings": {
@@ -298,9 +312,12 @@
 										"p_file_name": {
 											"value": "@activity('Get Metadata4').output.itemName",
 											"type": "Expression"
-										}
+										},
+										"P_directory": " ",
+										"P_container": "sample-test"
 									}
-								}
+								},
+								"firstRowOnly": false
 							}
 						}
 					]

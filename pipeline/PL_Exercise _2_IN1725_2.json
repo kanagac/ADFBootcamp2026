@@ -19,14 +19,20 @@
 						"referenceName": "DelimitedText1",
 						"type": "DatasetReference",
 						"parameters": {
-							"p_file_name": " "
+							"p_file_name": " ",
+							"P_directory": " ",
+							"P_container": "sample-test"
 						}
 					},
 					"fieldList": [
-						"childItems"
+						{
+							"value": "childItems",
+							"type": "Expression"
+						}
 					],
 					"storeSettings": {
 						"type": "AzureBlobStorageReadSettings",
+						"recursive": true,
 						"enablePartitionDiscovery": false
 					},
 					"formatSettings": {
@@ -73,7 +79,9 @@
 										"p_file_name": {
 											"value": "@item().name",
 											"type": "Expression"
-										}
+										},
+										"P_directory": " ",
+										"P_container": "sample-test"
 									}
 								},
 								"fieldList": [
@@ -82,6 +90,7 @@
 								],
 								"storeSettings": {
 									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
 									"enablePartitionDiscovery": false
 								},
 								"formatSettings": {
@@ -131,7 +140,9 @@
 										"p_file_name": {
 											"value": "@item().name",
 											"type": "Expression"
-										}
+										},
+										"P_directory": " ",
+										"P_container": "sample-test"
 									}
 								},
 								"fieldList": [
@@ -140,6 +151,7 @@
 								],
 								"storeSettings": {
 									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
 									"enablePartitionDiscovery": false
 								},
 								"formatSettings": {
