@@ -16,6 +16,9 @@
 				"type": "string"
 			}
 		},
+		"folder": {
+			"name": "day3"
+		},
 		"annotations": [],
 		"type": "DelimitedText",
 		"typeProperties": {
