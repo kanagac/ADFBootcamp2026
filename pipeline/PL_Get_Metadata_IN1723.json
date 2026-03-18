@@ -87,7 +87,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "append_file",
+					"variableName": "filename",
 					"value": {
 						"value": "@join(variables('append_file'), ', ')",
 						"type": "Expression"
@@ -101,6 +101,9 @@
 			},
 			"append_file": {
 				"type": "Array"
+			},
+			"filename": {
+				"type": "String"
 			}
 		},
 		"folder": {
