@@ -1,13 +1,30 @@
 {
-	"name": "Ps_Exercise_IN1723",
+	"name": "pipeline1",
 	"properties": {
 		"activities": [
 			{
-				"name": "If Condition2",
+				"name": "Validate",
+				"type": "Validation",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "DelimitedText1",
+						"type": "DatasetReference",
+						"parameters": {
+							"P_filename": " "
+						}
+					},
+					"timeout": "0.12:00:00",
+					"sleep": 10
+				}
+			},
+			{
+				"name": "If Condition1",
 				"type": "IfCondition",
 				"dependsOn": [
 					{
-						"activity": "Validation1",
+						"activity": "Validate",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -16,24 +33,24 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@equals(activity('Validation1').output.exists, true)",
+						"value": "@equals(activity('Validate').output.exists, true)",
 						"type": "Expression"
 					},
 					"ifFalseActivities": [
 						{
-							"name": "Fail3",
+							"name": "Fail1",
 							"type": "Fail",
 							"dependsOn": [],
 							"userProperties": [],
 							"typeProperties": {
-								"message": "Folder Not exist",
+								"message": "File not exists",
 								"errorCode": "400"
 							}
 						}
 					],
 					"ifTrueActivities": [
 						{
-							"name": "Get Metadata4",
+							"name": "Get Metadata1",
 							"type": "GetMetadata",
 							"dependsOn": [],
 							"policy": {
@@ -47,12 +64,85 @@
 							"typeProperties": {
 								"dataset": {
 									"referenceName": "DelimitedText1",
-									"type": "DatasetReference"
+									"type": "DatasetReference",
+									"parameters": {
+										"P_filename": " "
+									}
 								},
-								"fieldList": [],
+								"fieldList": [
+									"childItems"
+								],
 								"storeSettings": {
 									"type": "AzureBlobStorageReadSettings",
-									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "If Condition2",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "If Condition1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@greater(length(activity('Get Metadata1').output.childItems),0)",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "Fail2",
+							"type": "Fail",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"message": "Folder is empty",
+								"errorCode": "400"
+							}
+						}
+					],
+					"ifTrueActivities": [
+						{
+							"name": "Get Metadata2",
+							"type": "GetMetadata",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "DelimitedText1",
+									"type": "DatasetReference",
+									"parameters": {
+										"P_filename": {
+											"value": "@activity('Get Metadata1').output.childItems[0].name",
+											"type": "Expression"
+										}
+									}
+								},
+								"fieldList": [
+									"size",
+									"itemName"
+								],
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
 									"enablePartitionDiscovery": false
 								},
 								"formatSettings": {
@@ -77,24 +167,24 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@greater(length(activity('Get Metadata4').output.childItems), 0)",
+						"value": "@endswith(activity('Get Metadata2').output.itemName,'csv')",
 						"type": "Expression"
 					},
 					"ifFalseActivities": [
 						{
-							"name": "Fail4",
+							"name": "Fail3",
 							"type": "Fail",
 							"dependsOn": [],
 							"userProperties": [],
 							"typeProperties": {
-								"message": "No child items ",
+								"message": "File format is not supported",
 								"errorCode": "400"
 							}
 						}
 					],
 					"ifTrueActivities": [
 						{
-							"name": "Get Metadata5",
+							"name": "Get Metadata3",
 							"type": "GetMetadata",
 							"dependsOn": [],
 							"policy": {
@@ -108,15 +198,19 @@
 							"typeProperties": {
 								"dataset": {
 									"referenceName": "DelimitedText1",
-									"type": "DatasetReference"
+									"type": "DatasetReference",
+									"parameters": {
+										"P_filename": {
+											"value": "@activity('Get Metadata2').output.itemName",
+											"type": "Expression"
+										}
+									}
 								},
 								"fieldList": [
-									"size",
 									"itemName"
 								],
 								"storeSettings": {
 									"type": "AzureBlobStorageReadSettings",
-									"recursive": true,
 									"enablePartitionDiscovery": false
 								},
 								"formatSettings": {
@@ -128,10 +222,8 @@
 				}
 			},
 			{
-				"name": "If Condition5",
+				"name": "If Condition4",
 				"type": "IfCondition",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "If Condition3",
@@ -140,136 +232,7 @@
 						]
 					}
 				],
-				"userProperties": [],
-				"typeProperties": {
-					"expression": {
-						"value": "@greater(activity('Get Metadata5').output.size, 1024)",
-						"type": "Expression"
-					},
-					"ifFalseActivities": [
-						{
-							"name": "Fail5",
-							"type": "Fail",
-							"dependsOn": [],
-							"userProperties": [],
-							"typeProperties": {
-								"message": "File size not matched",
-								"errorCode": "400"
-							}
-						}
-					],
-					"ifTrueActivities": [
-						{
-							"name": "Get Metadata6",
-							"type": "GetMetadata",
-							"dependsOn": [],
-							"policy": {
-								"timeout": "0.12:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"dataset": {
-									"referenceName": "DelimitedText1",
-									"type": "DatasetReference"
-								},
-								"fieldList": [
-									"itemName"
-								],
-								"storeSettings": {
-									"type": "AzureBlobStorageReadSettings",
-									"recursive": true,
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "DelimitedTextReadSettings"
-								}
-							}
-						}
-					]
-				}
-			},
-			{
-				"name": "If Condition6",
-				"type": "IfCondition",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
-				"dependsOn": [
-					{
-						"activity": "If Condition5",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"expression": {
-						"value": "@endswith(activity('Get Metadata6').output.itemName, '.csv')",
-						"type": "Expression"
-					},
-					"ifFalseActivities": [
-						{
-							"name": "Fail6",
-							"type": "Fail",
-							"dependsOn": [],
-							"userProperties": [],
-							"typeProperties": {
-								"message": "Unsupported extension",
-								"errorCode": "400"
-							}
-						}
-					],
-					"ifTrueActivities": [
-						{
-							"name": "Get Metadata7",
-							"type": "GetMetadata",
-							"dependsOn": [],
-							"policy": {
-								"timeout": "0.12:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"dataset": {
-									"referenceName": "DelimitedText1",
-									"type": "DatasetReference"
-								},
-								"fieldList": [
-									"itemName"
-								],
-								"storeSettings": {
-									"type": "AzureBlobStorageReadSettings",
-									"recursive": true,
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "DelimitedTextReadSettings"
-								}
-							}
-						}
-					]
-				}
-			},
-			{
-				"name": "Validation1",
-				"type": "Validation",
-				"dependsOn": [],
-				"userProperties": [],
-				"typeProperties": {
-					"dataset": {
-						"referenceName": "DelimitedText1",
-						"type": "DatasetReference"
-					},
-					"timeout": "0.12:00:00",
-					"sleep": 10
-				}
+				"userProperties": []
 			}
 		],
 		"folder": {

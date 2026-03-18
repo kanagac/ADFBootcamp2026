@@ -6,7 +6,7 @@
 			"type": "LinkedServiceReference"
 		},
 		"parameters": {
-			"P_Name": {
+			"P_filename": {
 				"type": "string"
 			}
 		},
@@ -16,7 +16,7 @@
 			"location": {
 				"type": "AzureBlobStorageLocation",
 				"fileName": {
-					"value": "@dataset().P_Name",
+					"value": "@dataset().P_filename",
 					"type": "Expression"
 				},
 				"container": "sample-test"
