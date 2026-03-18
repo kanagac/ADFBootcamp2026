@@ -1,39 +1,7 @@
 {
-	"name": "Ps_Exercise_IN1726",
+	"name": "PS_DAY2_1to4_IN1726",
 	"properties": {
 		"activities": [
-			{
-				"name": "Get Metadata1",
-				"type": "GetMetadata",
-				"dependsOn": [],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"dataset": {
-						"referenceName": "DelimitedText1",
-						"type": "DatasetReference",
-						"parameters": {
-							"c_name": " "
-						}
-					},
-					"fieldList": [
-						"itemName"
-					],
-					"storeSettings": {
-						"type": "AzureBlobStorageReadSettings",
-						"enablePartitionDiscovery": false
-					},
-					"formatSettings": {
-						"type": "DelimitedTextReadSettings"
-					}
-				}
-			},
 			{
 				"name": "If Condition1",
 				"type": "IfCondition",
@@ -41,7 +9,7 @@
 					{
 						"activity": "Get Metadata1",
 						"dependencyConditions": [
-							"Completed"
+							"Succeeded"
 						]
 					}
 				],
@@ -65,7 +33,7 @@
 					],
 					"ifTrueActivities": [
 						{
-							"name": "Get Metadata2",
+							"name": "Get_child_items",
 							"type": "GetMetadata",
 							"dependsOn": [],
 							"policy": {
@@ -85,10 +53,11 @@
 									}
 								},
 								"fieldList": [
-									"itemName"
+									"childItems"
 								],
 								"storeSettings": {
 									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
 									"enablePartitionDiscovery": false
 								},
 								"formatSettings": {
@@ -113,7 +82,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@greater(length(activity('Get Metadata2').output.childItems),0)\r\n",
+						"value": "@greater(length(activity('Get_child_items').output.childItems),0)\n",
 						"type": "Expression"
 					},
 					"ifFalseActivities": [
@@ -130,7 +99,7 @@
 					],
 					"ifTrueActivities": [
 						{
-							"name": "Get Metadata3",
+							"name": "File_size",
 							"type": "GetMetadata",
 							"dependsOn": [],
 							"policy": {
@@ -146,14 +115,19 @@
 									"referenceName": "DelimitedText1",
 									"type": "DatasetReference",
 									"parameters": {
-										"c_name": " "
+										"c_name": {
+											"value": "@activity('Get_child_items').output.childItems[0].name",
+											"type": "Expression"
+										}
 									}
 								},
 								"fieldList": [
-									"itemName"
+									"itemName",
+									"size"
 								],
 								"storeSettings": {
 									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
 									"enablePartitionDiscovery": false
 								},
 								"formatSettings": {
@@ -165,7 +139,7 @@
 				}
 			},
 			{
-				"name": "If Condition2_copy1",
+				"name": "If Condition4",
 				"type": "IfCondition",
 				"dependsOn": [
 					{
@@ -178,25 +152,25 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@greater(activity('Get Metadata2').output.size,1024)\n",
+						"value": "@endswith(activity('File_size').output.itemName,'csv')",
 						"type": "Expression"
 					},
 					"ifFalseActivities": [
 						{
-							"name": "Fail2_copy1",
+							"name": "Fail4",
 							"type": "Fail",
 							"dependsOn": [],
 							"userProperties": [],
 							"typeProperties": {
-								"message": "File not found ",
-								"errorCode": "404"
+								"message": "File is not supported",
+								"errorCode": "400"
 							}
 						}
 					],
 					"ifTrueActivities": [
 						{
-							"name": "Get Metadata4",
-							"type": "GetMetadata",
+							"name": "Lookup1",
+							"type": "Lookup",
 							"dependsOn": [],
 							"policy": {
 								"timeout": "0.12:00:00",
@@ -207,31 +181,70 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
+								"source": {
+									"type": "DelimitedTextSource",
+									"storeSettings": {
+										"type": "AzureBlobStorageReadSettings",
+										"recursive": false,
+										"enablePartitionDiscovery": false
+									},
+									"formatSettings": {
+										"type": "DelimitedTextReadSettings"
+									}
+								},
 								"dataset": {
 									"referenceName": "DelimitedText1",
 									"type": "DatasetReference",
 									"parameters": {
-										"c_name": " "
+										"c_name": "  "
 									}
 								},
-								"fieldList": [
-									"itemName"
-								],
-								"storeSettings": {
-									"type": "AzureBlobStorageReadSettings",
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "DelimitedTextReadSettings"
-								}
+								"firstRowOnly": false
 							}
 						}
 					]
 				}
+			},
+			{
+				"name": "Get Metadata1",
+				"type": "GetMetadata",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "DelimitedText1",
+						"type": "DatasetReference",
+						"parameters": {
+							"c_name": " "
+						}
+					},
+					"fieldList": [
+						"exists"
+					],
+					"storeSettings": {
+						"type": "AzureBlobStorageReadSettings",
+						"enablePartitionDiscovery": false
+					},
+					"formatSettings": {
+						"type": "DelimitedTextReadSettings"
+					}
+				}
 			}
 		],
+		"parameters": {
+			"c_name": {
+				"type": "string"
+			}
+		},
 		"folder": {
-			"name": "Day 2 exercise"
+			"name": "PS_Day2_Exercise_IN1720"
 		},
 		"annotations": []
 	}
