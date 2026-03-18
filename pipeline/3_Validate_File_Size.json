@@ -24,6 +24,7 @@
 					],
 					"storeSettings": {
 						"type": "AzureBlobStorageReadSettings",
+						"recursive": true,
 						"enablePartitionDiscovery": false
 					},
 					"formatSettings": {
@@ -64,7 +65,7 @@
 			}
 		],
 		"folder": {
-			"name": "Ps_Exercise_IN1738/Validation"
+			"name": "Pl_Exercise_IN1738/Validation"
 		},
 		"annotations": []
 	}
