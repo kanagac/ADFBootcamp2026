@@ -1,0 +1,39 @@
+{
+	"name": "PL_Day_2_Q9_IN1716",
+	"properties": {
+		"description": "Retrieving Multiple Records",
+		"activities": [
+			{
+				"name": "Lookup1",
+				"description": "Retrieving Multiple Records ",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "SELECT * FROM dbo.dw_customers",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			}
+		],
+		"folder": {
+			"name": "PL_Day_2_IN1716/Lookup_Activity"
+		},
+		"annotations": []
+	}
+}
