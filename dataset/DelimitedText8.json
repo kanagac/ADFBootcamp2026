@@ -1,18 +1,26 @@
 {
-	"name": "DelimitedText1",
+	"name": "DelimitedText8",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "LS_AZURE_STORAGE",
 			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"File_name": {
+				"type": "String"
+			}
 		},
 		"annotations": [],
 		"type": "DelimitedText",
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": "Sales.csv",
-				"folderPath": "sales",
-				"container": "input"
+				"fileName": {
+					"value": "@dataset().File_name",
+					"type": "Expression"
+				},
+				"folderPath": "location/IN1734",
+				"container": "output"
 			},
 			"columnDelimiter": ",",
 			"escapeChar": "\\",
@@ -20,6 +28,5 @@
 			"quoteChar": "\""
 		},
 		"schema": []
-	},
-	"type": "Microsoft.DataFactory/factories/datasets"
+	}
 }
