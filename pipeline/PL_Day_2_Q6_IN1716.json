@@ -22,11 +22,12 @@
 						"type": "DatasetReference"
 					},
 					"fieldList": [
-						"size",
-						"lastModified"
+						"lastModified",
+						"size"
 					],
 					"storeSettings": {
 						"type": "AzureBlobStorageReadSettings",
+						"recursive": true,
 						"enablePartitionDiscovery": false
 					},
 					"formatSettings": {
