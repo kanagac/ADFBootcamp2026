@@ -3,44 +3,11 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Get Metadata1",
-				"type": "GetMetadata",
-				"dependsOn": [],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"dataset": {
-						"referenceName": "DelimitedText1",
-						"type": "DatasetReference",
-						"parameters": {
-							"P_Filename": " "
-						}
-					},
-					"fieldList": [
-						"exists"
-					],
-					"storeSettings": {
-						"type": "AzureBlobStorageReadSettings",
-						"recursive": true,
-						"enablePartitionDiscovery": false
-					},
-					"formatSettings": {
-						"type": "DelimitedTextReadSettings"
-					}
-				}
-			},
-			{
 				"name": "If Condition1",
 				"type": "IfCondition",
 				"dependsOn": [
 					{
-						"activity": "Get Metadata1",
+						"activity": "Validation1",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -49,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@activity('Get Metadata1').output.exists",
+						"value": "@equals(activity('Validation1').output.exists,true)",
 						"type": "Expression"
 					},
 					"ifFalseActivities": [
@@ -172,7 +139,7 @@
 				}
 			},
 			{
-				"name": "If Condition3",
+				"name": "If Condition4",
 				"type": "IfCondition",
 				"dependsOn": [
 					{
@@ -185,25 +152,25 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@greater(activity('File_size').output.size,1024)",
+						"value": "@endswith(activity('File_size').output.itemName,'csv')",
 						"type": "Expression"
 					},
 					"ifFalseActivities": [
 						{
-							"name": "Fail3",
+							"name": "Fail4",
 							"type": "Fail",
 							"dependsOn": [],
 							"userProperties": [],
 							"typeProperties": {
-								"message": "file size is not greator",
-								"errorCode": "404"
+								"message": "No File has CSV",
+								"errorCode": "400"
 							}
 						}
 					],
 					"ifTrueActivities": [
 						{
-							"name": "file_type",
-							"type": "GetMetadata",
+							"name": "Lookup1",
+							"type": "Lookup",
 							"dependsOn": [],
 							"policy": {
 								"timeout": "0.12:00:00",
@@ -214,27 +181,51 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
+								"source": {
+									"type": "DelimitedTextSource",
+									"storeSettings": {
+										"type": "AzureBlobStorageReadSettings",
+										"recursive": true,
+										"enablePartitionDiscovery": false
+									},
+									"formatSettings": {
+										"type": "DelimitedTextReadSettings"
+									}
+								},
 								"dataset": {
 									"referenceName": "DelimitedText1",
-									"type": "DatasetReference"
+									"type": "DatasetReference",
+									"parameters": {
+										"P_Filename": " "
+									}
 								},
-								"fieldList": [
-									"itemType"
-								],
-								"storeSettings": {
-									"type": "AzureBlobStorageReadSettings",
-									"recursive": true,
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "DelimitedTextReadSettings"
-								}
+								"firstRowOnly": false
 							}
 						}
 					]
 				}
+			},
+			{
+				"name": "Validation1",
+				"type": "Validation",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "DelimitedText1",
+						"type": "DatasetReference",
+						"parameters": {
+							"P_Filename": " "
+						}
+					},
+					"timeout": "0.12:00:00",
+					"sleep": 10
+				}
 			}
 		],
+		"folder": {
+			"name": "PL_Day2_Excercise_IN1720"
+		},
 		"annotations": []
 	}
 }
