@@ -1,5 +1,5 @@
 {
-	"name": "pipeline1",
+	"name": "PL_Validate",
 	"properties": {
 		"activities": [
 			{
@@ -74,6 +74,7 @@
 								],
 								"storeSettings": {
 									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
 									"enablePartitionDiscovery": false
 								},
 								"formatSettings": {
@@ -143,6 +144,7 @@
 								],
 								"storeSettings": {
 									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
 									"enablePartitionDiscovery": false
 								},
 								"formatSettings": {
@@ -184,8 +186,8 @@
 					],
 					"ifTrueActivities": [
 						{
-							"name": "Get Metadata3",
-							"type": "GetMetadata",
+							"name": "Lookup1",
+							"type": "Lookup",
 							"dependsOn": [],
 							"policy": {
 								"timeout": "0.12:00:00",
@@ -196,43 +198,29 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
+								"source": {
+									"type": "DelimitedTextSource",
+									"storeSettings": {
+										"type": "AzureBlobStorageReadSettings",
+										"recursive": true,
+										"enablePartitionDiscovery": false
+									},
+									"formatSettings": {
+										"type": "DelimitedTextReadSettings"
+									}
+								},
 								"dataset": {
 									"referenceName": "DelimitedText1",
 									"type": "DatasetReference",
 									"parameters": {
-										"P_filename": {
-											"value": "@activity('Get Metadata2').output.itemName",
-											"type": "Expression"
-										}
+										"P_filename": " "
 									}
 								},
-								"fieldList": [
-									"itemName"
-								],
-								"storeSettings": {
-									"type": "AzureBlobStorageReadSettings",
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "DelimitedTextReadSettings"
-								}
+								"firstRowOnly": false
 							}
 						}
 					]
 				}
-			},
-			{
-				"name": "If Condition4",
-				"type": "IfCondition",
-				"dependsOn": [
-					{
-						"activity": "If Condition3",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": []
 			}
 		],
 		"folder": {
