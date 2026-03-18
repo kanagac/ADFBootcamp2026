@@ -10,8 +10,8 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"folderPath": "sales",
-				"container": "input"
+				"fileName": "transactions.csv",
+				"container": "metadatadriven"
 			},
 			"columnDelimiter": ",",
 			"escapeChar": "\\",
