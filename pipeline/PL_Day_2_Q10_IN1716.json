@@ -1,0 +1,69 @@
+{
+	"name": "PL_Day_2_Q10_IN1716",
+	"properties": {
+		"description": "Pipeline Execution Flow",
+		"activities": [
+			{
+				"name": "Lookup Validation",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "SELECT customer_id, name, city FROM dbo.dw_customers",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					}
+				}
+			},
+			{
+				"name": "Validation",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Lookup Validation",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(activity('Lookup Validation').output.firstRow.city,'Chennai')",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "Fail1",
+							"description": "Validating the file",
+							"type": "Fail",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"message": "Validation Failed due to invalid records",
+								"errorCode": "400"
+							}
+						}
+					]
+				}
+			}
+		],
+		"folder": {
+			"name": "PL_Day_2_IN1716/Lookup_Activity"
+		},
+		"annotations": []
+	}
+}
