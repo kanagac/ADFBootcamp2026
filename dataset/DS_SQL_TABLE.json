@@ -15,7 +15,10 @@
 		"schema": [],
 		"typeProperties": {
 			"schema": "dbo",
-			"table": "Employee"
+			"table": {
+				"value": "@dataset().P_Tablename",
+				"type": "Expression"
+			}
 		}
 	}
 }
