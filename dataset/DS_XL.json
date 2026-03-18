@@ -5,15 +5,25 @@
 			"referenceName": "LS_AZURE_STORAGE",
 			"type": "LinkedServiceReference"
 		},
+		"parameters": {
+			"P_filename": {
+				"type": "string",
+				"defaultValue": " "
+			}
+		},
 		"annotations": [],
 		"type": "Excel",
 		"typeProperties": {
-			"sheetName": "Sheet1",
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": "samplecheck.xlsx",
-				"container": "check"
-			}
+				"fileName": {
+					"value": "@dataset().P_filename",
+					"type": "Expression"
+				},
+				"folderPath": "locations",
+				"container": "output"
+			},
+			"firstRowAsHeader": true
 		},
 		"schema": []
 	},
