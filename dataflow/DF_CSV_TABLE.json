@@ -6,7 +6,7 @@
 			"sources": [
 				{
 					"dataset": {
-						"referenceName": "DelimitedText1",
+						"referenceName": "DS_SQL_TABLE",
 						"type": "DatasetReference"
 					},
 					"name": "srccsvfile"
@@ -15,45 +15,41 @@
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "DS_SQL_TABLE",
+						"referenceName": "AzureSqlTable1",
 						"type": "DatasetReference"
 					},
-					"name": "sink1"
+					"name": "sink1",
+					"rejectedDataLinkedService": {
+						"referenceName": "LS_AZURE_STORAGE",
+						"type": "LinkedServiceReference"
+					}
 				}
 			],
 			"transformations": [
 				{
-					"name": "union1"
-				},
-				{
-					"name": "select1"
+					"name": "derivedColumn1"
 				}
 			],
 			"scriptLines": [
 				"source(output(",
-				"          StoreId as string,",
-				"          StoreName as string,",
-				"          City as string,",
-				"          Region as string,",
-				"          Latitude as double,",
-				"          Longitude as double",
+				"          EmpID as integer,",
+				"          EmployeeName as string,",
+				"          Department as string,",
+				"          Salary as integer",
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     ignoreNoFilesFound: false) ~> srccsvfile",
-				"srccsvfile, select1 union(byName: true)~> union1",
-				"srccsvfile select(mapColumn(",
-				"          StoreId,",
-				"          StoreName,",
-				"          City,",
-				"          Region,",
-				"          Latitude,",
-				"          Longitude",
-				"     ),",
-				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> select1",
-				"union1 sink(allowSchemaDrift: true,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> srccsvfile",
+				"srccsvfile derive(Salary_Category = 90) ~> derivedColumn1",
+				"derivedColumn1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
+				"     input(",
+				"          EmpID as integer,",
+				"          EmployeeName as string,",
+				"          Department as string,",
+				"          Salary as integer",
+				"     ),",
 				"     deletable:false,",
 				"     insertable:true,",
 				"     updateable:false,",
@@ -61,7 +57,6 @@
 				"     format: 'table',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     saveOrder: 1,",
 				"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
 			]
 		}
