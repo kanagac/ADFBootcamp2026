@@ -67,7 +67,7 @@
 											"value": "@pipeline().parameters.fileName",
 											"type": "Expression"
 										},
-										"directory_name": "excel",
+										"directory_name": "mixedfiles",
 										"container_name": "input"
 									}
 								}
