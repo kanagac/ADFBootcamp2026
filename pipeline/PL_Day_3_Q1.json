@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Get Metadata1",
+				"name": "Folder Metadata",
 				"type": "GetMetadata",
 				"dependsOn": [],
 				"policy": {
@@ -37,11 +37,11 @@
 				}
 			},
 			{
-				"name": "ForEach1",
+				"name": "Iterate Through Files",
 				"type": "ForEach",
 				"dependsOn": [
 					{
-						"activity": "Get Metadata1",
+						"activity": "Folder Metadata",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -50,12 +50,12 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('Get Metadata1').output.childItems",
+						"value": "@activity('Folder_Metadata').output.childItems",
 						"type": "Expression"
 					},
 					"activities": [
 						{
-							"name": "Get Metadata2",
+							"name": "Files Metadata",
 							"type": "GetMetadata",
 							"dependsOn": [],
 							"policy": {
@@ -96,7 +96,7 @@
 							"type": "IfCondition",
 							"dependsOn": [
 								{
-									"activity": "Get Metadata2",
+									"activity": "Files Metadata",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -105,7 +105,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"expression": {
-									"value": "@greaterOrEquals(activity('Get Metadata2').output.lastModified, variables('timestamp'))",
+									"value": "@greaterOrEquals(activity('Files Metadata').output.lastModified, variables('timestamp'))",
 									"type": "Expression"
 								},
 								"ifTrueActivities": [
@@ -121,7 +121,7 @@
 										"typeProperties": {
 											"variableName": "timestamp",
 											"value": {
-												"value": "@activity('Get Metadata2').output.lastModified",
+												"value": "@activity('Files Metadata').output.lastModified",
 												"type": "Expression"
 											}
 										}
@@ -154,7 +154,7 @@
 				"type": "Copy",
 				"dependsOn": [
 					{
-						"activity": "ForEach1",
+						"activity": "Iterate Through Files",
 						"dependencyConditions": [
 							"Succeeded"
 						]
