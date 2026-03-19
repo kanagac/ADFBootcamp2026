@@ -25,10 +25,6 @@
 			"location": {
 				"type": "AzureBlobStorageLocation",
 				"fileName": "Sales_20260216.csv",
-				"folderPath": {
-					"value": "@dataset().directory",
-					"type": "Expression"
-				},
 				"container": {
 					"value": "@dataset().container",
 					"type": "Expression"
