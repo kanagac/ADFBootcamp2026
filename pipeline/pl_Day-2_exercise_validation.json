@@ -1,5 +1,5 @@
 {
-	"name": "pl_Day-2_exercise",
+	"name": "pl_Day-2_exercise_validation",
 	"properties": {
 		"activities": [
 			{
@@ -19,7 +19,9 @@
 						"referenceName": "DelimitedText1",
 						"type": "DatasetReference",
 						"parameters": {
-							"pFilename": " "
+							"container": "input",
+							"foldername": "sales",
+							"filename": " "
 						}
 					},
 					"fieldList": [
@@ -36,11 +38,11 @@
 				}
 			},
 			{
-				"name": "If Condition2",
+				"name": "exists_expression",
 				"type": "IfCondition",
 				"dependsOn": [
 					{
-						"activity": "If Condition4",
+						"activity": "Get Metadata1",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -49,24 +51,24 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@greater(length(activity('Get Metadata2').output.childItems),0)",
+						"value": "@activity('Get Metadata1').output.exists",
 						"type": "Expression"
 					},
 					"ifFalseActivities": [
 						{
-							"name": "Fail2",
+							"name": "Fail1",
 							"type": "Fail",
 							"dependsOn": [],
 							"userProperties": [],
 							"typeProperties": {
-								"message": "there is no child items",
-								"errorCode": "400"
+								"message": "file dosent exist",
+								"errorCode": "111"
 							}
 						}
 					],
 					"ifTrueActivities": [
 						{
-							"name": "Get Metadata3",
+							"name": "Child_items",
 							"type": "GetMetadata",
 							"dependsOn": [],
 							"policy": {
@@ -82,15 +84,16 @@
 									"referenceName": "DelimitedText1",
 									"type": "DatasetReference",
 									"parameters": {
-										"pFilename": "DimStore.csv"
+										"container": "input",
+										"foldername": "sales",
+										"filename": " "
 									}
 								},
 								"fieldList": [
-									"size"
+									"childItems"
 								],
 								"storeSettings": {
 									"type": "AzureBlobStorageReadSettings",
-									"recursive": true,
 									"enablePartitionDiscovery": false
 								},
 								"formatSettings": {
@@ -102,11 +105,11 @@
 				}
 			},
 			{
-				"name": "If Condition3",
+				"name": "if_greater",
 				"type": "IfCondition",
 				"dependsOn": [
 					{
-						"activity": "If Condition2",
+						"activity": "exists_expression",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -115,25 +118,25 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@greater(activity('Get Metadata3').output.size,1024 )",
+						"value": "@greater(length(activity('Child_items').output.childItems),0)",
 						"type": "Expression"
 					},
 					"ifFalseActivities": [
 						{
-							"name": "Fail3",
+							"name": "Fail2",
 							"type": "Fail",
 							"dependsOn": [],
 							"userProperties": [],
 							"typeProperties": {
-								"message": "File not matching the size",
-								"errorCode": "400"
+								"message": "File count lower than 1",
+								"errorCode": "222"
 							}
 						}
 					],
 					"ifTrueActivities": [
 						{
-							"name": "Lookup1",
-							"type": "Lookup",
+							"name": "size_metadata",
+							"type": "GetMetadata",
 							"dependsOn": [],
 							"policy": {
 								"timeout": "0.12:00:00",
@@ -144,55 +147,114 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
-								"source": {
-									"type": "DelimitedTextSource",
-									"storeSettings": {
-										"type": "AzureBlobStorageReadSettings",
-										"recursive": true,
-										"enablePartitionDiscovery": false
-									},
-									"formatSettings": {
-										"type": "DelimitedTextReadSettings"
-									}
-								},
 								"dataset": {
 									"referenceName": "DelimitedText1",
 									"type": "DatasetReference",
 									"parameters": {
-										"pFilename": "DimStore.csv"
+										"container": "input",
+										"foldername": "sales",
+										"filename": "Sales.csv"
 									}
 								},
-								"firstRowOnly": false
+								"fieldList": [
+									"size"
+								],
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
 							}
 						}
 					]
 				}
 			},
 			{
-				"name": "If Condition4",
+				"name": "size-expression",
 				"type": "IfCondition",
 				"dependsOn": [
 					{
-						"activity": "Get Metadata1",
+						"activity": "if_greater",
 						"dependencyConditions": [
-							"Completed"
+							"Succeeded"
 						]
 					}
 				],
 				"userProperties": [],
 				"typeProperties": {
+					"expression": {
+						"value": "@greater(activity('size_metadata').output.size, 0)",
+						"type": "Expression"
+					},
 					"ifFalseActivities": [
 						{
-							"name": "Fail4",
+							"name": "Fail3",
 							"type": "Fail",
 							"dependsOn": [],
 							"userProperties": [],
 							"typeProperties": {
-								"message": "",
-								"errorCode": ""
+								"message": "Size doesn't match",
+								"errorCode": "333"
+							}
+						}
+					],
+					"ifTrueActivities": [
+						{
+							"name": "Speific_file_metadata",
+							"type": "GetMetadata",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "DelimitedText1",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": "input",
+										"foldername": "sales",
+										"filename": "Sales.csv"
+									}
+								},
+								"fieldList": [
+									"itemName"
+								],
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
 							}
 						}
 					]
+				}
+			},
+			{
+				"name": "Specific_filetype",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "size-expression",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@endswith(activity('Speific_file_metadata').output.itemName, '.csv')",
+						"type": "Expression"
+					}
 				}
 			}
 		],
