@@ -6,8 +6,16 @@
 			"type": "LinkedServiceReference"
 		},
 		"parameters": {
-			"pFilename": {
+			"container": {
 				"type": "string"
+			},
+			"foldername": {
+				"type": "string",
+				"defaultValue": " "
+			},
+			"filename": {
+				"type": "string",
+				"defaultValue": " "
 			}
 		},
 		"annotations": [],
@@ -16,10 +24,17 @@
 			"location": {
 				"type": "AzureBlobStorageLocation",
 				"fileName": {
-					"value": "@concat(dataset().pFilename)",
+					"value": "@dataset().filename",
 					"type": "Expression"
 				},
-				"container": "sample-test"
+				"folderPath": {
+					"value": "@dataset().foldername",
+					"type": "Expression"
+				},
+				"container": {
+					"value": "@dataset().container",
+					"type": "Expression"
+				}
 			},
 			"columnDelimiter": ",",
 			"escapeChar": "\\",

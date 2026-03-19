@@ -132,12 +132,6 @@
 													}
 												},
 												"datasetParameters": {
-													"source1": {
-														"pFilename": {
-															"value": "@concat(item().source_table,'.csv')",
-															"type": "Expression"
-														}
-													},
 													"sink1": {
 														"pTablename": {
 															"value": "@item().target_table",
