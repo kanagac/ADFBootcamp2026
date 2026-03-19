@@ -106,7 +106,7 @@
 											"waitOnCompletion": true,
 											"parameters": {
 												"fileName": {
-													"value": "@item().fileName",
+													"value": "@item().name",
 													"type": "Expression"
 												},
 												"fileExtension": {
@@ -363,7 +363,7 @@
 			}
 		},
 		"folder": {
-			"name": "ADF Exercise/Day3 Exercise"
+			"name": "ADF Exercise/Day3 Exercise/Question3"
 		},
 		"annotations": []
 	}
