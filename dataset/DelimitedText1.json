@@ -8,6 +8,12 @@
 		"parameters": {
 			"P_filename": {
 				"type": "string"
+			},
+			"P_directory": {
+				"type": "string"
+			},
+			"P_container": {
+				"type": "string"
 			}
 		},
 		"annotations": [],
@@ -19,7 +25,14 @@
 					"value": "@dataset().P_filename",
 					"type": "Expression"
 				},
-				"container": "sample-test"
+				"folderPath": {
+					"value": "@dataset().P_directory",
+					"type": "Expression"
+				},
+				"container": {
+					"value": "@dataset().P_container",
+					"type": "Expression"
+				}
 			},
 			"columnDelimiter": ",",
 			"escapeChar": "\\",
