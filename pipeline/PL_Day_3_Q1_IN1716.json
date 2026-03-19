@@ -68,7 +68,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"dataset": {
-									"referenceName": "ADLS_path1",
+									"referenceName": "DS_ADLS_path1",
 									"type": "DatasetReference",
 									"parameters": {
 										"filename": {
@@ -215,7 +215,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "ADLS_path1",
+						"referenceName": "DS_ADLS_path1",
 						"type": "DatasetReference",
 						"parameters": {
 							"filename": {
@@ -227,7 +227,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "sink",
+						"referenceName": "DS_sink",
 						"type": "DatasetReference",
 						"parameters": {
 							"container": "output",

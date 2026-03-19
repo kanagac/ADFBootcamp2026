@@ -1,5 +1,5 @@
 {
-	"name": "sink",
+	"name": "DS_sink",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "LS_AZURE_STORAGE",
