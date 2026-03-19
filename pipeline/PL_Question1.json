@@ -19,9 +19,9 @@
 						"referenceName": "DelimitedText1",
 						"type": "DatasetReference",
 						"parameters": {
-							"P_filename": " ",
+							"P_container": "input",
 							"P_directory": "latest",
-							"P_container": "input"
+							"P_filename": " "
 						}
 					},
 					"fieldList": [
