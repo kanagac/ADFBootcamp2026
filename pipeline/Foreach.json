@@ -29,6 +29,7 @@
 					],
 					"storeSettings": {
 						"type": "AzureBlobStorageReadSettings",
+						"recursive": true,
 						"enablePartitionDiscovery": false
 					},
 					"formatSettings": {
@@ -85,7 +86,7 @@
 									"parameters": {
 										"Container": "sample-test",
 										"Folder": " ",
-										"File": " DimStore.csv"
+										"File": "DimStore.csv"
 									}
 								}
 							}
