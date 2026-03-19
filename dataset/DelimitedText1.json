@@ -1,10 +1,6 @@
 {
 	"name": "DelimitedText1",
 	"properties": {
-		"linkedServiceName": {
-			"referenceName": "LS_AZURE_STORAGE",
-			"type": "LinkedServiceReference"
-		},
 		"parameters": {
 			"c_name": {
 				"type": "string",
@@ -14,14 +10,6 @@
 		"annotations": [],
 		"type": "DelimitedText",
 		"typeProperties": {
-			"location": {
-				"type": "AzureBlobStorageLocation",
-				"fileName": {
-					"value": "@dataset().c_name",
-					"type": "Expression"
-				},
-				"container": "sample-test"
-			},
 			"columnDelimiter": ",",
 			"rowDelimiter": "\n",
 			"escapeChar": "\\",
