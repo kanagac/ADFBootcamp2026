@@ -1,0 +1,23 @@
+{
+	"name": "DS_CSV_FILES",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AZURE_STORAGE",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "Sales_20260214.csv",
+				"container": "input"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}
