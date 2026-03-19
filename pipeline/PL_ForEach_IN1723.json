@@ -3,115 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "ForEach1",
-				"type": "ForEach",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
-				"dependsOn": [],
-				"userProperties": [],
-				"typeProperties": {
-					"items": {
-						"value": "@activity('Get Metadata2').output.childItems",
-						"type": "Expression"
-					},
-					"isSequential": true,
-					"activities": [
-						{
-							"name": "Get Metadata2",
-							"type": "GetMetadata",
-							"dependsOn": [],
-							"policy": {
-								"timeout": "0.12:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"dataset": {
-									"referenceName": "DelimitedText1",
-									"type": "DatasetReference",
-									"parameters": {
-										"P_filename": {
-											"value": "@item().name",
-											"type": "Expression"
-										}
-									}
-								},
-								"fieldList": [
-									"childItems"
-								],
-								"storeSettings": {
-									"type": "AzureBlobStorageReadSettings",
-									"recursive": true,
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "DelimitedTextReadSettings"
-								}
-							}
-						}
-					]
-				}
-			},
-			{
-				"name": "ForEach2",
-				"type": "ForEach",
-				"dependsOn": [
-					{
-						"activity": "Get Metadata3",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"items": {
-						"value": "@activity('Get Metadata3').output.childItems",
-						"type": "Expression"
-					},
-					"isSequential": true,
-					"activities": [
-						{
-							"name": "Lookup1",
-							"type": "Lookup",
-							"dependsOn": [],
-							"policy": {
-								"timeout": "0.12:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"source": {
-									"type": "DelimitedTextSource",
-									"storeSettings": {
-										"type": "AzureBlobStorageReadSettings",
-										"recursive": true,
-										"enablePartitionDiscovery": false
-									},
-									"formatSettings": {
-										"type": "DelimitedTextReadSettings"
-									}
-								},
-								"dataset": {
-									"referenceName": "DelimitedText1",
-									"type": "DatasetReference",
-									"parameters": {
-										"P_filename": " "
-									}
-								}
-							}
-						}
-					]
-				}
-			},
-			{
-				"name": "Get Metadata3",
+				"name": "Get Metadata4",
 				"type": "GetMetadata",
 				"dependsOn": [],
 				"policy": {
@@ -127,15 +19,11 @@
 						"referenceName": "DelimitedText1",
 						"type": "DatasetReference",
 						"parameters": {
-							"P_filename": {
-								"value": " ",
-								"type": "Expression"
-							}
+							"P_filename": " "
 						}
 					},
 					"fieldList": [
-						"childItems",
-						"itemName"
+						"childItems"
 					],
 					"storeSettings": {
 						"type": "AzureBlobStorageReadSettings",
@@ -145,8 +33,91 @@
 						"type": "DelimitedTextReadSettings"
 					}
 				}
+			},
+			{
+				"name": "ForEach3",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Get Metadata4",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Get Metadata4').output.childItems",
+						"type": "Expression"
+					},
+					"batchCount": 2,
+					"activities": [
+						{
+							"name": "Set variable4",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "Sequential",
+								"value": {
+									"value": "@item().name",
+									"type": "Expression"
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "ForEach4",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Get Metadata4",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Get Metadata4').output.childItems",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "Set variable5",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "Sequential",
+								"value": {
+									"value": "@item().name",
+									"type": "Expression"
+								}
+							}
+						}
+					]
+				}
 			}
 		],
+		"variables": {
+			"Sequential": {
+				"type": "String"
+			}
+		},
 		"folder": {
 			"name": "DAY 2 Exercise - IN1723/ForEach Activity"
 		},
