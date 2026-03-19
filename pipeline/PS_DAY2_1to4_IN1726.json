@@ -49,7 +49,9 @@
 									"referenceName": "DelimitedText1",
 									"type": "DatasetReference",
 									"parameters": {
-										"c_name": " "
+										"filename": " ",
+										"container": "DelimeterText1",
+										"folder": "sample-test"
 									}
 								},
 								"fieldList": [
@@ -115,10 +117,12 @@
 									"referenceName": "DelimitedText1",
 									"type": "DatasetReference",
 									"parameters": {
-										"c_name": {
+										"filename": {
 											"value": "@activity('Get_child_items').output.childItems[0].name",
 											"type": "Expression"
-										}
+										},
+										"container": "DelimeterText1",
+										"folder": "sample-test"
 									}
 								},
 								"fieldList": [
@@ -196,7 +200,9 @@
 									"referenceName": "DelimitedText1",
 									"type": "DatasetReference",
 									"parameters": {
-										"c_name": "  "
+										"filename": "  ",
+										"container": "DelimeterText1",
+										"folder": "sample-test"
 									}
 								},
 								"firstRowOnly": false
@@ -222,7 +228,9 @@
 						"referenceName": "DelimitedText1",
 						"type": "DatasetReference",
 						"parameters": {
-							"c_name": " "
+							"filename": " ",
+							"container": "DelimeterText1",
+							"folder": "sample-test"
 						}
 					},
 					"fieldList": [
