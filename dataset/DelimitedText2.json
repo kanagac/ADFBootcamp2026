@@ -15,7 +15,11 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"folderPath": "mixedfiles",
+				"fileName": {
+					"value": "@dataset().filename",
+					"type": "Expression"
+				},
+				"folderPath": "data",
 				"container": "input"
 			},
 			"columnDelimiter": ",",
