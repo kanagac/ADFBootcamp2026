@@ -3,8 +3,8 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Get Metadata1",
-				"type": "GetMetadata",
+				"name": "Lookup1",
+				"type": "Lookup",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -15,11 +15,47 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					}
+				}
+			},
+			{
+				"name": "Lookup2_multiple_rows",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "Lookup1",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
 					"dataset": {
 						"referenceName": "DS_SQL_TABLE",
 						"type": "DatasetReference"
 					},
-					"fieldList": []
+					"firstRowOnly": false
 				}
 			}
 		],

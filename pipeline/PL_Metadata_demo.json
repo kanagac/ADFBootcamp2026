@@ -130,14 +130,6 @@
 														"value": "'@{activity('Lookup2').output.firstRow.last_value}'",
 														"type": "Expression"
 													}
-												},
-												"datasetParameters": {
-													"sink1": {
-														"pTablename": {
-															"value": "@item().target_table",
-															"type": "Expression"
-														}
-													}
 												}
 											},
 											"compute": {
@@ -225,13 +217,7 @@
 										"inputs": [
 											{
 												"referenceName": "DelimitedText1",
-												"type": "DatasetReference",
-												"parameters": {
-													"pFilename": {
-														"value": "@concat(item().source_table,'.csv')",
-														"type": "Expression"
-													}
-												}
+												"type": "DatasetReference"
 											}
 										],
 										"outputs": [
