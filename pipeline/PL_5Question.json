@@ -1,5 +1,5 @@
 {
-	"name": "PL_5to6Question",
+	"name": "PL_5Question",
 	"properties": {
 		"activities": [
 			{
@@ -19,7 +19,7 @@
 						"referenceName": "DelimitedText1",
 						"type": "DatasetReference",
 						"parameters": {
-							"P_Filename": " "
+							"P_filename": " "
 						}
 					},
 					"fieldList": [
@@ -27,6 +27,7 @@
 					],
 					"storeSettings": {
 						"type": "AzureBlobStorageReadSettings",
+						"recursive": true,
 						"enablePartitionDiscovery": false
 					},
 					"formatSettings": {
