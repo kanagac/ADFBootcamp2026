@@ -18,11 +18,14 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataset": {
-						"referenceName": "DelimitedText1",
-						"type": "DatasetReference"
+						"referenceName": "DS_CSV_FILES",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": "input"
+						}
 					},
 					"fieldList": [
-						"childItems"
+						"itemName"
 					],
 					"storeSettings": {
 						"type": "AzureBlobStorageReadSettings",
@@ -49,7 +52,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@and(\r\n    greater(length(activity('Get Metadata1').output.childItems),0),\r\n    contains(toLower(string(activity('Get Metadata1').output.childItems)),'.csv')\r\n    )",
+						"value": "@endswith(activity('Get Metadata1').output.itemName,'.csv')",
 						"type": "Expression"
 					},
 					"ifFalseActivities": [

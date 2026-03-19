@@ -5,13 +5,34 @@
 			"referenceName": "LS_AZURE_STORAGE",
 			"type": "LinkedServiceReference"
 		},
+		"parameters": {
+			"container": {
+				"type": "string",
+				"defaultValue": "0"
+			},
+			"directory": {
+				"type": "string",
+				"defaultValue": "0"
+			},
+			"filename": {
+				"type": "string",
+				"defaultValue": "0"
+			}
+		},
 		"annotations": [],
 		"type": "DelimitedText",
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": "Sales_20260214.csv",
-				"container": "input"
+				"fileName": "Sales_20260216.csv",
+				"folderPath": {
+					"value": "@dataset().directory",
+					"type": "Expression"
+				},
+				"container": {
+					"value": "@dataset().container",
+					"type": "Expression"
+				}
 			},
 			"columnDelimiter": ",",
 			"escapeChar": "\\",
