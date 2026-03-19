@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataset": {
-						"referenceName": "DelimitedText1",
+						"referenceName": "DS_csv",
 						"type": "DatasetReference",
 						"parameters": {
 							"p_file_name": " ",
@@ -70,7 +70,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"dataset": {
-									"referenceName": "DelimitedText1",
+									"referenceName": "DS_csv",
 									"type": "DatasetReference",
 									"parameters": {
 										"p_file_name": {
@@ -206,7 +206,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "DelimitedText1",
+						"referenceName": "DS_csv",
 						"type": "DatasetReference",
 						"parameters": {
 							"p_file_name": {
@@ -220,7 +220,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "DelimitedText1",
+						"referenceName": "DS_csv",
 						"type": "DatasetReference",
 						"parameters": {
 							"p_file_name": {
