@@ -1,5 +1,5 @@
 {
-	"name": "PL_Validation_IN1722",
+	"name": "PL_Validation_1_to_4",
 	"properties": {
 		"activities": [
 			{
@@ -74,6 +74,7 @@
 								],
 								"storeSettings": {
 									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
 									"enablePartitionDiscovery": false
 								},
 								"formatSettings": {
@@ -143,6 +144,7 @@
 								],
 								"storeSettings": {
 									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
 									"enablePartitionDiscovery": false
 								},
 								"formatSettings": {
