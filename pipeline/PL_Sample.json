@@ -57,7 +57,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"dataset": {
-									"referenceName": "DelimitedText1",
+									"referenceName": "DS_csv",
 									"type": "DatasetReference"
 								},
 								"fieldList": [

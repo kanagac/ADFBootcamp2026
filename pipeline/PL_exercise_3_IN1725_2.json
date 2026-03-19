@@ -27,7 +27,7 @@
 						}
 					},
 					"dataset": {
-						"referenceName": "DelimitedText1",
+						"referenceName": "DS_csv",
 						"type": "DatasetReference",
 						"parameters": {
 							"p_file_name": "Sales.csv",
