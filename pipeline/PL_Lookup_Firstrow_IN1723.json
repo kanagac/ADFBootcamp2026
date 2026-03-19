@@ -1,5 +1,5 @@
 {
-	"name": "PL_Lookup",
+	"name": "PL_Lookup_Firstrow_IN1723",
 	"properties": {
 		"activities": [
 			{
@@ -35,10 +35,16 @@
 								"type": "Expression"
 							}
 						}
-					}
+					},
+					"firstRowOnly": true
 				}
 			}
 		],
+		"variables": {
+			"records": {
+				"type": "String"
+			}
+		},
 		"folder": {
 			"name": "DAY 2 Exercise - IN1723/Lookup Activity"
 		},
