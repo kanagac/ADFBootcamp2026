@@ -14,7 +14,8 @@
 				"fileName": "sheetnames.xlsx",
 				"folderPath": "data/excel",
 				"container": "input"
-			}
+			},
+			"firstRowAsHeader": true
 		},
 		"schema": [
 			{
