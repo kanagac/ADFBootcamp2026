@@ -29,6 +29,7 @@
 					],
 					"storeSettings": {
 						"type": "AzureBlobStorageReadSettings",
+						"recursive": true,
 						"enablePartitionDiscovery": false
 					},
 					"formatSettings": {
@@ -120,6 +121,7 @@
 					],
 					"storeSettings": {
 						"type": "AzureBlobStorageReadSettings",
+						"recursive": true,
 						"enablePartitionDiscovery": false
 					},
 					"formatSettings": {
@@ -187,7 +189,7 @@
 			}
 		],
 		"folder": {
-			"name": "PL_Exercises_IN1727/Day_2_Exercise/ForEach_Activity"
+			"name": "Ps_Exercises_IN1727/Day_2_Exercise/ForEach_Activity"
 		},
 		"annotations": []
 	}
