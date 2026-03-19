@@ -56,10 +56,6 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
-								"dataset": {
-									"referenceName": "DelimitedText1",
-									"type": "DatasetReference"
-								},
 								"fieldList": [
 									"columnCount",
 									"exists",

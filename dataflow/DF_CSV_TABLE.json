@@ -5,10 +5,6 @@
 		"typeProperties": {
 			"sources": [
 				{
-					"dataset": {
-						"referenceName": "DelimitedText1",
-						"type": "DatasetReference"
-					},
 					"name": "srccsvfile"
 				}
 			],
@@ -39,8 +35,7 @@
 				"          Longitude as double",
 				"     ),",
 				"     allowSchemaDrift: true,",
-				"     validateSchema: false,",
-				"     ignoreNoFilesFound: false) ~> srccsvfile",
+				"     validateSchema: false) ~> srccsvfile",
 				"srccsvfile, select1 union(byName: true)~> union1",
 				"srccsvfile select(mapColumn(",
 				"          StoreId,",

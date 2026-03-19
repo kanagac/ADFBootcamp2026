@@ -5,10 +5,6 @@
 		"typeProperties": {
 			"sources": [
 				{
-					"dataset": {
-						"referenceName": "DelimitedText1",
-						"type": "DatasetReference"
-					},
 					"name": "source1"
 				}
 			],
@@ -31,8 +27,7 @@
 				"          Longitude as double",
 				"     ),",
 				"     allowSchemaDrift: true,",
-				"     validateSchema: false,",
-				"     ignoreNoFilesFound: false) ~> source1",
+				"     validateSchema: false) ~> source1",
 				"source1 derive(Full_Store_Name = concat(StoreName,',',Region)) ~> derivedColumn1",
 				"derivedColumn1 split(greater(Latitude,90),",
 				"     disjoint: false) ~> split1@(latitudeGreater90, latituelesser90)"

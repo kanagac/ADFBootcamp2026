@@ -218,28 +218,8 @@
 												"sqlWriterUseTableLock": false,
 												"disableMetricsCollection": false
 											},
-											"enableStaging": false,
-											"translator": {
-												"type": "TabularTranslator",
-												"typeConversion": true,
-												"typeConversionSettings": {
-													"allowDataTruncation": true,
-													"treatBooleanAsNumber": false
-												}
-											}
+											"enableStaging": false
 										},
-										"inputs": [
-											{
-												"referenceName": "DelimitedText1",
-												"type": "DatasetReference",
-												"parameters": {
-													"pFilename": {
-														"value": "@concat(item().source_table,'.csv')",
-														"type": "Expression"
-													}
-												}
-											}
-										],
 										"outputs": [
 											{
 												"referenceName": "DS_SQL_TABLE",
