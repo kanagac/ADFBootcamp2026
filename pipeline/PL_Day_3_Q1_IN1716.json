@@ -51,8 +51,7 @@
 						"value": "@activity('GM_listFiles').output.childItems",
 						"type": "Expression"
 					},
-					"isSequential": false,
-					"batchCount": 5,
+					"isSequential": true,
 					"activities": [
 						{
 							"name": "GM_FileMetadata",
@@ -78,7 +77,8 @@
 									}
 								},
 								"fieldList": [
-									"lastModified"
+									"lastModified",
+									"itemName"
 								],
 								"storeSettings": {
 									"type": "AzureBlobStorageReadSettings",
@@ -103,7 +103,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"expression": {
-									"value": "@or(\n   equals(variables('latest_time'), ''),\n   greater(activity('GM_FileMetadata').output.lastModified, variables('latest_time'))\n)",
+									"value": "@greaterOrEquals(activity('GM_FileMetadata').output.lastModified,variables('latest_time'))",
 									"type": "Expression"
 								},
 								"ifFalseActivities": [
@@ -132,7 +132,7 @@
 										"typeProperties": {
 											"variableName": "latest_file_name",
 											"value": {
-												"value": "@item().name",
+												"value": "@activity('GM_FileMetadata').output.itemName",
 												"type": "Expression"
 											}
 										}
