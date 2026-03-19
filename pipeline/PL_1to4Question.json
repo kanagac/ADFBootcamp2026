@@ -1,5 +1,5 @@
 {
-	"name": "PS_Day2_Exercise_IN1720",
+	"name": "PL_1to4Question",
 	"properties": {
 		"activities": [
 			{
@@ -49,7 +49,7 @@
 									"referenceName": "DelimitedText1",
 									"type": "DatasetReference",
 									"parameters": {
-										"P_Filename": " "
+										"P_filename": " "
 									}
 								},
 								"fieldList": [
@@ -115,7 +115,7 @@
 									"referenceName": "DelimitedText1",
 									"type": "DatasetReference",
 									"parameters": {
-										"P_Filename": {
+										"P_filename": {
 											"value": "@activity('Get_Child_items').output.childItems[0].name",
 											"type": "Expression"
 										}
@@ -196,7 +196,7 @@
 									"referenceName": "DelimitedText1",
 									"type": "DatasetReference",
 									"parameters": {
-										"P_Filename": " "
+										"P_filename": " "
 									}
 								},
 								"firstRowOnly": false
@@ -215,7 +215,7 @@
 						"referenceName": "DelimitedText1",
 						"type": "DatasetReference",
 						"parameters": {
-							"P_Filename": " "
+							"P_filename": " "
 						}
 					},
 					"timeout": "0.12:00:00",
