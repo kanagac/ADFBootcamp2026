@@ -187,7 +187,7 @@
 														"type": "Expression"
 													},
 													"directory_name": {
-														"value": "@variables('fileExtension')",
+														"value": "csv/IN1735",
 														"type": "Expression"
 													},
 													"container_name": "output"
