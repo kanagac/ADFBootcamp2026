@@ -22,7 +22,10 @@
 			"location": {
 				"type": "AzureBlobStorageLocation",
 				"fileName": "Sales_20260216.csv",
-				"container": "input"
+				"container": {
+					"value": "@dataset().container",
+					"type": "Expression"
+				}
 			},
 			"columnDelimiter": ",",
 			"escapeChar": "\\",
