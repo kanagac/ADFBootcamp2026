@@ -22,7 +22,10 @@
 					},
 					"dataset": {
 						"referenceName": "DS_SQL_TABLE",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"TABLENAME": " "
+						}
 					},
 					"firstRowOnly": false
 				}
@@ -89,7 +92,10 @@
 											},
 											"dataset": {
 												"referenceName": "DS_SQL_TABLE",
-												"type": "DatasetReference"
+												"type": "DatasetReference",
+												"parameters": {
+													"TABLENAME": "EMPLOYEE"
+												}
 											}
 										}
 									}
