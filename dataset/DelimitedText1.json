@@ -5,12 +5,6 @@
 			"referenceName": "LS_AZURE_STORAGE",
 			"type": "LinkedServiceReference"
 		},
-		"parameters": {
-			"PFile": {
-				"type": "string",
-				"defaultValue": " "
-			}
-		},
 		"annotations": [],
 		"type": "DelimitedText",
 		"typeProperties": {
