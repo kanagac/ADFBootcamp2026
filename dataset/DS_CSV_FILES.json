@@ -24,6 +24,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
+				"fileName": "Sales_20260216.csv",
 				"container": {
 					"value": "@dataset().container",
 					"type": "Expression"
