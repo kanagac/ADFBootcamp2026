@@ -17,7 +17,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataset": {
-						"referenceName": "DelimitedText1",
+						"referenceName": "DS_csv",
 						"type": "DatasetReference",
 						"parameters": {
 							"p_file_name": " ",
@@ -82,7 +82,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"dataset": {
-									"referenceName": "DelimitedText1",
+									"referenceName": "DS_csv",
 									"type": "DatasetReference",
 									"parameters": {
 										"p_file_name": " ",
@@ -98,6 +98,7 @@
 								],
 								"storeSettings": {
 									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
 									"enablePartitionDiscovery": false
 								},
 								"formatSettings": {
@@ -152,7 +153,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"dataset": {
-									"referenceName": "DelimitedText1",
+									"referenceName": "DS_csv",
 									"type": "DatasetReference",
 									"parameters": {
 										"p_file_name": {
@@ -194,7 +195,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@greater(activity('Get Metadata3').output.size,1024)",
+						"value": "@greater(activity('Get Metadata3').output.size,1)",
 						"type": "Expression"
 					},
 					"ifFalseActivities": [
@@ -224,7 +225,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"dataset": {
-									"referenceName": "DelimitedText1",
+									"referenceName": "DS_csv",
 									"type": "DatasetReference",
 									"parameters": {
 										"p_file_name": {
@@ -306,7 +307,7 @@
 									}
 								},
 								"dataset": {
-									"referenceName": "DelimitedText1",
+									"referenceName": "DS_csv",
 									"type": "DatasetReference",
 									"parameters": {
 										"p_file_name": {
