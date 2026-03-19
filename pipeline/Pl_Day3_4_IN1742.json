@@ -82,7 +82,7 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
-								"variableName": "extention",
+								"variableName": "extension",
 								"value": "@toLower(split(item().name,'.')[1])"
 							}
 						},
@@ -169,7 +169,7 @@
 													"container": "output",
 													"directory": "IN1742",
 													"filename": {
-														"value": "@item().name",
+														"value": "@{concat(item().name,'_',item(),'.xlsx')}",
 														"type": "Expression"
 													}
 												}
@@ -187,7 +187,15 @@
 										},
 										"userProperties": [],
 										"typeProperties": {
-											"waitOnCompletion": true
+											"pipeline": {
+												"referenceName": "excel_1",
+												"type": "PipelineReference"
+											},
+											"waitOnCompletion": true,
+											"parameters": {
+												"filepath": "@item().path",
+												"filename": "@item().name"
+											}
 										}
 									}
 								]
@@ -198,7 +206,7 @@
 			}
 		],
 		"variables": {
-			"extention": {
+			"extension": {
 				"type": "String"
 			}
 		},
