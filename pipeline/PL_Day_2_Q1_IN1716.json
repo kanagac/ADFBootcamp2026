@@ -20,8 +20,7 @@
 						"referenceName": "DS_CSV_FILES",
 						"type": "DatasetReference",
 						"parameters": {
-							"container": "input",
-							"filename": "Sales_20260216.csv"
+							"container": "input"
 						}
 					},
 					"fieldList": [

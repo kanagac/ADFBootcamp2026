@@ -7,13 +7,16 @@
 		},
 		"parameters": {
 			"container": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "0"
 			},
 			"directory": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "0"
 			},
 			"filename": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "0"
 			}
 		},
 		"annotations": [],
