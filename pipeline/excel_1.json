@@ -31,11 +31,18 @@
 			{
 				"name": "ForEach1",
 				"type": "ForEach",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Get Metadata1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('GetSheetList').output.value",
+						"value": "@activity('Get Metadata1').output.value",
 						"type": "Expression"
 					},
 					"isSequential": true,
@@ -61,12 +68,42 @@
 										"enablePartitionDiscovery": false
 									}
 								},
-								"enableStaging": false
+								"sink": {
+									"type": "DelimitedTextSink",
+									"storeSettings": {
+										"type": "AzureBlobStorageWriteSettings"
+									},
+									"formatSettings": {
+										"type": "DelimitedTextWriteSettings",
+										"quoteAllText": true,
+										"fileExtension": ".txt"
+									}
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
 							},
 							"inputs": [
 								{
-									"referenceName": "Excel1",
+									"referenceName": "Excel2",
 									"type": "DatasetReference"
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "sink1",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": "ouput",
+										"directory": "IN1742",
+										"filename": "@{concat(pipeline().parameters.fileName, '_', item().SheetName, '.xlsx')}"
+									}
 								}
 							]
 						}
