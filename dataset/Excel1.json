@@ -1,0 +1,25 @@
+{
+	"name": "Excel1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AZURE_STORAGE",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"sheetName": "Sheet1",
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "sheetnames.xlsx",
+				"folderPath": "data/excel",
+				"container": "input"
+			},
+			"firstRowAsHeader": true,
+			"compression": {
+				"type": "bzip2"
+			}
+		},
+		"schema": []
+	}
+}
