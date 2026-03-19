@@ -106,29 +106,12 @@
 							"userProperties": [],
 							"typeProperties": {
 								"expression": {
-									"value": "@greater(activity('Get Metadata2').output.lastModified,variables('last_modified'))\n",
+									"value": "@greater(activity('Get Metadata2').output.lastModified,variables('last_modified'))",
 									"type": "Expression"
 								},
 								"ifTrueActivities": [
 									{
-										"name": "Last_modified",
-										"type": "SetVariable",
-										"dependsOn": [],
-										"policy": {
-											"secureOutput": false,
-											"secureInput": false
-										},
-										"userProperties": [],
-										"typeProperties": {
-											"variableName": "last_modified",
-											"value": {
-												"value": "@activity('Get Metadata2').output.lastModified",
-												"type": "Expression"
-											}
-										}
-									},
-									{
-										"name": "Set variable1",
+										"name": "FileName",
 										"type": "SetVariable",
 										"dependsOn": [],
 										"policy": {
@@ -140,6 +123,23 @@
 											"variableName": "Latest_filename",
 											"value": {
 												"value": "@item().name",
+												"type": "Expression"
+											}
+										}
+									},
+									{
+										"name": "LastModified",
+										"type": "SetVariable",
+										"dependsOn": [],
+										"policy": {
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"variableName": "last_modified",
+											"value": {
+												"value": "@activity('Get Metadata2').output.lastModified",
 												"type": "Expression"
 											}
 										}
