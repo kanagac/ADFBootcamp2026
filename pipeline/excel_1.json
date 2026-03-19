@@ -127,7 +127,8 @@
 				"type": "string"
 			},
 			"filename": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "file1"
 			}
 		},
 		"folder": {
