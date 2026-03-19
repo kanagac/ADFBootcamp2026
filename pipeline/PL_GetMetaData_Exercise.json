@@ -30,6 +30,7 @@
 					],
 					"storeSettings": {
 						"type": "AzureBlobStorageReadSettings",
+						"recursive": true,
 						"enablePartitionDiscovery": false
 					},
 					"formatSettings": {
@@ -64,6 +65,7 @@
 					],
 					"storeSettings": {
 						"type": "AzureBlobStorageReadSettings",
+						"recursive": true,
 						"enablePartitionDiscovery": false
 					},
 					"formatSettings": {
@@ -165,6 +167,7 @@
 					],
 					"storeSettings": {
 						"type": "AzureBlobStorageReadSettings",
+						"recursive": true,
 						"enablePartitionDiscovery": false
 					},
 					"formatSettings": {
@@ -182,7 +185,7 @@
 			}
 		},
 		"folder": {
-			"name": "PL_Exercises_IN1727/Day_2_Exercise/GetMetaData"
+			"name": "Ps_Exercises_IN1727/Day_2_Exercise/GetMetaData"
 		},
 		"annotations": []
 	}
