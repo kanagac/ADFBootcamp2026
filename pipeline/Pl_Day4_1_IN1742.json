@@ -1,0 +1,42 @@
+{
+	"name": "Pl_Day4_1_IN1742",
+	"properties": {
+		"activities": [
+			{
+				"name": "Data flow1",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "dataflow2",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"sink1": {
+								"container": "output",
+								"directory": "IN1742",
+								"filename": "DAy4_1"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"folder": {
+			"name": "DAY4"
+		},
+		"annotations": []
+	}
+}
