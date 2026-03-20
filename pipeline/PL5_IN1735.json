@@ -1,0 +1,66 @@
+{
+	"name": "PL5_IN1735",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy data1",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "BinarySource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": true
+						},
+						"formatSettings": {
+							"type": "BinaryReadSettings"
+						}
+					},
+					"sink": {
+						"type": "BinarySink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings",
+							"copyBehavior": "PreserveHierarchy"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "DS_Binary",
+						"type": "DatasetReference",
+						"parameters": {
+							"Container": "input",
+							"Directory": " data",
+							"Filename": " "
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DS_Binary",
+						"type": "DatasetReference",
+						"parameters": {
+							"Container": "output",
+							"Directory": "IN1735/output2",
+							"Filename": " "
+						}
+					}
+				]
+			}
+		],
+		"folder": {
+			"name": "ADF Exercise/Day3 Exercise"
+		},
+		"annotations": []
+	}
+}

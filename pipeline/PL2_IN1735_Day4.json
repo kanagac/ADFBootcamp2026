@@ -1,9 +1,9 @@
 {
-	"name": "PL1_IN1735_Day4",
+	"name": "PL2_IN1735_Day4",
 	"properties": {
 		"activities": [
 			{
-				"name": "Data_transformation",
+				"name": "Data flow1",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
@@ -16,8 +16,20 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "transform_csv",
-						"type": "DataFlowReference"
+						"referenceName": "DF_Union",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"employeeIndia": {
+								"filename": "Employees_India.csv",
+								"directory_name": "dataflowinput",
+								"container_name": "input"
+							},
+							"EmployeeUSA": {
+								"filename": "Employees_USA.csv",
+								"directory_name": "dataflowinput",
+								"container_name": "input"
+							}
+						}
 					},
 					"compute": {
 						"coreCount": 8,

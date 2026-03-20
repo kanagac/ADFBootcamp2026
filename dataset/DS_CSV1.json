@@ -1,5 +1,5 @@
 {
-	"name": "DS_Folder",
+	"name": "DS_CSV1",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "LS_AZURE_STORAGE",
@@ -10,7 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": "Employees_Combine.csv",
+				"fileName": "EmployeeSalary.csv",
 				"folderPath": "IN1735",
 				"container": "output"
 			},
@@ -19,31 +19,6 @@
 			"firstRowAsHeader": true,
 			"quoteChar": "\""
 		},
-		"schema": [
-			{
-				"name": "StoreId",
-				"type": "String"
-			},
-			{
-				"name": "StoreName",
-				"type": "String"
-			},
-			{
-				"name": "City",
-				"type": "String"
-			},
-			{
-				"name": "Region",
-				"type": "String"
-			},
-			{
-				"name": "Latitude",
-				"type": "String"
-			},
-			{
-				"name": "Longitude",
-				"type": "String"
-			}
-		]
+		"schema": []
 	}
 }
