@@ -1,5 +1,5 @@
 {
-	"name": "Dataflow_DS",
+	"name": "Dataflow_Input_DS",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "LS_AZURE_STORAGE",
@@ -10,8 +10,8 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": "EmployeeSalary.csv",
-				"folderPath": "employees",
+				"fileName": "Employees_India.csv",
+				"folderPath": "dataflowinput",
 				"container": "input"
 			},
 			"columnDelimiter": ",",

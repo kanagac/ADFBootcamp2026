@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "TransformCSV",
+						"referenceName": "DF_Conditional",
 						"type": "DataFlowReference"
 					},
 					"compute": {
