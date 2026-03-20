@@ -10,11 +10,8 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": {
-					"value": "@item()",
-					"type": "Expression"
-				},
-				"folderPath": "data",
+				"fileName": "EmployeeSalary.xlsx",
+				"folderPath": "employees",
 				"container": "input"
 			},
 			"columnDelimiter": ",",
