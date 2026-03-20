@@ -1,0 +1,217 @@
+{
+	"name": "PL_Day_3_Q2_IN1716",
+	"properties": {
+		"activities": [
+			{
+				"name": "LP_SalesData",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"dataset": {
+						"referenceName": "DS_Input_Sales_CSV",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "FE_Location",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Set_AllSalesData",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@variables('LocationList')",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "Set_CurrentLocation",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "CurrentLocation",
+								"value": {
+									"value": "@item()",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Filter_Location",
+							"type": "Filter",
+							"dependsOn": [
+								{
+									"activity": "Set_CurrentLocation",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"items": {
+									"value": "@variables('AllsalesData')",
+									"type": "Expression"
+								},
+								"condition": {
+									"value": "@equals(item().LocationName, variables('CurrentLocation'))",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "CP_filtered_data",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "Filter_Location",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "DelimitedTextSource",
+									"storeSettings": {
+										"type": "AzureBlobStorageReadSettings",
+										"recursive": true,
+										"enablePartitionDiscovery": false
+									},
+									"formatSettings": {
+										"type": "DelimitedTextReadSettings"
+									}
+								},
+								"sink": {
+									"type": "DelimitedTextSink",
+									"storeSettings": {
+										"type": "AzureBlobStorageWriteSettings"
+									},
+									"formatSettings": {
+										"type": "DelimitedTextWriteSettings",
+										"quoteAllText": true,
+										"fileExtension": ".txt"
+									}
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "DS_Input_Sales_CSV",
+									"type": "DatasetReference"
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "DS_Output_Sales_CSV",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": "output",
+										"directory": "locations/IN1716",
+										"filename": {
+											"value": "@concat('sales_',variables('CurrentLocation'),'.csv')",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"name": "Set_AllSalesData",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "LP_SalesData",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "AllsalesData",
+					"value": {
+						"value": "@activity('LP_SalesData').output.value",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"variables": {
+			"LocationList": {
+				"type": "Array",
+				"defaultValue": [
+					"Chennai",
+					"Bangalore",
+					"Hyderabad"
+				]
+			},
+			"CurrentLocation": {
+				"type": "String"
+			},
+			"AllsalesData": {
+				"type": "Array"
+			}
+		},
+		"folder": {
+			"name": "PL_Day_3_IN1716"
+		},
+		"annotations": []
+	}
+}
