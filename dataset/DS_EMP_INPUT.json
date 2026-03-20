@@ -1,0 +1,47 @@
+{
+	"name": "DS_EMP_INPUT",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AZURE_STORAGE",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"container": {
+				"type": "string"
+			},
+			"directory": {
+				"type": "string"
+			},
+			"filepath": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "Day_4"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": {
+					"value": "@dataset().filepath",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@dataset().directory",
+					"type": "Expression"
+				},
+				"container": {
+					"value": "@dataset().container",
+					"type": "Expression"
+				}
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}

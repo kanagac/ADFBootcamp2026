@@ -1,0 +1,51 @@
+{
+	"name": "dataflow1",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_EMP_INPUT",
+						"type": "DatasetReference"
+					},
+					"name": "EMPSRC1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_EMP_OUTPUT",
+						"type": "DatasetReference"
+					},
+					"name": "EMPSINK1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "derivedColumn1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          EmpID as string,",
+				"          EmployeeName as string,",
+				"          Department as string,",
+				"          Salary as integer",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> EMPSRC1",
+				"EMPSRC1 derive(Salary_Category = case(\r",
+				"    Salary >= 80000,'High',\r",
+				"    Salary >= 50000 && Salary <= 79999,'Medium',\r",
+				"    'Low'\r",
+				")) ~> derivedColumn1",
+				"derivedColumn1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> EMPSINK1"
+			]
+		}
+	}
+}
