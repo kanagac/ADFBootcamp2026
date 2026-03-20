@@ -1,5 +1,5 @@
 {
-	"name": "PL_DAY5_EXERCISE_1",
+	"name": "PL_DAY4_EXERCISE_1",
 	"properties": {
 		"activities": [
 			{
@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "DF_Day_5_Exercise_1",
+						"referenceName": "DF_Day4_Exercise_1",
 						"type": "DataFlowReference",
 						"datasetParameters": {
 							"source1": {
