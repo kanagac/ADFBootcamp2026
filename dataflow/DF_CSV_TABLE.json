@@ -18,16 +18,12 @@
 						"referenceName": "AzureSqlTable1",
 						"type": "DatasetReference"
 					},
-					"name": "sink1",
-					"rejectedDataLinkedService": {
-						"referenceName": "LS_AZURE_STORAGE",
-						"type": "LinkedServiceReference"
-					}
+					"name": "sink1"
 				}
 			],
 			"transformations": [
 				{
-					"name": "derivedColumn1"
+					"name": "EmployeeSalaryCategory"
 				}
 			],
 			"scriptLines": [
@@ -41,15 +37,13 @@
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
 				"     format: 'table') ~> srccsvfile",
-				"srccsvfile derive(Salary_Category = 90) ~> derivedColumn1",
-				"derivedColumn1 sink(allowSchemaDrift: true,",
+				"srccsvfile derive(Salary_Category = case(\r",
+				"    Salary >= 80000,\"High\",\r",
+				"    Salary >=50000 && Salary <80000,\"Medium\",\r",
+				"    \"Low\"\r",
+				")) ~> EmployeeSalaryCategory",
+				"EmployeeSalaryCategory sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     input(",
-				"          EmpID as integer,",
-				"          EmployeeName as string,",
-				"          Department as string,",
-				"          Salary as integer",
-				"     ),",
 				"     deletable:false,",
 				"     insertable:true,",
 				"     updateable:false,",
