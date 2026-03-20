@@ -18,8 +18,8 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": "emp1.json",
-				"folderPath": "employees",
+				"fileName": "Employees_USA.csv",
+				"folderPath": "dataflowinput",
 				"container": "input"
 			},
 			"columnDelimiter": ",",
