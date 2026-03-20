@@ -5,13 +5,28 @@
 			"referenceName": "LS_AZURE_STORAGE",
 			"type": "LinkedServiceReference"
 		},
+		"parameters": {
+			"Container": {
+				"type": "String",
+				"defaultValue": " "
+			},
+			"Folder": {
+				"type": "String",
+				"defaultValue": " "
+			},
+			"file": {
+				"type": "String",
+				"defaultValue": " "
+			}
+		},
 		"annotations": [],
 		"type": "DelimitedText",
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"folderPath": "IN1726",
-				"container": "output"
+				"fileName": "Employees_USA.csv",
+				"folderPath": "dataflowinput",
+				"container": "input"
 			},
 			"columnDelimiter": ",",
 			"escapeChar": "\\",
