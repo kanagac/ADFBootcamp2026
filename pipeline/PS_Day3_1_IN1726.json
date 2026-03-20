@@ -13,11 +13,13 @@
 					"secureOutput": false,
 					"secureInput": false
 				},
+				"userProperties": [],
 				"typeProperties": {
 					"dataset": {
 						"referenceName": "DelimitedText1",
 						"type": "DatasetReference",
 						"parameters": {
+							"filename": " ",
 							"container": "input",
 							"folder": "latest"
 						}
@@ -49,7 +51,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('Get Metadata1').output.childItems[0]",
+						"value": "@activity('Get Metadata1').output.childItems",
 						"type": "Expression"
 					},
 					"isSequential": true,
@@ -85,6 +87,7 @@
 								],
 								"storeSettings": {
 									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
 									"enablePartitionDiscovery": false
 								},
 								"formatSettings": {
@@ -106,7 +109,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"expression": {
-									"value": "@greater(activity('Get Metadata2').output.lastModified,variables('latest_date'))",
+									"value": "@greaterOrEquals(activity('Get Metadata2').output.lastModified,variables('latest_date'))",
 									"type": "Expression"
 								},
 								"ifTrueActivities": [
