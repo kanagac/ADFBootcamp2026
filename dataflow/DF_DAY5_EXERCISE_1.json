@@ -1,0 +1,17 @@
+{
+	"name": "DF_DAY5_EXERCISE_1",
+	"properties": {
+		"folder": {
+			"name": "DAY 5 Exercise"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [],
+			"sinks": [],
+			"transformations": [],
+			"scriptLines": [
+				""
+			]
+		}
+	}
+}
