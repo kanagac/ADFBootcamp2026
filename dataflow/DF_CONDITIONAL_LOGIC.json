@@ -1,5 +1,5 @@
 {
-	"name": "dataflow1",
+	"name": "DF_CONDITIONAL_LOGIC",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {

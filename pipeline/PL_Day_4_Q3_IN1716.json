@@ -17,7 +17,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "dataflow2",
+						"referenceName": "DF_JOIN",
 						"type": "DataFlowReference"
 					},
 					"compute": {
