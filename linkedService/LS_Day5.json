@@ -1,0 +1,18 @@
+{
+	"name": "LS_Day5",
+	"properties": {
+		"description": "Linked Service for Day5 Exercise",
+		"parameters": {
+			"BaseURL": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "RestService",
+		"typeProperties": {
+			"url": "@{linkedService().BaseURL}",
+			"enableServerCertificateValidation": false,
+			"authenticationType": "Anonymous"
+		}
+	}
+}
