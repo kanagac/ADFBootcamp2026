@@ -1,5 +1,5 @@
 {
-	"name": "DS_ORD_IN1716",
+	"name": "DS_ORD_INPUT",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "LS_AZURE_STORAGE",
