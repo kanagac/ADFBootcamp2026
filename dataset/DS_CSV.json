@@ -24,18 +24,9 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": {
-					"value": "@dataset().FileName",
-					"type": "Expression"
-				},
-				"folderPath": {
-					"value": "@dataset().Directory",
-					"type": "Expression"
-				},
-				"container": {
-					"value": "@dataset().Container",
-					"type": "Expression"
-				}
+				"fileName": "Sales_20260216.csv",
+				"folderPath": "IN1723",
+				"container": "output"
 			},
 			"columnDelimiter": ",",
 			"escapeChar": "\\",
