@@ -1,0 +1,47 @@
+{
+	"name": "PL_Day_4_Q3",
+	"properties": {
+		"activities": [
+			{
+				"name": "Join Transformation",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DF_Join",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"orders": {
+								"container": "input",
+								"folder": "dataflowinput",
+								"file": "Orders.csv"
+							},
+							"customers": {
+								"container": "input",
+								"folder": "dataflowinput",
+								"file": "Customers.csv"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"folder": {
+			"name": "Ps_Exercises_IN1727/Day_4_Exercise"
+		},
+		"annotations": []
+	}
+}
