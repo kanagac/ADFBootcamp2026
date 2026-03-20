@@ -1,0 +1,23 @@
+{
+	"name": "DS_WEB_API",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_WEB_API",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"URL": {
+					"value": "@dataset().URL",
+					"type": "Expression"
+				}
+			}
+		},
+		"parameters": {
+			"URL": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"schema": []
+	}
+}
