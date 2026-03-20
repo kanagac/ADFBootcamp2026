@@ -5,12 +5,20 @@
 			"referenceName": "LS_AZURE_STORAGE",
 			"type": "LinkedServiceReference"
 		},
+		"parameters": {
+			"PFilename": {
+				"type": "string"
+			}
+		},
 		"annotations": [],
 		"type": "DelimitedText",
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": "Employees_India.csv",
+				"fileName": {
+					"value": "@dataset().PFilename",
+					"type": "Expression"
+				},
 				"folderPath": "dataflowinput",
 				"container": "input"
 			},
