@@ -1,9 +1,9 @@
 {
-	"name": "PL_DAY5_EXERCISE_1",
+	"name": "PL_Day4_Exercise_2",
 	"properties": {
 		"activities": [
 			{
-				"name": "Data flow1",
+				"name": "Union DATAFLOW",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
@@ -16,14 +16,23 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "DF_Day_5_Exercise_1",
+						"referenceName": "DF_DAY4_Exercise_2",
 						"type": "DataFlowReference",
 						"datasetParameters": {
 							"source1": {
-								"P_Tablename": "employeesalary"
+								"p_file_name": "Employees_India.csv",
+								"P_directory": "dataflowinput",
+								"P_container": "input"
+							},
+							"source2": {
+								"p_file_name": "Employees_USA.csv",
+								"P_directory": "dataflowinput",
+								"P_container": "input"
 							},
 							"sink1": {
-								"P_Tablename": "employeesalaryIN1725"
+								"p_file_name": "EmployeeUNION",
+								"P_directory": "IN1725/dataflow",
+								"P_container": "output"
 							}
 						}
 					},
