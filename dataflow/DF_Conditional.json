@@ -1,5 +1,5 @@
 {
-	"name": "TransformCSV",
+	"name": "DF_Conditional",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
