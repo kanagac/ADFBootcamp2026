@@ -4,7 +4,8 @@
 		"description": "Linked Service for Day5 Exercise",
 		"parameters": {
 			"BaseURL": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "https://jsonplaceholder.typicode.com/users"
 			}
 		},
 		"annotations": [],
