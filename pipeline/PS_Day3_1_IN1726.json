@@ -109,12 +109,12 @@
 							"userProperties": [],
 							"typeProperties": {
 								"expression": {
-									"value": "@greaterOrEquals(activity('Get Metadata2').output.lastModified,variables('latest_date'))",
+									"value": "@greaterOrEquals(activity('Get Metadata2').output.lastModified,variables('latest_date'))\n",
 									"type": "Expression"
 								},
 								"ifTrueActivities": [
 									{
-										"name": "Set variable1",
+										"name": "datean",
 										"type": "SetVariable",
 										"dependsOn": [],
 										"policy": {
@@ -131,16 +131,9 @@
 										}
 									},
 									{
-										"name": "Set variable2",
+										"name": "filean",
 										"type": "SetVariable",
-										"dependsOn": [
-											{
-												"activity": "Set variable1",
-												"dependencyConditions": [
-													"Succeeded"
-												]
-											}
-										],
+										"dependsOn": [],
 										"policy": {
 											"secureOutput": false,
 											"secureInput": false
