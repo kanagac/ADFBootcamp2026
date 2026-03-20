@@ -15,11 +15,8 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": {
-					"value": "@dataset().filename",
-					"type": "Expression"
-				},
-				"folderPath": "data",
+				"fileName": "Employees_India.csv",
+				"folderPath": "dataflowinput",
 				"container": "input"
 			},
 			"columnDelimiter": ",",
