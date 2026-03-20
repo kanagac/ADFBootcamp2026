@@ -1,0 +1,43 @@
+{
+	"name": "PL_partition_IN1716",
+	"properties": {
+		"description": "partition a single file into multiple files based on location\n",
+		"activities": [
+			{
+				"name": "DE_Split_Location",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DF_Partition",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"sink1": {
+								"container": "output",
+								"directory": "locations",
+								"filename": "IN1716"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"folder": {
+			"name": "PL_Day_3_IN1716"
+		},
+		"annotations": []
+	}
+}
