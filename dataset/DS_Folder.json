@@ -10,7 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": "Employees_Combine.csv",
+				"fileName": "joined_result.csv",
 				"folderPath": "IN1735",
 				"container": "output"
 			},
