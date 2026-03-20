@@ -1,6 +1,218 @@
 {
 	"name": "PL_DAY5_Exercise_6",
 	"properties": {
+		"activities": [
+			{
+				"name": "Get Metadata1",
+				"type": "GetMetadata",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "DS_JSON",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": "input",
+							"directory": "employees",
+							"filename": " "
+						}
+					},
+					"fieldList": [
+						"childItems",
+						"itemName"
+					],
+					"storeSettings": {
+						"type": "AzureBlobStorageReadSettings",
+						"enablePartitionDiscovery": false
+					},
+					"formatSettings": {
+						"type": "JsonReadSettings"
+					}
+				}
+			},
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Get Metadata1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Get Metadata1').output.childItems",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "If Condition1",
+							"type": "IfCondition",
+							"state": "Inactive",
+							"onInactiveMarkAs": "Succeeded",
+							"dependsOn": [
+								{
+									"activity": "Get Metadata2",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@endswith(item().name,'.json')",
+									"type": "Expression"
+								},
+								"ifTrueActivities": [
+									{
+										"name": "Copy data1",
+										"type": "Copy",
+										"dependsOn": [],
+										"policy": {
+											"timeout": "0.12:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"source": {
+												"type": "JsonSource",
+												"storeSettings": {
+													"type": "AzureBlobStorageReadSettings",
+													"recursive": true,
+													"enablePartitionDiscovery": false
+												},
+												"formatSettings": {
+													"type": "JsonReadSettings"
+												}
+											},
+											"sink": {
+												"type": "AzureSqlSink",
+												"writeBehavior": "insert",
+												"sqlWriterUseTableLock": false,
+												"tableOption": "autoCreate",
+												"disableMetricsCollection": false
+											},
+											"enableStaging": false,
+											"translator": {
+												"type": "TabularTranslator",
+												"mappings": [
+													{
+														"source": {
+															"path": "$['EmpID']"
+														},
+														"sink": {
+															"name": "EmpID"
+														}
+													},
+													{
+														"source": {
+															"path": "$['Name']"
+														},
+														"sink": {
+															"name": "Name"
+														}
+													},
+													{
+														"source": {
+															"path": "$['Department']"
+														},
+														"sink": {
+															"name": "Department"
+														}
+													},
+													{
+														"source": {
+															"path": "$['Salary']"
+														},
+														"sink": {
+															"name": "Salary"
+														}
+													}
+												]
+											}
+										},
+										"inputs": [
+											{
+												"referenceName": "DS_JSON",
+												"type": "DatasetReference",
+												"parameters": {
+													"container": "input",
+													"directory": "employees",
+													"filename": {
+														"value": "@activity('Get Metadata2').output.itemName",
+														"type": "Expression"
+													}
+												}
+											}
+										],
+										"outputs": [
+											{
+												"referenceName": "DS_SQL_TABLE",
+												"type": "DatasetReference",
+												"parameters": {
+													"P_Tablename": "tgt_json_IN1725"
+												}
+											}
+										]
+									}
+								]
+							}
+						},
+						{
+							"name": "Get Metadata2",
+							"type": "GetMetadata",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "DS_JSON",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": "input",
+										"directory": "employees",
+										"filename": {
+											"value": "@item().name",
+											"type": "Expression"
+										}
+									}
+								},
+								"fieldList": [
+									"itemName"
+								],
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "JsonReadSettings"
+								}
+							}
+						}
+					]
+				}
+			}
+		],
 		"folder": {
 			"name": "DAY 5 EXERCISE"
 		},
