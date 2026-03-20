@@ -1,0 +1,12 @@
+{
+	"name": "UsersAPI",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_Day5",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"schema": []
+	}
+}

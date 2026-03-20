@@ -1,0 +1,16 @@
+{
+	"name": "AzureSqlTableRestAPIDestination",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AZURE_SQL",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "Target_API_Users_IN1734"
+		}
+	}
+}
