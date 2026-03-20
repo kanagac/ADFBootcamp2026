@@ -1,5 +1,13 @@
 {
 	"name": "Bootcamp2026ADF",
+	"properties": {
+		"globalParameters": {
+			"API_LINK": {
+				"type": "string",
+				"value": " "
+			}
+		}
+	},
 	"location": "eastus",
 	"identity": {
 		"type": "SystemAssigned",
