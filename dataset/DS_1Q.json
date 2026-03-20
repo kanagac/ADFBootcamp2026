@@ -1,0 +1,12 @@
+{
+	"name": "DS_1Q",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_Day5",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"schema": []
+	}
+}
