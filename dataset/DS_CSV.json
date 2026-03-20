@@ -1,0 +1,40 @@
+{
+	"name": "DS_CSV",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AZURE_STORAGE",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"folderPath": "IN1734",
+				"container": "output"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "EmpID",
+				"type": "String"
+			},
+			{
+				"name": "EmployeeName",
+				"type": "String"
+			},
+			{
+				"name": "Department",
+				"type": "String"
+			},
+			{
+				"name": "Salary",
+				"type": "String"
+			}
+		]
+	}
+}
