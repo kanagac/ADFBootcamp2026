@@ -1,6 +1,11 @@
 {
 	"name": "LS_REST",
 	"properties": {
+		"parameters": {
+			"url": {
+				"type": "string"
+			}
+		},
 		"annotations": [],
 		"type": "RestService",
 		"typeProperties": {
