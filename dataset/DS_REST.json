@@ -1,0 +1,15 @@
+{
+	"name": "DS_REST",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_REST",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"url": "https://jsonplaceholder.typicode.com/users"
+			}
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"schema": []
+	}
+}

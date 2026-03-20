@@ -56,16 +56,6 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
-								"dataset": {
-									"referenceName": "DelimitedText1",
-									"type": "DatasetReference",
-									"parameters": {
-										"pfilename": {
-											"value": "@item()",
-											"type": "Expression"
-										}
-									}
-								},
 								"fieldList": [
 									"columnCount",
 									"exists",

@@ -100,6 +100,7 @@
 					],
 					"storeSettings": {
 						"type": "AzureBlobStorageReadSettings",
+						"recursive": true,
 						"enablePartitionDiscovery": false
 					},
 					"formatSettings": {
@@ -317,6 +318,7 @@
 								],
 								"storeSettings": {
 									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
 									"enablePartitionDiscovery": false
 								},
 								"formatSettings": {
@@ -340,8 +342,7 @@
 						"type": "DatasetReference"
 					},
 					"timeout": "0.12:00:00",
-					"sleep": 10,
-					"childItems": true
+					"sleep": 10
 				}
 			},
 			{
@@ -398,6 +399,7 @@
 								],
 								"storeSettings": {
 									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
 									"enablePartitionDiscovery": false
 								},
 								"formatSettings": {
@@ -451,6 +453,7 @@
 					],
 					"storeSettings": {
 						"type": "AzureBlobStorageReadSettings",
+						"recursive": true,
 						"enablePartitionDiscovery": false
 					},
 					"formatSettings": {
@@ -471,8 +474,7 @@
 						"type": "DatasetReference"
 					},
 					"timeout": "0.12:00:00",
-					"sleep": 10,
-					"childItems": true
+					"sleep": 10
 				}
 			},
 			{
@@ -540,6 +542,7 @@
 											],
 											"storeSettings": {
 												"type": "AzureBlobStorageReadSettings",
+												"recursive": true,
 												"enablePartitionDiscovery": false
 											},
 											"formatSettings": {
@@ -605,6 +608,7 @@
 								],
 								"storeSettings": {
 									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
 									"enablePartitionDiscovery": false
 								},
 								"formatSettings": {
