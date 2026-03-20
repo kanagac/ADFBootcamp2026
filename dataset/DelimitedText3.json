@@ -18,7 +18,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": "Employees_India.csv",
+				"fileName": "Employees_USA.csv",
 				"folderPath": "dataflowinput",
 				"container": "input"
 			},
