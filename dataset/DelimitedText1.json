@@ -10,8 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": "Employees_USA.csv",
-				"folderPath": "dataflowinput",
+				"folderPath": "data/excel",
 				"container": "input"
 			},
 			"columnDelimiter": ",",
