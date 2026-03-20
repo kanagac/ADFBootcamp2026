@@ -16,8 +16,15 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "Conditional Formatting",
-						"type": "DataFlowReference"
+						"referenceName": "ConditionalFormatting",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"source1": {
+								"Container": "input",
+								"Folder": "employees",
+								"File": "EmployeeSalary.csv"
+							}
+						}
 					},
 					"compute": {
 						"coreCount": 8,
