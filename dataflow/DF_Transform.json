@@ -15,7 +15,7 @@
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "DS_CSV",
+						"referenceName": "DS_output",
 						"type": "DatasetReference"
 					},
 					"name": "sink1"
@@ -44,10 +44,12 @@
 				"derivedColumn1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
-				"          EmpID as string,",
-				"          EmployeeName as string,",
-				"          Department as string,",
-				"          Salary as string",
+				"          OrderID as string,",
+				"          CustomerName as string,",
+				"          Product as string,",
+				"          Quantity as string,",
+				"          Amount as string,",
+				"          OrderDate as string",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> sink1"
