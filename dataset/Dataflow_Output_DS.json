@@ -10,7 +10,6 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": "EmployeeSalary.csv",
 				"folderPath": "IN1727",
 				"container": "output"
 			},

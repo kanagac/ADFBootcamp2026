@@ -1,0 +1,47 @@
+{
+	"name": "PL_Day_4_Q2",
+	"properties": {
+		"activities": [
+			{
+				"name": "UNION Transformation",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DF_Union",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"EmployeeIND": {
+								"container": "input",
+								"folder": "dataflowinput",
+								"file": "Employees_India.csv"
+							},
+							"EmployeeUSA": {
+								"container": "input",
+								"folder": "dataflowinput",
+								"file": "Employees_USA.csv"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"folder": {
+			"name": "Ps_Exercises_IN1727/Day_4_Exercise"
+		},
+		"annotations": []
+	}
+}
