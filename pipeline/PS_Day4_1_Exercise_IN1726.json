@@ -1,5 +1,5 @@
 {
-	"name": "pipeline1",
+	"name": "PS_Day4_1_Exercise_IN1726",
 	"properties": {
 		"activities": [
 			{
@@ -17,7 +17,14 @@
 				"typeProperties": {
 					"dataflow": {
 						"referenceName": "DF_salarycategorization_dataflow",
-						"type": "DataFlowReference"
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"source1": {
+								"Container": " ",
+								"Folder": " ",
+								"file": " "
+							}
+						}
 					},
 					"compute": {
 						"coreCount": 8,
