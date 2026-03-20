@@ -10,11 +10,12 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": "EmployeeSalary.xlsx",
+				"fileName": "EmployeeSalary.csv",
 				"folderPath": "employees",
 				"container": "input"
 			},
 			"columnDelimiter": ",",
+			"rowDelimiter": "\r",
 			"escapeChar": "\\",
 			"firstRowAsHeader": false,
 			"quoteChar": null
