@@ -122,15 +122,6 @@
 				}
 			}
 		],
-		"parameters": {
-			"filepath": {
-				"type": "string"
-			},
-			"filename": {
-				"type": "string",
-				"defaultValue": "file1"
-			}
-		},
 		"folder": {
 			"name": "DAY_3"
 		},

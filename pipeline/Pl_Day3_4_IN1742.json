@@ -24,6 +24,7 @@
 					],
 					"storeSettings": {
 						"type": "AzureBlobStorageReadSettings",
+						"recursive": true,
 						"enablePartitionDiscovery": false
 					},
 					"formatSettings": {
@@ -84,7 +85,10 @@
 							"userProperties": [],
 							"typeProperties": {
 								"variableName": "extension",
-								"value": "@toLower(split(item().name,'.')[1])"
+								"value": {
+									"value": "@toLower(split(item().name,'.')[1])",
+									"type": "Expression"
+								}
 							}
 						},
 						{
@@ -194,8 +198,14 @@
 											},
 											"waitOnCompletion": true,
 											"parameters": {
-												"filepath": "@item().path",
-												"filename": "@item().name"
+												"filepath": {
+													"value": "@item().path",
+													"type": "Expression"
+												},
+												"filename": {
+													"value": "@item().name",
+													"type": "Expression"
+												}
 											}
 										}
 									}
