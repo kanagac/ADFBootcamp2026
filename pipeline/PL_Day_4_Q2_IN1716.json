@@ -1,0 +1,36 @@
+{
+	"name": "PL_Day_4_Q2_IN1716",
+	"properties": {
+		"description": "combining two tables by using union",
+		"activities": [
+			{
+				"name": "DF_Combining_src",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DF_UNION",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"folder": {
+			"name": "PL_Day_4_IN1716"
+		},
+		"annotations": []
+	}
+}
