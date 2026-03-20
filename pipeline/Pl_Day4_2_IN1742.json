@@ -17,7 +17,14 @@
 				"typeProperties": {
 					"dataflow": {
 						"referenceName": "dataflow3",
-						"type": "DataFlowReference"
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"sink1": {
+								"container": "output",
+								"directory": "IN1742",
+								"filename": "Day4_2"
+							}
+						}
 					},
 					"compute": {
 						"coreCount": 8,
