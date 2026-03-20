@@ -1,0 +1,47 @@
+{
+	"name": "PL3_IN1734",
+	"properties": {
+		"activities": [
+			{
+				"name": "Join_Transformation",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DF_join",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"Orders": {
+								"Container": "input",
+								"Directory": "dataflowinput",
+								"FileName": "Orders.csv"
+							},
+							"Customers": {
+								"Container": "input",
+								"Directory": "dataflowinput",
+								"FileName": "Customers.csv"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"folder": {
+			"name": "Day4"
+		},
+		"annotations": []
+	}
+}
