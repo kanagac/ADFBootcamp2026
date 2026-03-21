@@ -10,11 +10,8 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": {
-					"value": "@concat('tgt_salestransactions_IN1727_', utcNow())",
-					"type": "Expression"
-				},
-				"folderPath": "IN1727",
+				"fileName": "customers.csv",
+				"folderPath": "csv/IN1727",
 				"container": "output"
 			},
 			"columnDelimiter": ",",
