@@ -1,5 +1,5 @@
 {
-	"name": "DS_Customer_Target",
+	"name": "DS_Customer_Target_SCD1",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "LS_AZURE_SQL",
