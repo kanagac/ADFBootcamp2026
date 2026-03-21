@@ -1,5 +1,5 @@
 {
-	"name": "DS_SQL_TABLE",
+	"name": "DS_Employees",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "LS_AZURE_SQL",
@@ -10,7 +10,7 @@
 		"schema": [],
 		"typeProperties": {
 			"schema": "dbo",
-			"table": "Employee"
+			"table": "tgt_emp_IN1734"
 		}
 	}
 }
