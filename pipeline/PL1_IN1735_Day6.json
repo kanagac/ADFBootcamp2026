@@ -1,0 +1,49 @@
+{
+	"name": "PL1_IN1735_Day6",
+	"properties": {
+		"activities": [
+			{
+				"name": "Data flow1",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DF_SCD1",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"CustomerSource": {
+								"tablename": "Customer_Source_IN1735"
+							},
+							"CustomerTarget": {
+								"tablename": "Customer_Target_IN1735"
+							},
+							"Insertsink": {
+								"tablename": "Customer_Target_IN1735"
+							},
+							"updateSink": {
+								"tablename": "Customer_Target_IN1735"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"folder": {
+			"name": "ADF Exercise/Day6 Exercise"
+		},
+		"annotations": []
+	}
+}
