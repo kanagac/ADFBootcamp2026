@@ -1,0 +1,41 @@
+{
+	"name": "DS_Json",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AZURE_STORAGE",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"FileName": {
+				"type": "String"
+			}
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": {
+					"value": "@dataset().FileName",
+					"type": "Expression"
+				},
+				"folderPath": "data/json",
+				"container": "input"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"EmpID": {
+					"type": "integer"
+				},
+				"Name": {
+					"type": "string"
+				},
+				"Dept": {
+					"type": "string"
+				}
+			}
+		}
+	}
+}
