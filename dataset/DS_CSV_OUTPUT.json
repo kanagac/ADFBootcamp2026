@@ -1,5 +1,5 @@
 {
-	"name": "Dataflow_Output_DS",
+	"name": "DS_CSV_OUTPUT",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "LS_AZURE_STORAGE",
@@ -10,6 +10,10 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
+				"fileName": {
+					"value": "@concat('tgt_salestransactions_IN1727_', utcNow())",
+					"type": "Expression"
+				},
 				"folderPath": "IN1727",
 				"container": "output"
 			},
