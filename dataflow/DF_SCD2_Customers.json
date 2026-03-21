@@ -3,11 +3,62 @@
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
-			"sources": [],
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SCD2_Customer_Source",
+						"type": "DatasetReference"
+					},
+					"name": "CustomerSource"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SCD2_Customers_Target",
+						"type": "DatasetReference"
+					},
+					"name": "CustomerTarget"
+				}
+			],
 			"sinks": [],
-			"transformations": [],
+			"transformations": [
+				{
+					"name": "JOIN"
+				},
+				{
+					"name": "split1"
+				}
+			],
 			"scriptLines": [
-				""
+				"source(output(",
+				"          CustomerID as integer,",
+				"          Name as string,",
+				"          City as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> CustomerSource",
+				"source(output(",
+				"          CustomerSK as integer,",
+				"          CustomerID as integer,",
+				"          Name as string,",
+				"          City as string,",
+				"          StartDate as date,",
+				"          EndDate as date,",
+				"          IsCurrent as integer",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> CustomerTarget",
+				"CustomerSource, CustomerTarget join(CustomerSource@CustomerID == CustomerTarget@CustomerID,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> JOIN",
+				"JOIN split(isNull(CustomerTarget@CustomerID),",
+				"     CustomerSource@CustomerID==CustomerTarget@CustomerID&&CustomerSource@City!=CustomerTarget@City&&IsCurrent == 1,",
+				"     disjoint: false) ~> split1@(insert, update)"
 			]
 		}
 	}

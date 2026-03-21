@@ -1,0 +1,16 @@
+{
+	"name": "DS_SCD2_Customer_Source",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AZURE_SQL",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "Customers_Source_IN1734"
+		}
+	}
+}
