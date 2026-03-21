@@ -1,0 +1,51 @@
+{
+	"name": "Q1_IN1743",
+	"properties": {
+		"activities": [
+			{
+				"name": "Data flow1",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DF_SCD1",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"Source": {
+								"container": "input",
+								"folder": "dataflowinput",
+								"file": "Customers.csv"
+							},
+							"Target": {
+								"Table": "target_IN1743"
+							},
+							"sink1": {
+								"Table": "target_IN1743_scd1"
+							},
+							"sink2": {
+								"Table": "target_IN1743_scd1"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"folder": {
+			"name": "DAY5_IN1743"
+		},
+		"annotations": []
+	}
+}

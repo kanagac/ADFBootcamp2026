@@ -8,7 +8,7 @@
 		"parameters": {
 			"Table": {
 				"type": "string",
-				"defaultValue": "target_IN1743"
+				"defaultValue": "target_IN1743_scd1"
 			}
 		},
 		"annotations": [],

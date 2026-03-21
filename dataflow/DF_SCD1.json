@@ -1,5 +1,5 @@
 {
-	"name": "dataflow1",
+	"name": "DF_SCD1",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
@@ -9,14 +9,14 @@
 						"referenceName": "DelimitedText1",
 						"type": "DatasetReference"
 					},
-					"name": "source1"
+					"name": "Source"
 				},
 				{
 					"dataset": {
 						"referenceName": "AzureSqlTable1",
 						"type": "DatasetReference"
 					},
-					"name": "source2"
+					"name": "Target"
 				}
 			],
 			"sinks": [
@@ -71,7 +71,7 @@
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     ignoreNoFilesFound: false) ~> source1",
+				"     ignoreNoFilesFound: false) ~> Source",
 				"source(output(",
 				"          CustomerID as integer,",
 				"          CustomerName as string,",
@@ -80,13 +80,13 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
-				"     format: 'table') ~> source2",
-				"source1, select1 join(CustomerID == TGT_CustomerID,",
+				"     format: 'table') ~> Target",
+				"Source, select1 join(CustomerID == TGT_CustomerID,",
 				"     joinType:'left',",
 				"     matchType:'exact',",
 				"     ignoreSpaces: false,",
 				"     broadcast: 'auto')~> join1",
-				"source2 select(mapColumn(",
+				"Target select(mapColumn(",
 				"          TGT_CustomerID = CustomerID,",
 				"          TGT_CustomerName = CustomerName,",
 				"          TGT_City = City",
