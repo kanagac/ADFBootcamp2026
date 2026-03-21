@@ -1,6 +1,250 @@
 {
-	"name": "PL",
+	"name": "PL2_IN1735_Day5",
 	"properties": {
+		"activities": [
+			{
+				"name": "Web1",
+				"type": "WebActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "GET",
+					"url": "https://dummyjson.com/users?limit=1&skip=0"
+				}
+			},
+			{
+				"name": "total",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Web1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "totalRecords",
+					"value": {
+						"value": "@activity('Web1').output.total",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "records",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "total",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "limit",
+					"value": "10"
+				}
+			},
+			{
+				"name": "iteration",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "records",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "iterations",
+					"value": {
+						"value": "@(div(int(variables('totalRecords')),int(variables('limit')))",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "iteration",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@range(0, int(variables('iterations')))",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Copy data1",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "RestSource",
+									"httpRequestTimeout": "00:01:40",
+									"requestInterval": "00.00:00:00.010",
+									"requestMethod": "GET",
+									"paginationRules": {
+										"supportRFC5988": "true"
+									}
+								},
+								"sink": {
+									"type": "AzureSqlSink",
+									"writeBehavior": "insert",
+									"sqlWriterUseTableLock": false,
+									"tableOption": "autoCreate",
+									"disableMetricsCollection": false
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"mappings": [
+										{
+											"source": {
+												"path": "$['id']"
+											},
+											"sink": {
+												"name": "id"
+											}
+										},
+										{
+											"source": {
+												"path": "$['name']"
+											},
+											"sink": {
+												"name": "name"
+											}
+										},
+										{
+											"source": {
+												"path": "$['lastName']"
+											},
+											"sink": {
+												"name": "lastName"
+											}
+										},
+										{
+											"source": {
+												"path": "$['maidenName']"
+											},
+											"sink": {
+												"name": "maidenName"
+											}
+										},
+										{
+											"source": {
+												"path": "$['age']"
+											},
+											"sink": {
+												"name": "age"
+											}
+										},
+										{
+											"source": {
+												"path": "$['gender']"
+											},
+											"sink": {
+												"name": "gender"
+											}
+										},
+										{
+											"source": {
+												"path": "$['email']"
+											},
+											"sink": {
+												"name": "email"
+											}
+										},
+										{
+											"source": {
+												"path": "$['phone']"
+											},
+											"sink": {
+												"name": "phone"
+											}
+										}
+									],
+									"mapComplexValuesToString": false
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "DS_REST_Param",
+									"type": "DatasetReference",
+									"parameters": {
+										"limit": {
+											"value": "@variables('limit')",
+											"type": "Expression"
+										},
+										"skip": {
+											"value": "@mul(item(),int(variables('limit')))",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "DS_SQL_TABLE",
+									"type": "DatasetReference"
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"variables": {
+			"totalRecords": {
+				"type": "String"
+			},
+			"limit": {
+				"type": "String"
+			},
+			"iterations": {
+				"type": "String"
+			}
+		},
 		"folder": {
 			"name": "ADF Exercise/Day5 Exercise"
 		},

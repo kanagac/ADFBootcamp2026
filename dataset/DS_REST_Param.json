@@ -1,0 +1,29 @@
+{
+	"name": "DS_REST_Param",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_REST",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"url": "https://dummyjson.com/"
+			}
+		},
+		"parameters": {
+			"limit": {
+				"type": "string"
+			},
+			"skip": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"typeProperties": {
+			"relativeUrl": {
+				"value": "@concat(\n    'users?limit=',dataset().limit,\n    '&skip=', dataset().skip\n)",
+				"type": "Expression"
+			}
+		},
+		"schema": []
+	}
+}

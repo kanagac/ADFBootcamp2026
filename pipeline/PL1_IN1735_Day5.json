@@ -80,7 +80,20 @@
 							},
 							{
 								"source": {
-									"path": "$['Column_1']"
+									"path": "$['load_timestamp']"
+								},
+								"sink": {
+									"name": "load_timestamp",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['pipeline_run_id']"
+								},
+								"sink": {
+									"name": "pipeline_run_id",
+									"type": "String"
 								}
 							}
 						],
