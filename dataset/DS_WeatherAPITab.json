@@ -1,0 +1,16 @@
+{
+	"name": "DS_WeatherAPITab",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AZURE_SQL",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "tgt_api_paginated_IN1734"
+		}
+	}
+}

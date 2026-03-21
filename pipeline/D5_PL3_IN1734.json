@@ -1,6 +1,383 @@
 {
 	"name": "D5_PL3_IN1734",
 	"properties": {
+		"activities": [
+			{
+				"name": "UserAPI",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "RestSource",
+						"httpRequestTimeout": "00:01:40",
+						"requestInterval": "00.00:00:00.010",
+						"requestMethod": "GET",
+						"paginationRules": {
+							"QueryParameters.{skip}": "RANGE:0:10:5"
+						}
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"writeBehavior": "insert",
+						"sqlWriterUseTableLock": false,
+						"tableOption": "autoCreate",
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"path": "['id']"
+								},
+								"sink": {
+									"name": "id",
+									"type": "Int64"
+								}
+							},
+							{
+								"source": {
+									"path": "['firstName']"
+								},
+								"sink": {
+									"name": "firstName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['lastName']"
+								},
+								"sink": {
+									"name": "lastName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['maidenName']"
+								},
+								"sink": {
+									"name": "maidenName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['age']"
+								},
+								"sink": {
+									"name": "age",
+									"type": "Int64"
+								}
+							},
+							{
+								"source": {
+									"path": "['gender']"
+								},
+								"sink": {
+									"name": "gender",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['email']"
+								},
+								"sink": {
+									"name": "email",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['phone']"
+								},
+								"sink": {
+									"name": "phone",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['username']"
+								},
+								"sink": {
+									"name": "username",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['password']"
+								},
+								"sink": {
+									"name": "password",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['birthDate']"
+								},
+								"sink": {
+									"name": "birthDate",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['image']"
+								},
+								"sink": {
+									"name": "image",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['bloodGroup']"
+								},
+								"sink": {
+									"name": "bloodGroup",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['height']"
+								},
+								"sink": {
+									"name": "height",
+									"type": "Double"
+								}
+							},
+							{
+								"source": {
+									"path": "['weight']"
+								},
+								"sink": {
+									"name": "weight",
+									"type": "Double"
+								}
+							},
+							{
+								"source": {
+									"path": "['eyeColor']"
+								},
+								"sink": {
+									"name": "eyeColor",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['hair']['color']"
+								},
+								"sink": {
+									"name": "color",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['hair']['type']"
+								},
+								"sink": {
+									"name": "type",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['ip']"
+								},
+								"sink": {
+									"name": "ip",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['macAddress']"
+								},
+								"sink": {
+									"name": "macAddress",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['university']"
+								},
+								"sink": {
+									"name": "university",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['bank']['cardExpire']"
+								},
+								"sink": {
+									"name": "cardExpire",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['bank']['cardNumber']"
+								},
+								"sink": {
+									"name": "cardNumber",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['bank']['cardType']"
+								},
+								"sink": {
+									"name": "cardType",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['bank']['currency']"
+								},
+								"sink": {
+									"name": "currency",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['bank']['iban']"
+								},
+								"sink": {
+									"name": "iban",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['company']['department']"
+								},
+								"sink": {
+									"name": "department",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['company']['name']"
+								},
+								"sink": {
+									"name": "name",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['company']['title']"
+								},
+								"sink": {
+									"name": "title",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['ein']"
+								},
+								"sink": {
+									"name": "ein",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['ssn']"
+								},
+								"sink": {
+									"name": "ssn",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['userAgent']"
+								},
+								"sink": {
+									"name": "userAgent",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['crypto']['coin']"
+								},
+								"sink": {
+									"name": "coin",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['crypto']['wallet']"
+								},
+								"sink": {
+									"name": "wallet",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['crypto']['network']"
+								},
+								"sink": {
+									"name": "network",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['role']"
+								},
+								"sink": {
+									"name": "role",
+									"type": "String"
+								}
+							}
+						],
+						"collectionReference": "$['users']",
+						"mapComplexValuesToString": false
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "DS_WeatherAPI",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DS_WeatherAPITab",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
 		"folder": {
 			"name": "Day5"
 		},
