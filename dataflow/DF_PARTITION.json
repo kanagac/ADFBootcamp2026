@@ -1,5 +1,5 @@
 {
-	"name": "DF_Partition",
+	"name": "DF_PARTITION",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {

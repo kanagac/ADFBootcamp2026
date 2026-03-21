@@ -17,7 +17,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "DF_Partition",
+						"referenceName": "DF_PARTITION",
 						"type": "DataFlowReference",
 						"datasetParameters": {
 							"sink1": {
