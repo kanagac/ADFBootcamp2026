@@ -51,7 +51,7 @@
 		],
 		"typeProperties": {
 			"schema": "dbo",
-			"table": "dim_store"
+			"table": "tgt_api_users_IN1733"
 		}
 	}
 }

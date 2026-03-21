@@ -1,0 +1,15 @@
+{
+	"name": "DS_REST_INP",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_REST_API",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"url": "https://jsonplaceholder.typicode.com/users"
+			}
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"schema": []
+	}
+}
