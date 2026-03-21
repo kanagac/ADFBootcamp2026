@@ -21,7 +21,7 @@
 						"partitionOption": "None"
 					},
 					"dataset": {
-						"referenceName": "DS_SQL_TABLE",
+						"referenceName": "DS_SQL_TABLE_INPUT",
 						"type": "DatasetReference"
 					}
 				}
@@ -45,7 +45,7 @@
 						"partitionOption": "None"
 					},
 					"dataset": {
-						"referenceName": "DS_SQL_TABLE",
+						"referenceName": "DS_SQL_TABLE_INPUT",
 						"type": "DatasetReference"
 					},
 					"firstRowOnly": false
@@ -111,7 +111,7 @@
 												"partitionOption": "None"
 											},
 											"dataset": {
-												"referenceName": "DS_SQL_TABLE",
+												"referenceName": "DS_SQL_TABLE_INPUT",
 												"type": "DatasetReference"
 											},
 											"firstRowOnly": true
