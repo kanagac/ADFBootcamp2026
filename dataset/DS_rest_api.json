@@ -5,13 +5,13 @@
 			"referenceName": "LS_REST_API",
 			"type": "LinkedServiceReference",
 			"parameters": {
-				"P_name": "https://jsonplaceholder.typicode.com/users"
+				"P_name": "https://archive-api.open-meteo.com/"
 			}
 		},
 		"annotations": [],
 		"type": "RestResource",
 		"typeProperties": {
-			"relativeUrl": ""
+			"relativeUrl": "v1/archive?latitude=52.52&longitude=13.41&start_date=2022-01-01&end_date=2022-01-01&hourly=temperature_2m"
 		},
 		"schema": []
 	}
