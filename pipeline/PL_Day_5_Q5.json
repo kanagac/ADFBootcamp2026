@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataset": {
-						"referenceName": "Dataflow_Input_DS",
+						"referenceName": "DS_CSV_INPUT",
 						"type": "DatasetReference",
 						"parameters": {
 							"container": "input",
@@ -165,7 +165,7 @@
 										},
 										"inputs": [
 											{
-												"referenceName": "Dataflow_Input_DS",
+												"referenceName": "DS_CSV_INPUT",
 												"type": "DatasetReference",
 												"parameters": {
 													"container": "input",
@@ -201,7 +201,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"dataset": {
-									"referenceName": "Dataflow_Input_DS",
+									"referenceName": "DS_CSV_INPUT",
 									"type": "DatasetReference",
 									"parameters": {
 										"container": "input",
