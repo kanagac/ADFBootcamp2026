@@ -26,6 +26,9 @@
 				},
 				{
 					"name": "split1"
+				},
+				{
+					"name": "alterRow1"
 				}
 			],
 			"scriptLines": [
@@ -58,7 +61,8 @@
 				"     broadcast: 'auto')~> JOIN",
 				"JOIN split(isNull(CustomerTarget@CustomerID),",
 				"     CustomerSource@CustomerID==CustomerTarget@CustomerID&&CustomerSource@City!=CustomerTarget@City&&IsCurrent == 1,",
-				"     disjoint: false) ~> split1@(insert, update)"
+				"     disjoint: false) ~> split1@(insert, update)",
+				"split1@update alterRow() ~> alterRow1"
 			]
 		}
 	}
