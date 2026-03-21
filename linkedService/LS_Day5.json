@@ -1,7 +1,7 @@
 {
 	"name": "LS_Day5",
 	"properties": {
-		"description": "Linked Service for Dummy API",
+		"description": "Linked Service for Dummy API.",
 		"parameters": {
 			"BaseURL": {
 				"type": "string",
