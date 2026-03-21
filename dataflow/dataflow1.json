@@ -1,0 +1,57 @@
+{
+	"name": "dataflow1",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DelimitedText2",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DelimitedText3",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "derivedColumn1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          EmpID as string,",
+				"          EmployeeName as string,",
+				"          Department as string,",
+				"          Salary as integer",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source1",
+				"source1 derive(Salary_Category = case(Salary >= 80000,'High',\r",
+				"    Salary >=50000 && Salary<=79999,'Medium',\r",
+				"    Salary<50000,'Low')) ~> derivedColumn1",
+				"derivedColumn1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          OrderID as string,",
+				"          CustomerName as string,",
+				"          Product as string,",
+				"          Quantity as string,",
+				"          Amount as string,",
+				"          OrderDate as string",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1"
+			]
+		}
+	}
+}
