@@ -1,0 +1,17 @@
+{
+	"name": "LS_AZURE_API",
+	"properties": {
+		"parameters": {
+			"P_Name": {
+				"type": "String"
+			}
+		},
+		"annotations": [],
+		"type": "RestService",
+		"typeProperties": {
+			"url": "@{linkedService().P_Name}",
+			"enableServerCertificateValidation": true,
+			"authenticationType": "Anonymous"
+		}
+	}
+}
