@@ -1,0 +1,15 @@
+{
+	"name": "DS_REST_API_Users",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AZURE_API",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"P_Name": "https://jsonplaceholder.typicode.com/users"
+			}
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"schema": []
+	}
+}
