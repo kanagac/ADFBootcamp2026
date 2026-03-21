@@ -15,11 +15,9 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": {
-					"value": "@dataset().P_filename",
-					"type": "Expression"
-				},
-				"container": "sample-test"
+				"fileName": "EmployeeSalary.csv",
+				"folderPath": "employees",
+				"container": "input"
 			},
 			"columnDelimiter": ",",
 			"escapeChar": "\\",
