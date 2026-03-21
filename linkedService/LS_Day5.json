@@ -5,7 +5,7 @@
 		"parameters": {
 			"BaseURL": {
 				"type": "string",
-				"defaultValue": "https://jsonplaceholder.typicode.com/users"
+				"defaultValue": "https://dummyjson.com/users?"
 			}
 		},
 		"annotations": [],
