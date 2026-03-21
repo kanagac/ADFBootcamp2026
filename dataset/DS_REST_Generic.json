@@ -1,0 +1,26 @@
+{
+	"name": "DS_REST_Generic",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_REST_GENERIC",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"baseURL": {
+					"value": "@dataset().relativeURL",
+					"type": "Expression"
+				}
+			}
+		},
+		"parameters": {
+			"relativeURL": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "Day_5"
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"schema": []
+	}
+}
