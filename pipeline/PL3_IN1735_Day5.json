@@ -1,5 +1,5 @@
 {
-	"name": "PL2_IN1735_Day5",
+	"name": "PL3_IN1735_Day5",
 	"properties": {
 		"activities": [
 			{
@@ -226,7 +226,10 @@
 							"outputs": [
 								{
 									"referenceName": "DS_SQL_TABLE",
-									"type": "DatasetReference"
+									"type": "DatasetReference",
+									"parameters": {
+										"tablename": "tgt_api_paginated_IN1735"
+									}
 								}
 							]
 						}
