@@ -10,6 +10,10 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
+				"fileName": {
+					"value": "@concat('tgt_salestransactions_IN1733.csv',utcNow())",
+					"type": "Expression"
+				},
 				"folderPath": " IN1733",
 				"container": "output"
 			},
