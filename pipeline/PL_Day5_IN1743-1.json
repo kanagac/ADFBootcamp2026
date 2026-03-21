@@ -103,7 +103,10 @@
 				"outputs": [
 					{
 						"referenceName": "DS_SQL_TABLE",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"Tablename": "tgt_apiusers_IN1743"
+						}
 					}
 				]
 			}
