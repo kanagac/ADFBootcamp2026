@@ -10,7 +10,7 @@
 		"schema": [],
 		"typeProperties": {
 			"schema": "dbo",
-			"table": "tgt_emp_IN1727"
+			"table": "tgt_sales_IN1727"
 		}
 	}
 }
