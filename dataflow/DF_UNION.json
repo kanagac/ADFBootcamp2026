@@ -53,7 +53,7 @@
 				"source1, source2 union(byName: true)~> union1",
 				"union1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     partitionFileNames:[''],",
+				"     partitionFileNames:['Combined_Output'],",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
 				"     partitionBy('hash', 1)) ~> sink1"
