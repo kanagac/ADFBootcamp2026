@@ -1,0 +1,17 @@
+{
+	"name": "LS_API",
+	"properties": {
+		"parameters": {
+			"LS_RESTAPI": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "RestService",
+		"typeProperties": {
+			"url": "@{linkedService().LS_RESTAPI}",
+			"enableServerCertificateValidation": true,
+			"authenticationType": "Anonymous"
+		}
+	}
+}
