@@ -1,5 +1,5 @@
 {
-	"name": "Dataflow_Input_DS",
+	"name": "DS_CSV_INPUT",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "LS_AZURE_STORAGE",
