@@ -5,34 +5,13 @@
 			"referenceName": "LS_AZURE_STORAGE",
 			"type": "LinkedServiceReference"
 		},
-		"parameters": {
-			"container": {
-				"type": "string"
-			},
-			"path": {
-				"type": "string"
-			},
-			"file": {
-				"type": "string"
-			}
-		},
 		"annotations": [],
 		"type": "DelimitedText",
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": {
-					"value": "@dataset().file",
-					"type": "Expression"
-				},
-				"folderPath": {
-					"value": "@dataset().path",
-					"type": "Expression"
-				},
-				"container": {
-					"value": "@dataset().container",
-					"type": "Expression"
-				}
+				"folderPath": "IN1722",
+				"container": "output"
 			},
 			"columnDelimiter": ",",
 			"escapeChar": "\\",
