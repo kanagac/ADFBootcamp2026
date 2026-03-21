@@ -1,16 +1,24 @@
 {
-	"name": "DS_SQL_TABLE",
+	"name": "DS_SQL_TABLE_INPUT",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "LS_AZURE_SQL",
 			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"table_name": {
+				"type": "string"
+			}
 		},
 		"annotations": [],
 		"type": "AzureSqlTable",
 		"schema": [],
 		"typeProperties": {
 			"schema": "dbo",
-			"table": "tgt_api_users_IN1727"
+			"table": {
+				"value": "@dataset().table_name",
+				"type": "Expression"
+			}
 		}
 	}
 }

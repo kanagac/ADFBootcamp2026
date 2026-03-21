@@ -103,7 +103,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "DS_SQL_TABLE",
+						"referenceName": "DS_SQL_TABLE_INPUT",
 						"type": "DatasetReference"
 					}
 				]
