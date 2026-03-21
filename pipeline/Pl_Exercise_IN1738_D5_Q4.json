@@ -1,9 +1,9 @@
 {
-	"name": "Question_2",
+	"name": "Pl_Exercise_IN1738_D5_Q4",
 	"properties": {
 		"activities": [
 			{
-				"name": "Copy data1",
+				"name": "Copy1_D5_Q1",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
