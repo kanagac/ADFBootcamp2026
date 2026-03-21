@@ -1,0 +1,77 @@
+{
+	"name": "Pl_Exercise_D5_Q2",
+	"properties": {
+		"activities": [
+			{
+				"name": "For1_D5_Q2",
+				"type": "ForEach",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@variables('dayoffsets')",
+						"type": "Expression"
+					},
+					"isSequential": false,
+					"batchCount": 5,
+					"activities": [
+						{
+							"name": "Copy1_D5_Q2",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "JsonSource",
+									"storeSettings": {
+										"type": "HttpReadSettings",
+										"requestMethod": "GET"
+									},
+									"formatSettings": {
+										"type": "JsonReadSettings"
+									}
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "Json2",
+									"type": "DatasetReference",
+									"parameters": {
+										"RelativeURL": {
+											"value": "@concat('v1/archive?latitude=52.52&longitude=13.41&start_date=', \nformatDateTime(addDays(utcNow(), sub(0, item())), 'yyyy-MM-dd'), \n'&end_date=', \nformatDateTime(addDays(utcNow(), sub(0, item())), 'yyyy-MM-dd'), \n'&hourly=temperature_2m')",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"variables": {
+			"dayoffsets": {
+				"type": "Array",
+				"defaultValue": [
+					0,
+					1,
+					2,
+					3,
+					4
+				]
+			}
+		},
+		"folder": {
+			"name": "DAY_5_Exercise"
+		},
+		"annotations": []
+	}
+}
