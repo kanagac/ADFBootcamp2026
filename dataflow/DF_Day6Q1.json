@@ -127,19 +127,13 @@
 				"select3 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
-				"     insertable:false,",
-				"     updateable:true,",
+				"     insertable:true,",
+				"     updateable:false,",
 				"     upsertable:false,",
-				"     keys:[(CustomerID)],",
 				"     format: 'table',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     errorHandlingOption: 'stopOnFirstError',",
-				"     mapColumn(",
-				"          CustomerID,",
-				"          CustomerName,",
-				"          City",
-				"     )) ~> sink2"
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink2"
 			]
 		}
 	}
