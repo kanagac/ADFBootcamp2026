@@ -1,0 +1,37 @@
+{
+	"name": "PL_Day_6_Q2_IN1716",
+	"properties": {
+		"description": "Implementing SC2 in source table",
+		"activities": [
+			{
+				"name": "DF_SCD2_Customer",
+				"description": "Implementing SCD2 in ADF",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DF_SCD2_Customer",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"folder": {
+			"name": "PL_Day_6_IN1716"
+		},
+		"annotations": []
+	}
+}
