@@ -15,7 +15,7 @@
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "Day_4_output",
+						"referenceName": "Day_4_emp_output",
 						"type": "DatasetReference"
 					},
 					"name": "sink1"
@@ -23,7 +23,7 @@
 			],
 			"transformations": [
 				{
-					"name": "derivedColumn1"
+					"name": "derivedSalaryCategory"
 				}
 			],
 			"scriptLines": [
@@ -41,8 +41,8 @@
 				"    Salary >= 80000, 'High',\r",
 				"    Salary >= 50000 && Salary <= 79999, 'Medium',\r",
 				"    Salary < 50000, 'Low'\r",
-				"    )) ~> derivedColumn1",
-				"derivedColumn1 sink(allowSchemaDrift: true,",
+				"    )) ~> derivedSalaryCategory",
+				"derivedSalaryCategory sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> sink1"
