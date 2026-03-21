@@ -6,7 +6,7 @@
 			"sources": [
 				{
 					"dataset": {
-						"referenceName": "Dataflow_Input_DS",
+						"referenceName": "DS_CSV_INPUT",
 						"type": "DatasetReference"
 					},
 					"name": "sourceCSV"
@@ -15,7 +15,7 @@
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "Dataflow_Output_DS",
+						"referenceName": "DS_CSV_OUTPUT",
 						"type": "DatasetReference"
 					},
 					"name": "sink1"
