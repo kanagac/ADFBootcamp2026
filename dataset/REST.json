@@ -1,0 +1,18 @@
+{
+	"name": "REST",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_API",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"url": {
+					"value": "https://jsonplaceholder.typicode.com/users",
+					"type": "Expression"
+				}
+			}
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"schema": []
+	}
+}
