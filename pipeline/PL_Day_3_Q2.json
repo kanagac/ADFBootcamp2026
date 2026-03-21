@@ -69,7 +69,7 @@
 										"value": "csv",
 										"activities": [
 											{
-												"name": "Copy data1",
+												"name": "CSV",
 												"type": "Copy",
 												"dependsOn": [],
 												"policy": {
@@ -148,7 +148,7 @@
 										"value": "json",
 										"activities": [
 											{
-												"name": "Copy data1_copy1",
+												"name": "JSON",
 												"type": "Copy",
 												"dependsOn": [],
 												"policy": {
@@ -217,7 +217,7 @@
 										"value": "parquet",
 										"activities": [
 											{
-												"name": "Copy data1_copy2",
+												"name": "PARQUET",
 												"type": "Copy",
 												"dependsOn": [],
 												"policy": {
@@ -293,7 +293,7 @@
 								],
 								"defaultActivities": [
 									{
-										"name": "Copy data1_copy3",
+										"name": "DEFAULT",
 										"type": "Copy",
 										"dependsOn": [],
 										"policy": {
