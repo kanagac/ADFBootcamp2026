@@ -1,0 +1,110 @@
+{
+	"name": "DF_SCD1_Customer",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_Customer_Source",
+						"type": "DatasetReference"
+					},
+					"name": "CustomerSource"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_Customer_Target",
+						"type": "DatasetReference"
+					},
+					"name": "CustomerTarget"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_Customer_Target",
+						"type": "DatasetReference"
+					},
+					"name": "SinkInsertCustomer"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_Customer_Target",
+						"type": "DatasetReference"
+					},
+					"name": "SinkUpdateCustomer"
+				}
+			],
+			"transformations": [
+				{
+					"name": "LEFTJOIN"
+				},
+				{
+					"name": "ConditionalSplit"
+				},
+				{
+					"name": "ARUpdateCustomer"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          CustomerID as integer,",
+				"          Name as string,",
+				"          City as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> CustomerSource",
+				"source(output(",
+				"          CustomerID as integer,",
+				"          Name as string,",
+				"          City as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> CustomerTarget",
+				"CustomerSource, CustomerTarget join(CustomerSource@CustomerID == CustomerTarget@CustomerID,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> LEFTJOIN",
+				"LEFTJOIN split(isNull(CustomerTarget@CustomerID),",
+				"     disjoint: false) ~> ConditionalSplit@(NewRecords, ExistingRecords)",
+				"ConditionalSplit@ExistingRecords alterRow(updateIf(true())) ~> ARUpdateCustomer",
+				"ConditionalSplit@NewRecords sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          CustomerID as integer,",
+				"          Name as string,",
+				"          City as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> SinkInsertCustomer",
+				"ARUpdateCustomer sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          CustomerID as integer,",
+				"          Name as string,",
+				"          City as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:false,",
+				"     updateable:true,",
+				"     upsertable:false,",
+				"     keys:['CustomerID'],",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> SinkUpdateCustomer"
+			]
+		}
+	}
+}
