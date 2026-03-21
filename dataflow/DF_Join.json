@@ -6,14 +6,14 @@
 			"sources": [
 				{
 					"dataset": {
-						"referenceName": "Dataflow_Input_DS",
+						"referenceName": "DS_CSV_INPUT",
 						"type": "DatasetReference"
 					},
 					"name": "orders"
 				},
 				{
 					"dataset": {
-						"referenceName": "Dataflow_Input_DS",
+						"referenceName": "DS_CSV_INPUT",
 						"type": "DatasetReference"
 					},
 					"name": "customers"
@@ -22,7 +22,7 @@
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "Dataflow_Output_DS",
+						"referenceName": "DS_CSV_OUTPUT",
 						"type": "DatasetReference"
 					},
 					"name": "sink1"
