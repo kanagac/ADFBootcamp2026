@@ -7,8 +7,7 @@
 		},
 		"parameters": {
 			"P_tableName": {
-				"type": "string",
-				"defaultValue": "Customer_Target_tableIN1720"
+				"type": "string"
 			}
 		},
 		"annotations": [],
