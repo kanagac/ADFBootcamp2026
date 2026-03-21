@@ -5,12 +5,20 @@
 			"referenceName": "LS_AZURE_SQL",
 			"type": "LinkedServiceReference"
 		},
+		"parameters": {
+			"P_SQL": {
+				"type": "string"
+			}
+		},
 		"annotations": [],
 		"type": "AzureSqlTable",
 		"schema": [],
 		"typeProperties": {
 			"schema": "dbo",
-			"table": "tgt_api_users_IN1722"
+			"table": {
+				"value": "@dataset().P_SQL",
+				"type": "Expression"
+			}
 		}
 	}
 }
