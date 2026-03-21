@@ -235,6 +235,52 @@
 						}
 					]
 				}
+			},
+			{
+				"name": "Copy data2",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "RestSource",
+						"httpRequestTimeout": "00:01:40",
+						"requestInterval": "00.00:00:00.010",
+						"requestMethod": "GET",
+						"paginationRules": {
+							"QueryParameters": ""
+						}
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"writeBehavior": "insert",
+						"sqlWriterUseTableLock": false
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "DS_REST_Param",
+						"type": "DatasetReference",
+						"parameters": {
+							"limit": "10",
+							"skip": "1"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					}
+				]
 			}
 		],
 		"variables": {
