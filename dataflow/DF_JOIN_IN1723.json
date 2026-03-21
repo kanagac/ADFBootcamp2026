@@ -1,0 +1,85 @@
+{
+	"name": "DF_JOIN_IN1723",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_JOIN_ORD_IN1723",
+						"type": "DatasetReference"
+					},
+					"name": "srcOrders"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_JOIN_CUST_IN1723",
+						"type": "DatasetReference"
+					},
+					"name": "srcCustomers"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_JOIN_OUTPUT_IN1723",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "join1"
+				},
+				{
+					"name": "select1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          OrderID as string,",
+				"          CustomerID as string,",
+				"          OrderAmount as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> srcOrders",
+				"source(output(",
+				"          CustomerID as string,",
+				"          CustomerName as string,",
+				"          City as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> srcCustomers",
+				"srcOrders, srcCustomers join(srcOrders@CustomerID == srcCustomers@CustomerID,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join1",
+				"join1 select(mapColumn(",
+				"          OrderID,",
+				"          CustomerID = srcOrders@CustomerID,",
+				"          CustomerName,",
+				"          City,",
+				"          OrderAmount,",
+				"          CustomerID = srcCustomers@CustomerID",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          EmpID as string,",
+				"          EmployeeName as string,",
+				"          Country as string",
+				"     ),",
+				"     partitionFileNames:['DAY_4_JOIN_OUTPUT'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> sink1"
+			]
+		}
+	}
+}
