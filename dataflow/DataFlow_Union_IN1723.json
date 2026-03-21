@@ -56,8 +56,10 @@
 				"          Amount as string,",
 				"          OrderDate as string",
 				"     ),",
+				"     partitionFileNames:['Day_4_union.csv'],",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> sink1"
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> sink1"
 			]
 		}
 	}
