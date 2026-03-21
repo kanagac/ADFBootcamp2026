@@ -1,0 +1,51 @@
+{
+	"name": "PL_DAY6_Exercise_1",
+	"properties": {
+		"activities": [
+			{
+				"name": "Data flow1",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DF_SCD1",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"Sourcecustomer": {
+								"p_file_name": "customersSCD.csv",
+								"P_directory": "IN1725",
+								"P_container": "input"
+							},
+							"TargetcustomerSQL": {
+								"P_Tablename": "TGT_customer_IN1725"
+							},
+							"sink1": {
+								"P_Tablename": "TGT_customer_IN1725"
+							},
+							"sink2": {
+								"P_Tablename": "TGT_customer_IN1725"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"folder": {
+			"name": "DAY 6 Exercise"
+		},
+		"annotations": []
+	}
+}
