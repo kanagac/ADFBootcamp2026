@@ -1,0 +1,158 @@
+{
+	"name": "Pl_Exercise_D5_Q6",
+	"properties": {
+		"activities": [
+			{
+				"name": "Get1_D5_Q6",
+				"type": "GetMetadata",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "Json1",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": "input",
+							"folder": "data/json",
+							"file": " "
+						}
+					},
+					"fieldList": [
+						"childItems"
+					],
+					"storeSettings": {
+						"type": "AzureBlobStorageReadSettings",
+						"enablePartitionDiscovery": false
+					},
+					"formatSettings": {
+						"type": "JsonReadSettings"
+					}
+				}
+			},
+			{
+				"name": "For1_D5_Q6",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Get1_D5_Q6",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Get1_D5_Q6').output.childItems",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "Copy1_D5_Q6",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "JsonSource",
+									"storeSettings": {
+										"type": "AzureBlobStorageReadSettings",
+										"recursive": true,
+										"wildcardFileName": "*.json",
+										"enablePartitionDiscovery": false
+									},
+									"formatSettings": {
+										"type": "JsonReadSettings"
+									}
+								},
+								"sink": {
+									"type": "AzureSqlSink",
+									"writeBehavior": "insert",
+									"sqlWriterUseTableLock": false,
+									"tableOption": "autoCreate",
+									"disableMetricsCollection": false
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"mappings": [
+										{
+											"source": {
+												"path": "$['EmpID']"
+											},
+											"sink": {
+												"name": "EmpID",
+												"type": "Int64"
+											}
+										},
+										{
+											"source": {
+												"path": "$['Name']"
+											},
+											"sink": {
+												"name": "Name",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"path": "$['Dept']"
+											},
+											"sink": {
+												"name": "Dept",
+												"type": "String"
+											}
+										}
+									],
+									"mapComplexValuesToString": false
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "Json1",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": "input",
+										"folder": "data/json",
+										"file": {
+											"value": "@item().name",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "DS_SQL_TABLE",
+									"type": "DatasetReference",
+									"parameters": {
+										"table": "tgt_json_IN1738"
+									}
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"folder": {
+			"name": "DAY_5_Exercise"
+		},
+		"annotations": []
+	}
+}

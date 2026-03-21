@@ -1,0 +1,36 @@
+{
+	"name": "Json1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AZURE_STORAGE",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"container": {
+				"type": "string"
+			},
+			"folder": {
+				"type": "string"
+			},
+			"file": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"folderPath": {
+					"value": "@dataset().folder",
+					"type": "Expression"
+				},
+				"container": {
+					"value": "@dataset().container",
+					"type": "Expression"
+				}
+			}
+		},
+		"schema": {}
+	}
+}
