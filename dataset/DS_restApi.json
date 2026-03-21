@@ -1,0 +1,23 @@
+{
+	"name": "DS_restApi",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_Azure_Rest_API",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"Url": {
+					"value": "@dataset().P_resrApi",
+					"type": "Expression"
+				}
+			}
+		},
+		"parameters": {
+			"P_resrApi": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"schema": []
+	}
+}

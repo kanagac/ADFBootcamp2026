@@ -1,0 +1,221 @@
+{
+	"name": "PL_Day5Question3",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy data1",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "RestSource",
+						"httpRequestTimeout": "00:01:40",
+						"requestInterval": "00.00:00:00.010",
+						"requestMethod": "GET",
+						"paginationRules": {
+							"QueryParameters..skip": "RANGE",
+							"EndCondition:$.users[0]": "NonExist"
+						}
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"preCopyScript": "truncate table tgt_api_paginated_IN1720",
+						"writeBehavior": "insert",
+						"sqlWriterUseTableLock": false,
+						"tableOption": "autoCreate",
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"path": "$['users'][0]['id']"
+								},
+								"sink": {
+									"name": "id"
+								}
+							},
+							{
+								"source": {
+									"path": "$['users'][0]['firstName']"
+								},
+								"sink": {
+									"name": "firstName"
+								}
+							},
+							{
+								"source": {
+									"path": "$['users'][0]['lastName']"
+								},
+								"sink": {
+									"name": "lastName"
+								}
+							},
+							{
+								"source": {
+									"path": "$['users'][0]['maidenName']"
+								},
+								"sink": {
+									"name": "maidenName"
+								}
+							},
+							{
+								"source": {
+									"path": "$['users'][0]['age']"
+								},
+								"sink": {
+									"name": "age"
+								}
+							},
+							{
+								"source": {
+									"path": "$['users'][0]['gender']"
+								},
+								"sink": {
+									"name": "gender"
+								}
+							},
+							{
+								"source": {
+									"path": "$['users'][0]['email']"
+								},
+								"sink": {
+									"name": "email"
+								}
+							},
+							{
+								"source": {
+									"path": "$['users'][0]['phone']"
+								},
+								"sink": {
+									"name": "phone"
+								}
+							},
+							{
+								"source": {
+									"path": "$['users'][0]['username']"
+								},
+								"sink": {
+									"name": "username"
+								}
+							},
+							{
+								"source": {
+									"path": "$['users'][0]['password']"
+								},
+								"sink": {
+									"name": "password"
+								}
+							},
+							{
+								"source": {
+									"path": "$['users'][0]['birthDate']"
+								},
+								"sink": {
+									"name": "birthDate"
+								}
+							},
+							{
+								"source": {
+									"path": "$['users'][0]['image']"
+								},
+								"sink": {
+									"name": "image"
+								}
+							},
+							{
+								"source": {
+									"path": "$['users'][0]['bloodGroup']"
+								},
+								"sink": {
+									"name": "bloodGroup"
+								}
+							},
+							{
+								"source": {
+									"path": "$['users'][0]['height']"
+								},
+								"sink": {
+									"name": "height"
+								}
+							},
+							{
+								"source": {
+									"path": "$['users'][0]['weight']"
+								},
+								"sink": {
+									"name": "weight"
+								}
+							},
+							{
+								"source": {
+									"path": "$['users'][0]['eyeColor']"
+								},
+								"sink": {
+									"name": "eyeColor"
+								}
+							},
+							{
+								"source": {
+									"path": "$['users'][0]['hair']['color']"
+								},
+								"sink": {
+									"name": "color"
+								}
+							},
+							{
+								"source": {
+									"path": "$['users'][0]['hair']['type']"
+								},
+								"sink": {
+									"name": "type"
+								}
+							},
+							{
+								"source": {
+									"path": "$['users'][0]['ip']"
+								},
+								"sink": {
+									"name": "ip"
+								}
+							}
+						],
+						"collectionReference": "$['users']"
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "DS_restApi",
+						"type": "DatasetReference",
+						"parameters": {
+							"P_resrApi": "https://dummyjson.com/users?limit=10&skip=0"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference",
+						"parameters": {
+							"P_tableName": "tgt_api_paginated_IN1720"
+						}
+					}
+				]
+			}
+		],
+		"folder": {
+			"name": "PL_Day5Excercise"
+		},
+		"annotations": []
+	}
+}
