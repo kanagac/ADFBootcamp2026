@@ -1,5 +1,5 @@
 {
-	"name": "Day_4_output",
+	"name": "Day_4_emp_output",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "LS_AZURE_STORAGE",
