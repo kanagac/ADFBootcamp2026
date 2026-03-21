@@ -30,6 +30,7 @@
 					],
 					"storeSettings": {
 						"type": "AzureBlobStorageReadSettings",
+						"recursive": true,
 						"enablePartitionDiscovery": false
 					},
 					"formatSettings": {
@@ -58,8 +59,6 @@
 						{
 							"name": "If Condition1",
 							"type": "IfCondition",
-							"state": "Inactive",
-							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [
 								{
 									"activity": "Get Metadata2",
@@ -202,6 +201,7 @@
 								],
 								"storeSettings": {
 									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
 									"enablePartitionDiscovery": false
 								},
 								"formatSettings": {
