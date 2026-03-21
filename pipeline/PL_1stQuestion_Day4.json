@@ -1,5 +1,5 @@
 {
-	"name": "pipeline2",
+	"name": "PL_1stQuestion_Day4",
 	"properties": {
 		"activities": [
 			{
@@ -27,6 +27,9 @@
 				}
 			}
 		],
+		"folder": {
+			"name": "PL_Day 4_Exercise_IN1722"
+		},
 		"annotations": []
 	}
 }
