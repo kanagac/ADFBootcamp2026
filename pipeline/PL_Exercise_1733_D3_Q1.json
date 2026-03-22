@@ -1,5 +1,5 @@
 {
-	"name": "Latestmodified",
+	"name": "PL_Exercise_1733_D3_Q1",
 	"properties": {
 		"activities": [
 			{
@@ -29,6 +29,7 @@
 					],
 					"storeSettings": {
 						"type": "AzureBlobStorageReadSettings",
+						"recursive": true,
 						"enablePartitionDiscovery": false
 					},
 					"formatSettings": {
@@ -85,6 +86,7 @@
 								],
 								"storeSettings": {
 									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
 									"enablePartitionDiscovery": false
 								},
 								"formatSettings": {
