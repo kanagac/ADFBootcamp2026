@@ -1,6 +1,7 @@
 {
 	"name": "PL_Day_5_Q6_IN1716",
 	"properties": {
+		"description": "JSON to SQL",
 		"activities": [
 			{
 				"name": "GM_JSON_TO_SQL",
