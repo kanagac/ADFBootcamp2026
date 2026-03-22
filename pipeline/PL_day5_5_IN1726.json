@@ -1,5 +1,5 @@
 {
-	"name": "pipeline1",
+	"name": "PL_day5_5_IN1726",
 	"properties": {
 		"activities": [
 			{
@@ -186,7 +186,10 @@
 				"outputs": [
 					{
 						"referenceName": "DS_SQL_output",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"name": "tgt_emp_IN1726"
+						}
 					}
 				]
 			}
