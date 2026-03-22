@@ -1,5 +1,5 @@
 {
-	"name": "DS_JSON",
+	"name": "DF_JSON_1",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "LS_AZURE_STORAGE",
@@ -11,25 +11,15 @@
 			},
 			"directory": {
 				"type": "string"
-			},
-			"filename": {
-				"type": "string"
 			}
-		},
-		"folder": {
-			"name": "Day_5"
 		},
 		"annotations": [],
 		"type": "Json",
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": {
-					"value": "@dataset().filename",
-					"type": "Expression"
-				},
 				"folderPath": {
-					"value": "p_folder_path",
+					"value": "@dataset().directory",
 					"type": "Expression"
 				},
 				"container": {
