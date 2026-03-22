@@ -1,0 +1,63 @@
+{
+	"name": "PL_Day_3_Q5_IN1716",
+	"properties": {
+		"description": "Copying input file to output",
+		"activities": [
+			{
+				"name": "CP_src_des",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "BinarySource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": true
+						},
+						"formatSettings": {
+							"type": "BinaryReadSettings"
+						}
+					},
+					"sink": {
+						"type": "BinarySink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "Binary1",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": "input"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DS_BINARY",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": "output",
+							"directory": "IN1716/output2"
+						}
+					}
+				]
+			}
+		],
+		"folder": {
+			"name": "PL_Day_3_IN1716"
+		},
+		"annotations": []
+	}
+}
