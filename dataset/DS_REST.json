@@ -3,7 +3,10 @@
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "LS_REST_COMMON",
-			"type": "LinkedServiceReference"
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"baseURL": "@dataset().URL"
+			}
 		},
 		"parameters": {
 			"URL": {
@@ -12,12 +15,6 @@
 		},
 		"annotations": [],
 		"type": "RestResource",
-		"typeProperties": {
-			"relativeUrl": {
-				"value": "@dataset().URL",
-				"type": "Expression"
-			}
-		},
 		"schema": []
 	}
 }
