@@ -5,13 +5,21 @@
 			"referenceName": "LS_REST_API",
 			"type": "LinkedServiceReference",
 			"parameters": {
-				"P_name": "https://dummyjson.com/users?limit=10&skip=0"
+				"P_name": "https://archive-api.open-meteo.com/v1/"
+			}
+		},
+		"parameters": {
+			"rpath": {
+				"type": "String"
 			}
 		},
 		"annotations": [],
 		"type": "RestResource",
 		"typeProperties": {
-			"relativeUrl": ""
+			"relativeUrl": {
+				"value": "@dataset().rpath",
+				"type": "Expression"
+			}
 		},
 		"schema": []
 	}
