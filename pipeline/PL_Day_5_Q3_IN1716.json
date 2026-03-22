@@ -48,6 +48,22 @@
 									"value": "@greater(length(activity('WEB_API_SQL').output.users), 0)",
 									"type": "Expression"
 								},
+								"ifFalseActivities": [
+									{
+										"name": "SET_FALSE",
+										"type": "SetVariable",
+										"dependsOn": [],
+										"policy": {
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"variableName": "v_hasMore",
+											"value": false
+										}
+									}
+								],
 								"ifTrueActivities": [
 									{
 										"name": "CP_API_SQL",
