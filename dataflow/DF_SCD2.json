@@ -1,0 +1,158 @@
+{
+	"name": "DF_SCD2",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "CustomerSource"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "CustomerTarget"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "sink2"
+				}
+			],
+			"transformations": [
+				{
+					"name": "derivedColumn"
+				},
+				{
+					"name": "select1"
+				},
+				{
+					"name": "lookup1"
+				},
+				{
+					"name": "ExistingRecords"
+				},
+				{
+					"name": "select2"
+				},
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "alterRow1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          CustomerID as integer,",
+				"          Name as string,",
+				"          City as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> CustomerSource",
+				"source(output(",
+				"          CustomerSK as integer,",
+				"          CustomerID as integer,",
+				"          Name as string,",
+				"          City as string,",
+				"          StartDate as timestamp,",
+				"          EndDate as timestamp,",
+				"          IsCurrent as boolean",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> CustomerTarget",
+				"CustomerSource derive(StartDate = currentTimestamp(),",
+				"          EndDate = toTimestamp(null()),",
+				"          IsCurrent = 1) ~> derivedColumn",
+				"CustomerTarget select(mapColumn(",
+				"          SQL_CustomerSK = CustomerSK,",
+				"          SQL_CustomerID = CustomerID,",
+				"          SQL_Name = Name,",
+				"          SQL_City = City,",
+				"          SQL_StartDate = StartDate,",
+				"          SQL_EndDate = EndDate,",
+				"          SQL_IsCurrent = IsCurrent",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"CustomerSource, select1 lookup(CustomerID == SQL_CustomerID,",
+				"     multiple: false,",
+				"     pickup: 'any',",
+				"     broadcast: 'auto')~> lookup1",
+				"lookup1 filter(!isNull(SQL_CustomerID)) ~> ExistingRecords",
+				"ExistingRecords select(mapColumn(",
+				"          SQL_CustomerSK,",
+				"          SQL_CustomerID,",
+				"          SQL_Name,",
+				"          SQL_City,",
+				"          SQL_StartDate,",
+				"          SQL_EndDate,",
+				"          SQL_IsCurrent",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select2",
+				"select2 derive(SQL_EndDate = currentTimestamp(),",
+				"          SQL_IsCurrent = 0) ~> derivedColumn1",
+				"derivedColumn1 alterRow(updateIf(1 == 1)) ~> alterRow1",
+				"derivedColumn sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     saveOrder: 2,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          CustomerID,",
+				"          Name,",
+				"          City,",
+				"          StartDate,",
+				"          EndDate,",
+				"          IsCurrent",
+				"     )) ~> sink1",
+				"alterRow1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:false,",
+				"     updateable:true,",
+				"     upsertable:false,",
+				"     keys:['SQL_CustomerSK'],",
+				"     format: 'table',",
+				"     saveOrder: 1,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          SQL_CustomerSK,",
+				"          SQL_CustomerID,",
+				"          SQL_Name,",
+				"          SQL_City,",
+				"          SQL_StartDate,",
+				"          SQL_EndDate,",
+				"          SQL_IsCurrent",
+				"     )) ~> sink2"
+			]
+		}
+	}
+}

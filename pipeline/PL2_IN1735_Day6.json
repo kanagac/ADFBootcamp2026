@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "DF_SCD_type2",
+						"referenceName": "DF_SCD2",
 						"type": "DataFlowReference",
 						"datasetParameters": {
 							"CustomerSource": {
@@ -29,9 +29,6 @@
 								"tablename": "Customer_SCD2_target_IN1716"
 							},
 							"sink2": {
-								"tablename": "Customer_SCD2_target_IN1716"
-							},
-							"sink3": {
 								"tablename": "Customer_SCD2_target_IN1716"
 							}
 						}
