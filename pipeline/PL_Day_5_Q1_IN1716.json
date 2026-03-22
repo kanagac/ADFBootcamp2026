@@ -19,6 +19,22 @@
 				"typeProperties": {
 					"source": {
 						"type": "RestSource",
+						"additionalColumns": [
+							{
+								"name": "load_timestamp",
+								"value": {
+									"value": "@utcNow()",
+									"type": "Expression"
+								}
+							},
+							{
+								"name": "Pipeline_id",
+								"value": {
+									"value": "@pipeline().RunId",
+									"type": "Expression"
+								}
+							}
+						],
 						"httpRequestTimeout": "00:01:40",
 						"requestInterval": "00.00:00:00.010",
 						"requestMethod": "GET",
@@ -33,12 +49,68 @@
 						"tableOption": "autoCreate",
 						"disableMetricsCollection": false
 					},
-					"enableStaging": false
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"path": "$['id']"
+								},
+								"sink": {
+									"name": "user_id",
+									"type": "Int64"
+								}
+							},
+							{
+								"source": {
+									"path": "$['name']"
+								},
+								"sink": {
+									"name": "name",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['email']"
+								},
+								"sink": {
+									"name": "email",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['load_timestamp']"
+								},
+								"sink": {
+									"name": "load_timestamp",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Pipeline_id']"
+								},
+								"sink": {
+									"name": "Pipeline_id",
+									"type": "String"
+								}
+							}
+						]
+					}
 				},
 				"inputs": [
 					{
 						"referenceName": "DS_REST_Generic",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"URL": {
+								"value": "https://jsonplaceholder.typicode.com/users",
+								"type": "Expression"
+							}
+						}
 					}
 				],
 				"outputs": [
