@@ -1,0 +1,503 @@
+{
+	"name": "PL_Day5_3_IN1726",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy data1",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "RestSource",
+						"httpRequestTimeout": "00:01:40",
+						"requestInterval": "00.00:00:00.010",
+						"requestMethod": "GET",
+						"paginationRules": {
+							"supportRFC5988": "true"
+						}
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"writeBehavior": "insert",
+						"sqlWriterUseTableLock": false,
+						"tableOption": "autoCreate",
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"path": "$['users'][0]['id']"
+								},
+								"sink": {
+									"name": "id"
+								}
+							},
+							{
+								"source": {
+									"path": "$['users'][0]['firstName']"
+								},
+								"sink": {
+									"name": "firstName"
+								}
+							},
+							{
+								"source": {
+									"path": "$['users'][0]['lastName']"
+								},
+								"sink": {
+									"name": "lastName"
+								}
+							},
+							{
+								"source": {
+									"path": "$['users'][0]['maidenName']"
+								},
+								"sink": {
+									"name": "maidenName"
+								}
+							},
+							{
+								"source": {
+									"path": "$['users'][0]['age']"
+								},
+								"sink": {
+									"name": "age"
+								}
+							},
+							{
+								"source": {
+									"path": "$['users'][0]['gender']"
+								},
+								"sink": {
+									"name": "gender"
+								}
+							},
+							{
+								"source": {
+									"path": "$['users'][0]['email']"
+								},
+								"sink": {
+									"name": "email"
+								}
+							},
+							{
+								"source": {
+									"path": "$['users'][0]['phone']"
+								},
+								"sink": {
+									"name": "phone"
+								}
+							},
+							{
+								"source": {
+									"path": "$['users'][0]['username']"
+								},
+								"sink": {
+									"name": "username"
+								}
+							},
+							{
+								"source": {
+									"path": "$['users'][0]['password']"
+								},
+								"sink": {
+									"name": "password"
+								}
+							},
+							{
+								"source": {
+									"path": "$['users'][0]['birthDate']"
+								},
+								"sink": {
+									"name": "birthDate"
+								}
+							},
+							{
+								"source": {
+									"path": "$['users'][0]['image']"
+								},
+								"sink": {
+									"name": "image"
+								}
+							},
+							{
+								"source": {
+									"path": "$['users'][0]['bloodGroup']"
+								},
+								"sink": {
+									"name": "bloodGroup"
+								}
+							},
+							{
+								"source": {
+									"path": "$['users'][0]['height']"
+								},
+								"sink": {
+									"name": "height"
+								}
+							},
+							{
+								"source": {
+									"path": "$['users'][0]['weight']"
+								},
+								"sink": {
+									"name": "weight"
+								}
+							},
+							{
+								"source": {
+									"path": "$['users'][0]['eyeColor']"
+								},
+								"sink": {
+									"name": "eyeColor"
+								}
+							},
+							{
+								"source": {
+									"path": "$['users'][0]['hair']['color']"
+								},
+								"sink": {
+									"name": "color"
+								}
+							},
+							{
+								"source": {
+									"path": "$['users'][0]['hair']['type']"
+								},
+								"sink": {
+									"name": "type"
+								}
+							},
+							{
+								"source": {
+									"path": "$['users'][0]['ip']"
+								},
+								"sink": {
+									"name": "ip"
+								}
+							},
+							{
+								"source": {
+									"path": "$['users'][0]['address']['address']"
+								},
+								"sink": {
+									"name": "users'][0]['address_address"
+								}
+							},
+							{
+								"source": {
+									"path": "$['users'][0]['address']['city']"
+								},
+								"sink": {
+									"name": "users'][0]['address_city"
+								}
+							},
+							{
+								"source": {
+									"path": "$['users'][0]['address']['state']"
+								},
+								"sink": {
+									"name": "users'][0]['address_state"
+								}
+							},
+							{
+								"source": {
+									"path": "$['users'][0]['address']['stateCode']"
+								},
+								"sink": {
+									"name": "users'][0]['address_stateCode"
+								}
+							},
+							{
+								"source": {
+									"path": "$['users'][0]['address']['postalCode']"
+								},
+								"sink": {
+									"name": "users'][0]['address_postalCode"
+								}
+							},
+							{
+								"source": {
+									"path": "$['users'][0]['address']['coordinates']['lat']"
+								},
+								"sink": {
+									"name": "users'][0]['address_coordinates_lat"
+								}
+							},
+							{
+								"source": {
+									"path": "$['users'][0]['address']['coordinates']['lng']"
+								},
+								"sink": {
+									"name": "users'][0]['address_coordinates_lng"
+								}
+							},
+							{
+								"source": {
+									"path": "$['users'][0]['address']['country']"
+								},
+								"sink": {
+									"name": "users'][0]['address_country"
+								}
+							},
+							{
+								"source": {
+									"path": "$['users'][0]['macAddress']"
+								},
+								"sink": {
+									"name": "macAddress"
+								}
+							},
+							{
+								"source": {
+									"path": "$['users'][0]['university']"
+								},
+								"sink": {
+									"name": "university"
+								}
+							},
+							{
+								"source": {
+									"path": "$['users'][0]['bank']['cardExpire']"
+								},
+								"sink": {
+									"name": "cardExpire"
+								}
+							},
+							{
+								"source": {
+									"path": "$['users'][0]['bank']['cardNumber']"
+								},
+								"sink": {
+									"name": "cardNumber"
+								}
+							},
+							{
+								"source": {
+									"path": "$['users'][0]['bank']['cardType']"
+								},
+								"sink": {
+									"name": "cardType"
+								}
+							},
+							{
+								"source": {
+									"path": "$['users'][0]['bank']['currency']"
+								},
+								"sink": {
+									"name": "currency"
+								}
+							},
+							{
+								"source": {
+									"path": "$['users'][0]['bank']['iban']"
+								},
+								"sink": {
+									"name": "iban"
+								}
+							},
+							{
+								"source": {
+									"path": "$['users'][0]['company']['department']"
+								},
+								"sink": {
+									"name": "department"
+								}
+							},
+							{
+								"source": {
+									"path": "$['users'][0]['company']['name']"
+								},
+								"sink": {
+									"name": "name"
+								}
+							},
+							{
+								"source": {
+									"path": "$['users'][0]['company']['title']"
+								},
+								"sink": {
+									"name": "title"
+								}
+							},
+							{
+								"source": {
+									"path": "$['users'][0]['company']['address']['address']"
+								},
+								"sink": {
+									"name": "users'][0]['company_address_address"
+								}
+							},
+							{
+								"source": {
+									"path": "$['users'][0]['company']['address']['city']"
+								},
+								"sink": {
+									"name": "users'][0]['company_address_city"
+								}
+							},
+							{
+								"source": {
+									"path": "$['users'][0]['company']['address']['state']"
+								},
+								"sink": {
+									"name": "users'][0]['company_address_state"
+								}
+							},
+							{
+								"source": {
+									"path": "$['users'][0]['company']['address']['stateCode']"
+								},
+								"sink": {
+									"name": "users'][0]['company_address_stateCode"
+								}
+							},
+							{
+								"source": {
+									"path": "$['users'][0]['company']['address']['postalCode']"
+								},
+								"sink": {
+									"name": "users'][0]['company_address_postalCode"
+								}
+							},
+							{
+								"source": {
+									"path": "$['users'][0]['company']['address']['coordinates']['lat']"
+								},
+								"sink": {
+									"name": "users'][0]['company_address_coordinates_lat"
+								}
+							},
+							{
+								"source": {
+									"path": "$['users'][0]['company']['address']['coordinates']['lng']"
+								},
+								"sink": {
+									"name": "users'][0]['company_address_coordinates_lng"
+								}
+							},
+							{
+								"source": {
+									"path": "$['users'][0]['company']['address']['country']"
+								},
+								"sink": {
+									"name": "users'][0]['company_address_country"
+								}
+							},
+							{
+								"source": {
+									"path": "$['users'][0]['ein']"
+								},
+								"sink": {
+									"name": "ein"
+								}
+							},
+							{
+								"source": {
+									"path": "$['users'][0]['ssn']"
+								},
+								"sink": {
+									"name": "ssn"
+								}
+							},
+							{
+								"source": {
+									"path": "$['users'][0]['userAgent']"
+								},
+								"sink": {
+									"name": "userAgent"
+								}
+							},
+							{
+								"source": {
+									"path": "$['users'][0]['crypto']['coin']"
+								},
+								"sink": {
+									"name": "coin"
+								}
+							},
+							{
+								"source": {
+									"path": "$['users'][0]['crypto']['wallet']"
+								},
+								"sink": {
+									"name": "wallet"
+								}
+							},
+							{
+								"source": {
+									"path": "$['users'][0]['crypto']['network']"
+								},
+								"sink": {
+									"name": "network"
+								}
+							},
+							{
+								"source": {
+									"path": "$['users'][0]['role']"
+								},
+								"sink": {
+									"name": "role"
+								}
+							},
+							{
+								"source": {
+									"path": "$['total']"
+								},
+								"sink": {
+									"name": "total"
+								}
+							},
+							{
+								"source": {
+									"path": "$['skip']"
+								},
+								"sink": {
+									"name": "skip"
+								}
+							},
+							{
+								"source": {
+									"path": "$['limit']"
+								},
+								"sink": {
+									"name": "limit"
+								}
+							}
+						]
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "DS_rest_api",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DS_SQL_output",
+						"type": "DatasetReference",
+						"parameters": {
+							"name": "tgt_api_paginated_IN1726"
+						}
+					}
+				]
+			}
+		],
+		"folder": {
+			"name": "PS_Exercise_IN1726/Day5_Exercise"
+		},
+		"annotations": []
+	}
+}

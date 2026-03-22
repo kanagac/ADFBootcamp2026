@@ -5,7 +5,7 @@
 			"referenceName": "LS_REST_API",
 			"type": "LinkedServiceReference",
 			"parameters": {
-				"P_name": "https://archive-api.open-meteo.com/v1/archive?latitude=52.52&longitude=13.41&start_date=2022-01-01&end_date=2022-01-01&hourly=temperature_2m"
+				"P_name": "https://dummyjson.com/users?limit=10&skip=0"
 			}
 		},
 		"annotations": [],
