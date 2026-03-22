@@ -20,7 +20,7 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"Container": "input",
-							"Folder": "Folder_emp"
+							"Folder": "sales"
 						}
 					},
 					"fieldList": [
@@ -29,6 +29,7 @@
 					],
 					"storeSettings": {
 						"type": "AzureBlobStorageReadSettings",
+						"recursive": true,
 						"enablePartitionDiscovery": false
 					},
 					"formatSettings": {
@@ -72,7 +73,7 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"Container": "input",
-										"Folder": "Folder_emp",
+										"Folder": "sales",
 										"File": {
 											"value": "@activity('ChildItems').output.itemName",
 											"type": "Expression"
@@ -84,6 +85,7 @@
 								],
 								"storeSettings": {
 									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
 									"enablePartitionDiscovery": false
 								},
 								"formatSettings": {
