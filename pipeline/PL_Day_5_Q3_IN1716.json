@@ -23,7 +23,7 @@
 						"requestInterval": "00.00:00:00.010",
 						"requestMethod": "GET",
 						"paginationRules": {
-							"QueryParameters.limit": "RANGE:1:10:1",
+							"QueryParameters.lmit": "RANGE:1:10:1",
 							"EndCondition:$.users[0]": "NonExist"
 						}
 					},
@@ -146,7 +146,8 @@
 									"type": "String"
 								}
 							}
-						]
+						],
+						"collectionReference": "$['users']"
 					}
 				},
 				"inputs": [
