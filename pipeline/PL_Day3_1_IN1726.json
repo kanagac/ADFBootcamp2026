@@ -1,5 +1,5 @@
 {
-	"name": "PS_Day3_1_IN1726",
+	"name": "PL_Day3_1_IN1726",
 	"properties": {
 		"activities": [
 			{
@@ -17,12 +17,7 @@
 				"typeProperties": {
 					"dataset": {
 						"referenceName": "DelimitedText1",
-						"type": "DatasetReference",
-						"parameters": {
-							"filename": " ",
-							"container": "input",
-							"folder": "latest"
-						}
+						"type": "DatasetReference"
 					},
 					"fieldList": [
 						"childItems"
@@ -71,15 +66,7 @@
 							"typeProperties": {
 								"dataset": {
 									"referenceName": "DelimitedText1",
-									"type": "DatasetReference",
-									"parameters": {
-										"filename": {
-											"value": "@item().name",
-											"type": "Expression"
-										},
-										"container": "input",
-										"folder": "latest"
-									}
+									"type": "DatasetReference"
 								},
 								"fieldList": [
 									"lastModified",
@@ -208,29 +195,13 @@
 				"inputs": [
 					{
 						"referenceName": "DelimitedText1",
-						"type": "DatasetReference",
-						"parameters": {
-							"filename": {
-								"value": "@variables('latestfilename')",
-								"type": "Expression"
-							},
-							"container": "input",
-							"folder": "latest"
-						}
+						"type": "DatasetReference"
 					}
 				],
 				"outputs": [
 					{
 						"referenceName": "DelimitedText1",
-						"type": "DatasetReference",
-						"parameters": {
-							"filename": {
-								"value": "@variables('latestfilename')",
-								"type": "Expression"
-							},
-							"container": "output",
-							"folder": "IN1726"
-						}
+						"type": "DatasetReference"
 					}
 				]
 			}
@@ -244,7 +215,7 @@
 			}
 		},
 		"folder": {
-			"name": "PS_Day3_Exercise_IN1726"
+			"name": "PL_Day3_Exercise_IN1726"
 		},
 		"annotations": []
 	}
