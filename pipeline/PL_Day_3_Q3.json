@@ -1,5 +1,5 @@
 {
-	"name": "PL_Day_3_Q2",
+	"name": "PL_Day_3_Q3",
 	"properties": {
 		"activities": [
 			{
@@ -29,6 +29,7 @@
 					],
 					"storeSettings": {
 						"type": "AzureBlobStorageReadSettings",
+						"recursive": true,
 						"enablePartitionDiscovery": false
 					},
 					"formatSettings": {
