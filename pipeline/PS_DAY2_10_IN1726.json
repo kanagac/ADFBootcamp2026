@@ -28,10 +28,7 @@
 					},
 					"dataset": {
 						"referenceName": "DelimitedText1",
-						"type": "DatasetReference",
-						"parameters": {
-							"c_name": " "
-						}
+						"type": "DatasetReference"
 					},
 					"firstRowOnly": false
 				}
@@ -80,10 +77,7 @@
 								},
 								"dataset": {
 									"referenceName": "DelimitedText1",
-									"type": "DatasetReference",
-									"parameters": {
-										"c_name": " "
-									}
+									"type": "DatasetReference"
 								}
 							}
 						}
@@ -97,7 +91,7 @@
 			}
 		},
 		"folder": {
-			"name": "PS_Day2_Exercise_IN1726"
+			"name": "PL_Day2_Exercise_IN1726"
 		},
 		"annotations": []
 	}

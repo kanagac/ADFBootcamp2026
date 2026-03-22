@@ -56,16 +56,14 @@
 				"typeProperties": {
 					"dataset": {
 						"referenceName": "DelimitedText1",
-						"type": "DatasetReference",
-						"parameters": {
-							"c_name": " "
-						}
+						"type": "DatasetReference"
 					},
 					"fieldList": [
 						"childItems"
 					],
 					"storeSettings": {
 						"type": "AzureBlobStorageReadSettings",
+						"recursive": true,
 						"enablePartitionDiscovery": false
 					},
 					"formatSettings": {
@@ -122,7 +120,7 @@
 			}
 		},
 		"folder": {
-			"name": "PS_Day2_Exercise_IN1726"
+			"name": "PL_Day2_Exercise_IN1726"
 		},
 		"annotations": []
 	}

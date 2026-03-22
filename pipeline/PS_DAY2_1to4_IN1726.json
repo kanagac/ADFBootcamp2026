@@ -47,12 +47,7 @@
 							"typeProperties": {
 								"dataset": {
 									"referenceName": "DelimitedText1",
-									"type": "DatasetReference",
-									"parameters": {
-										"filename": " ",
-										"container": "DelimeterText1",
-										"folder": "sample-test"
-									}
+									"type": "DatasetReference"
 								},
 								"fieldList": [
 									"childItems"
@@ -115,15 +110,7 @@
 							"typeProperties": {
 								"dataset": {
 									"referenceName": "DelimitedText1",
-									"type": "DatasetReference",
-									"parameters": {
-										"filename": {
-											"value": "@activity('Get_child_items').output.childItems[0].name",
-											"type": "Expression"
-										},
-										"container": "DelimeterText1",
-										"folder": "sample-test"
-									}
+									"type": "DatasetReference"
 								},
 								"fieldList": [
 									"itemName",
@@ -198,12 +185,7 @@
 								},
 								"dataset": {
 									"referenceName": "DelimitedText1",
-									"type": "DatasetReference",
-									"parameters": {
-										"filename": "  ",
-										"container": "DelimeterText1",
-										"folder": "sample-test"
-									}
+									"type": "DatasetReference"
 								},
 								"firstRowOnly": false
 							}
@@ -226,12 +208,7 @@
 				"typeProperties": {
 					"dataset": {
 						"referenceName": "DelimitedText1",
-						"type": "DatasetReference",
-						"parameters": {
-							"filename": " ",
-							"container": "DelimeterText1",
-							"folder": "sample-test"
-						}
+						"type": "DatasetReference"
 					},
 					"fieldList": [
 						"exists"
@@ -253,7 +230,7 @@
 			}
 		},
 		"folder": {
-			"name": "PS_Day2_Exercise_IN1726"
+			"name": "PL_Day2_Exercise_IN1726"
 		},
 		"annotations": []
 	}
