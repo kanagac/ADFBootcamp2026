@@ -1,5 +1,5 @@
 {
-	"name": "PL_DAY5_Exercise_5",
+	"name": "PL_DAY5_Exercise_IN1725_5",
 	"properties": {
 		"activities": [
 			{
@@ -29,6 +29,7 @@
 					],
 					"storeSettings": {
 						"type": "AzureBlobStorageReadSettings",
+						"recursive": true,
 						"enablePartitionDiscovery": false
 					},
 					"formatSettings": {
@@ -221,6 +222,7 @@
 								],
 								"storeSettings": {
 									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
 									"enablePartitionDiscovery": false
 								},
 								"formatSettings": {
