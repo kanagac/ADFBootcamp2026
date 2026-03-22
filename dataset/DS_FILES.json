@@ -1,5 +1,5 @@
 {
-	"name": "DelimitedText1",
+	"name": "DS_FILES",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "LS_AZURE_STORAGE",
