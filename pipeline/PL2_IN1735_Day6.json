@@ -16,20 +16,20 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "DF_SCD2",
+						"referenceName": "DF_SCD_Type2",
 						"type": "DataFlowReference",
 						"datasetParameters": {
 							"CustomerSource": {
 								"tablename": "Customer_Source_IN1735"
 							},
 							"CustomerTarget": {
-								"tablename": "Customer_SCD2_target_IN1716"
+								"tablename": "Customer_target_SCD2_IN1735"
 							},
 							"sink1": {
-								"tablename": "Customer_SCD2_target_IN1716"
+								"tablename": "Customer_target_SCD2_IN1735"
 							},
 							"sink2": {
-								"tablename": "Customer_SCD2_target_IN1716"
+								"tablename": "Customer_target_SCD2_IN1735"
 							}
 						}
 					},

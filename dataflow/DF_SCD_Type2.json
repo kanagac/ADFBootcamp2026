@@ -1,5 +1,5 @@
 {
-	"name": "DF_SCD2",
+	"name": "DF_SCD_Type2",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
@@ -37,28 +37,19 @@
 			],
 			"transformations": [
 				{
-					"name": "derivedColumn"
-				},
-				{
-					"name": "select1"
-				},
-				{
 					"name": "lookup1"
 				},
 				{
-					"name": "ExistingRecords"
-				},
-				{
-					"name": "select2"
+					"name": "split1"
 				},
 				{
 					"name": "derivedColumn1"
 				},
 				{
-					"name": "alterRow1"
+					"name": "derivedColumn2"
 				},
 				{
-					"name": "filter1"
+					"name": "alterRow1"
 				}
 			],
 			"scriptLines": [
@@ -84,42 +75,20 @@
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
 				"     format: 'table') ~> CustomerTarget",
-				"CustomerSource derive(StartDate = currentTimestamp(),",
-				"          EndDate = toTimestamp(null()),",
-				"          IsCurrent = 1) ~> derivedColumn",
-				"filter1 select(mapColumn(",
-				"          SQL_CustomerSK = CustomerSK,",
-				"          SQL_CustomerID = CustomerID,",
-				"          SQL_Name = Name,",
-				"          SQL_City = City,",
-				"          SQL_StartDate = StartDate,",
-				"          SQL_EndDate = EndDate,",
-				"          SQL_IsCurrent = IsCurrent",
-				"     ),",
-				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> select1",
-				"CustomerSource, select1 lookup(CustomerID == SQL_CustomerID",
-				"     && ERROR_FUNCTION('') == ERROR_FUNCTION(''),",
+				"CustomerSource, CustomerTarget lookup(CustomerSource@CustomerID == CustomerTarget@CustomerID,",
 				"     multiple: false,",
 				"     pickup: 'any',",
 				"     broadcast: 'auto')~> lookup1",
-				"lookup1 filter(!isNull(SQL_CustomerID)) ~> ExistingRecords",
-				"ExistingRecords select(mapColumn(",
-				"          SQL_CustomerSK,",
-				"          SQL_CustomerID,",
-				"          SQL_Name,",
-				"          SQL_City,",
-				"          SQL_StartDate,",
-				"          SQL_EndDate,",
-				"          SQL_IsCurrent",
-				"     ),",
-				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> select2",
-				"select2 derive(SQL_EndDate = currentTimestamp(),",
-				"          SQL_IsCurrent = 0) ~> derivedColumn1",
-				"derivedColumn1 alterRow(insertIf(1 == 1)) ~> alterRow1",
-				"CustomerTarget filter(IsCurrent == true()) ~> filter1",
-				"derivedColumn sink(allowSchemaDrift: true,",
+				"lookup1 split(isNull(CustomerTarget@CustomerID),",
+				"     !isNull(CustomerTarget@CustomerID) &&\r",
+				"CustomerSource@City != CustomerTarget@City,",
+				"     disjoint: false) ~> split1@(NewCustomers, ChangedCustomers)",
+				"split1@NewCustomers derive(StartDate = currentTimestamp(),",
+				"          IsCurrent = 1) ~> derivedColumn1",
+				"split1@ChangedCustomers derive(EndDate = currentTimestamp(),",
+				"          IsCurrent = 0) ~> derivedColumn2",
+				"derivedColumn2 alterRow(updateIf(1 == 1)) ~> alterRow1",
+				"derivedColumn1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
 				"     insertable:true,",
@@ -131,9 +100,9 @@
 				"     saveOrder: 2,",
 				"     errorHandlingOption: 'stopOnFirstError',",
 				"     mapColumn(",
-				"          CustomerID,",
-				"          Name,",
-				"          City,",
+				"          CustomerID = split1@NewCustomers@CustomerID,",
+				"          Name = split1@NewCustomers@Name,",
+				"          City = split1@NewCustomers@City,",
 				"          StartDate,",
 				"          EndDate,",
 				"          IsCurrent",
@@ -141,15 +110,24 @@
 				"alterRow1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
-				"     insertable:true,",
+				"     insertable:false,",
 				"     updateable:true,",
 				"     upsertable:false,",
-				"     keys:['SQL_CustomerSK'],",
+				"     keys:['CustomerSK'],",
 				"     format: 'table',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
 				"     saveOrder: 1,",
-				"     errorHandlingOption: 'stopOnFirstError') ~> sink2"
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          CustomerSK,",
+				"          CustomerID = split1@ChangedCustomers@CustomerID,",
+				"          Name = split1@ChangedCustomers@Name,",
+				"          City = split1@ChangedCustomers@City,",
+				"          StartDate,",
+				"          EndDate,",
+				"          IsCurrent",
+				"     )) ~> sink2"
 			]
 		}
 	}
