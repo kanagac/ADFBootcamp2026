@@ -53,12 +53,12 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "DS_CSV_FILES",
+						"referenceName": "DS_FILES",
 						"type": "DatasetReference",
 						"parameters": {
 							"container": "output",
 							"directory": "IN1716",
-							"filename": "@concat('tgt_salestransactions_1716_', formatDateTime(utcNow(),'yyyy-MM-dd'), '.csv')"
+							"file": "@concat('tgt_salestransactions_1716_', formatDateTime(utcNow(),'yyyy-MM-dd'), '.csv')"
 						}
 					}
 				]
