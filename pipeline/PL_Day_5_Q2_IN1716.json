@@ -1,6 +1,106 @@
 {
 	"name": "PL_Day_5_Q2_IN1716",
 	"properties": {
+		"description": "Moving API data to ADLS container",
+		"activities": [
+			{
+				"name": "SET_Last_5",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "v_dates",
+					"value": {
+						"value": "@createArray(\n  formatDateTime(addDays(utcNow(),-5),'yyyy-MM-dd'),\n  formatDateTime(addDays(utcNow(),-4),'yyyy-MM-dd'),\n  formatDateTime(addDays(utcNow(),-3),'yyyy-MM-dd'),\n  formatDateTime(addDays(utcNow(),-2),'yyyy-MM-dd'),\n  formatDateTime(addDays(utcNow(),-1),'yyyy-MM-dd')\n)",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "FE_Weather",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "SET_Last_5",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@variables('v_dates')",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "CP_API_SQL",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "BinarySource",
+									"storeSettings": {
+										"type": "HttpReadSettings",
+										"requestMethod": "GET"
+									},
+									"formatSettings": {
+										"type": "BinaryReadSettings"
+									}
+								},
+								"sink": {
+									"type": "BinarySink",
+									"storeSettings": {
+										"type": "AzureBlobStorageWriteSettings"
+									}
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "DS_REST_BINARY",
+									"type": "DatasetReference",
+									"parameters": {
+										"URL": "@concat('https://archive-api.open-meteo.com/v1/archive?latitude=52.52&longitude=13.41&start_date=',item(),'&end_date=',item(),'&hourly=temperature_2m')"
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "DS_ADLS_BINARY",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": "output",
+										"directory": "@concat('weather/', item())",
+										"filename": "data.json"
+									}
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"variables": {
+			"v_dates": {
+				"type": "Array",
+				"defaultValue": []
+			}
+		},
 		"folder": {
 			"name": "PL_Day_5_In1716"
 		},

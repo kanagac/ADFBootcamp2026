@@ -1,0 +1,30 @@
+{
+	"name": "DS_REST_BINARY",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "HttpServer1",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"p_url": {
+					"value": "@dataset().URL",
+					"type": "Expression"
+				}
+			}
+		},
+		"parameters": {
+			"URL": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "Day_5"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "HttpServerLocation"
+			}
+		}
+	}
+}
