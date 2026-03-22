@@ -1,0 +1,17 @@
+{
+	"name": "binary",
+	"properties": {
+		"parameters": {
+			"bin_URL": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "RestService",
+		"typeProperties": {
+			"url": "@{linkedService().p_url}",
+			"enableServerCertificateValidation": true,
+			"authenticationType": "Anonymous"
+		}
+	}
+}
