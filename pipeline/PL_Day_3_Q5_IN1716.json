@@ -16,6 +16,16 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
+					"source": {
+						"type": "BinarySource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": true
+						},
+						"formatSettings": {
+							"type": "BinaryReadSettings"
+						}
+					},
 					"sink": {
 						"type": "BinarySink",
 						"storeSettings": {
@@ -24,6 +34,16 @@
 					},
 					"enableStaging": false
 				},
+				"inputs": [
+					{
+						"referenceName": "DS_BINARY",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": "input",
+							"directory": "data"
+						}
+					}
+				],
 				"outputs": [
 					{
 						"referenceName": "DS_BINARY",
