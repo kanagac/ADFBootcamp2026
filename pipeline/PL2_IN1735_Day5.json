@@ -128,7 +128,10 @@
 							"userProperties": [],
 							"typeProperties": {
 								"variableName": "datesArray",
-								"value": "@string(addDays(utcnow(), -sub(pipeline().parameters.days, sub(length(variables('datesArray')), -1))))\n``"
+								"value": {
+									"value": "@string(addDays(utcnow(), -sub(pipeline().parameters.days, sub(length(variables('datesArray')), -1))))\n``",
+									"type": "Expression"
+								}
 							}
 						}
 					],
@@ -216,7 +219,8 @@
 		},
 		"variables": {
 			"datesArray": {
-				"type": "Array"
+				"type": "Array",
+				"defaultValue": []
 			}
 		},
 		"folder": {
