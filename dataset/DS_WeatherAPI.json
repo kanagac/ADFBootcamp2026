@@ -3,7 +3,10 @@
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "LS_Day5",
-			"type": "LinkedServiceReference"
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"BaseURL": "https://dummyjson.com/users?limit=10&skip={skip}"
+			}
 		},
 		"annotations": [],
 		"type": "RestResource",
