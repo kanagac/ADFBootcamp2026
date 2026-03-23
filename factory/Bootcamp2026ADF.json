@@ -1,5 +1,13 @@
 {
 	"name": "Bootcamp2026ADF",
+	"properties": {
+		"globalParameters": {
+			"R_APAC": {
+				"type": "string",
+				"value": "APAC"
+			}
+		}
+	},
 	"location": "eastus",
 	"identity": {
 		"type": "SystemAssigned",
