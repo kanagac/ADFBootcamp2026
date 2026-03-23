@@ -5,7 +5,15 @@
 			"referenceName": "LS_AZURE_API",
 			"type": "LinkedServiceReference",
 			"parameters": {
-				"URL": "https://jsonplaceholder.typicode.com/users"
+				"URL": {
+					"value": "@dataset().base_url",
+					"type": "Expression"
+				}
+			}
+		},
+		"parameters": {
+			"base_url": {
+				"type": "string"
 			}
 		},
 		"annotations": [],

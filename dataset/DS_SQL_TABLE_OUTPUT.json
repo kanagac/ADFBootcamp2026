@@ -10,7 +10,7 @@
 		"schema": [],
 		"typeProperties": {
 			"schema": "dbo",
-			"table": "Customer_SCD2_Target_IN1727"
+			"table": "tgt_api_paginated_IN1727"
 		}
 	}
 }
