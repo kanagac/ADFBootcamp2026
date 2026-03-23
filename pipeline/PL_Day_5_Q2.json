@@ -74,8 +74,8 @@
 									"referenceName": "DS_HTTP_BINARY",
 									"type": "DatasetReference",
 									"parameters": {
-										"relativeUrl": {
-											"value": "@concat(\n'/v1/archive?...',\nformatDateTime(addDays(utcNow(), sub(0,item())), 'yyyy-MM-dd')\n)",
+										"baseUrl": {
+											"value": "@concat(\n'https://archive-api.open-meteo.com/v1/archive?latitude=52.52&longitude=13.41&start_date=',formatDateTime(addDays(utcNow(), sub(0,item())), 'yyyy-MM-dd'),'&end_date=',formatDateTime(addDays(utcNow(), sub(0,item())), 'yyyy-MM-dd'),'&hourly=temperature_2m'\n)",
 											"type": "Expression"
 										}
 									}
@@ -109,9 +109,6 @@
 		"variables": {
 			"dateArray": {
 				"type": "Array"
-			},
-			"currentDate": {
-				"type": "String"
 			}
 		},
 		"folder": {
