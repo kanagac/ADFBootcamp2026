@@ -9,6 +9,10 @@
 			"R_EMEA": {
 				"type": "string",
 				"value": "EMEA"
+			},
+			"R_AMER": {
+				"type": "string",
+				"value": "AMER"
 			}
 		}
 	},
