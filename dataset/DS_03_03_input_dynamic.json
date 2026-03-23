@@ -1,0 +1,27 @@
+{
+	"name": "DS_03_03_input_dynamic",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AZURE_STORAGE",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"p_FileName": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": {
+					"value": "@dataset().p_FileName",
+					"type": "Expression"
+				},
+				"folderPath": "mixedfiles",
+				"container": "input"
+			}
+		}
+	}
+}

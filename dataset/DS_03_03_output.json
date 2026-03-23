@@ -1,0 +1,33 @@
+{
+	"name": "DS_03_03_output",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AZURE_STORAGE",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"p_FileName": {
+				"type": "string"
+			},
+			"p_FilePath": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": {
+					"value": "@dataset().p_FileName",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@dataset().p_FilePath",
+					"type": "Expression"
+				},
+				"container": "output"
+			}
+		}
+	}
+}
