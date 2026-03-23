@@ -85,7 +85,10 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"container": "output",
-										"directory": "@concat('weather/', item())",
+										"directory": {
+											"value": "@concat('weather/IN1716', item())",
+											"type": "Expression"
+										},
 										"filename": "data.json"
 									}
 								}
