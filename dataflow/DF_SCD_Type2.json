@@ -33,6 +33,13 @@
 						"type": "DatasetReference"
 					},
 					"name": "sink2"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "sink3"
 				}
 			],
 			"transformations": [
@@ -50,6 +57,9 @@
 				},
 				{
 					"name": "alterRow1"
+				},
+				{
+					"name": "derivedColumn3"
 				}
 			],
 			"scriptLines": [
@@ -87,7 +97,9 @@
 				"          IsCurrent = 1) ~> derivedColumn1",
 				"split1@ChangedCustomers derive(EndDate = currentTimestamp(),",
 				"          IsCurrent = 0) ~> derivedColumn2",
-				"derivedColumn2 alterRow(updateIf(1 == 1)) ~> alterRow1",
+				"derivedColumn2 alterRow(updateIf(1==1)) ~> alterRow1",
+				"split1@ChangedCustomers derive(StartDate = currentTimestamp(),",
+				"          IsCurrent = 1) ~> derivedColumn3",
 				"derivedColumn1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
@@ -127,7 +139,17 @@
 				"          StartDate,",
 				"          EndDate,",
 				"          IsCurrent",
-				"     )) ~> sink2"
+				"     )) ~> sink2",
+				"derivedColumn3 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink3"
 			]
 		}
 	}

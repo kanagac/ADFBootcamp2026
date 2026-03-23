@@ -139,15 +139,40 @@
 				}
 			},
 			{
+				"name": "Set variable1",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "datesArray",
+					"value": {
+						"value": "@range(0,pipeline().parameters.days)",
+						"type": "Expression"
+					}
+				}
+			},
+			{
 				"name": "ForEach2",
 				"type": "ForEach",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Set variable1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@range(0,add(pipeline().parameters.days,1))",
+						"value": "@variables('datesArray')",
 						"type": "Expression"
 					},
+					"isSequential": true,
 					"activities": [
 						{
 							"name": "Copy data2",
@@ -185,10 +210,7 @@
 									"referenceName": "DS_HTTP_Binary",
 									"type": "DatasetReference",
 									"parameters": {
-										"relative": {
-											"value": "/v1/archive?latitude=52.52&longitude=13.41&start_date=@{string(addDays(utcnow(), sub(0,item())))}&end_date=@{string(addDays(utcnow(), sub(0,item())))}&hourly=temperature_2m",
-											"type": "Expression"
-										}
+										"relative": "@concat( '/v1/archive?...', formatDateTime(addDays(utcNow(), sub(0,item())), 'yyyy-MM-dd') )"
 									}
 								}
 							],
@@ -199,7 +221,7 @@
 									"parameters": {
 										"Container": "output",
 										"Directory": {
-											"value": "@weather/'IN1735-'+ {string(addDays(utcnow(), -item()))}",
+											"value": "@concat(\n'IN1735/weather/',\nformatDateTime(addDays(utcNow(), sub(0,item())), 'yyyy-MM-dd')\n)",
 											"type": "Expression"
 										},
 										"Filename": "data.json"
@@ -219,8 +241,10 @@
 		},
 		"variables": {
 			"datesArray": {
-				"type": "Array",
-				"defaultValue": []
+				"type": "Array"
+			},
+			"currentDate": {
+				"type": "String"
 			}
 		},
 		"folder": {

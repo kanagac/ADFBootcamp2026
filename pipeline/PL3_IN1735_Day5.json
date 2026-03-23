@@ -5,6 +5,8 @@
 			{
 				"name": "Web1",
 				"type": "WebActivity",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -22,6 +24,8 @@
 			{
 				"name": "total",
 				"type": "SetVariable",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Web1",
@@ -36,7 +40,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "totalRecords",
+					"variableName": "skip",
 					"value": {
 						"value": "@activity('Web1').output.total",
 						"type": "Expression"
@@ -46,6 +50,8 @@
 			{
 				"name": "records",
 				"type": "SetVariable",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "total",
@@ -60,13 +66,15 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "limit",
-					"value": "10"
+					"variableName": "hasRecords",
+					"value": 10
 				}
 			},
 			{
 				"name": "iteration",
 				"type": "SetVariable",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "records",
@@ -91,6 +99,8 @@
 			{
 				"name": "ForEach1",
 				"type": "ForEach",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "iteration",
@@ -237,61 +247,246 @@
 				}
 			},
 			{
-				"name": "Copy data2",
-				"type": "Copy",
+				"name": "Until1",
+				"type": "Until",
 				"dependsOn": [],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
 				"userProperties": [],
 				"typeProperties": {
-					"source": {
-						"type": "RestSource",
-						"httpRequestTimeout": "00:01:40",
-						"requestInterval": "00.00:00:00.010",
-						"requestMethod": "GET",
-						"paginationRules": {
-							"QueryParameters": ""
-						}
+					"expression": {
+						"value": "@equals(variables('hasRecords'),false)",
+						"type": "Expression"
 					},
-					"sink": {
-						"type": "AzureSqlSink",
-						"writeBehavior": "insert",
-						"sqlWriterUseTableLock": false
-					},
-					"enableStaging": false
-				},
-				"inputs": [
-					{
-						"referenceName": "DS_REST_Param",
-						"type": "DatasetReference",
-						"parameters": {
-							"limit": "10",
-							"skip": "1"
+					"activities": [
+						{
+							"name": "Web2",
+							"type": "WebActivity",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"method": "GET",
+								"url": {
+									"value": "@concat('https://dummyjson.com/users?limit=10&skip=',variables('skip'))",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "If Condition1",
+							"type": "IfCondition",
+							"dependsOn": [
+								{
+									"activity": "Web2",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@greater(length(activity('Web2').output.users),0)",
+									"type": "Expression"
+								},
+								"ifFalseActivities": [
+									{
+										"name": "Set variable1",
+										"type": "SetVariable",
+										"dependsOn": [],
+										"policy": {
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"variableName": "hasRecords",
+											"value": "false"
+										}
+									}
+								],
+								"ifTrueActivities": [
+									{
+										"name": "Copy data2",
+										"type": "Copy",
+										"dependsOn": [],
+										"policy": {
+											"timeout": "0.12:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"source": {
+												"type": "RestSource",
+												"httpRequestTimeout": "00:01:40",
+												"requestInterval": "00.00:00:00.010",
+												"requestMethod": "GET",
+												"paginationRules": {
+													"supportRFC5988": "true"
+												}
+											},
+											"sink": {
+												"type": "AzureSqlSink",
+												"writeBehavior": "insert",
+												"sqlWriterUseTableLock": false,
+												"tableOption": "autoCreate",
+												"disableMetricsCollection": false
+											},
+											"enableStaging": false,
+											"translator": {
+												"type": "TabularTranslator",
+												"mappings": [
+													{
+														"source": {
+															"path": "$['id']"
+														},
+														"sink": {
+															"name": "id",
+															"type": "Int64"
+														}
+													},
+													{
+														"source": {
+															"path": "$['name']"
+														},
+														"sink": {
+															"name": "name",
+															"type": "String"
+														}
+													},
+													{
+														"source": {
+															"path": "$['username']"
+														},
+														"sink": {
+															"name": "username",
+															"type": "String"
+														}
+													},
+													{
+														"source": {
+															"path": "$['email']"
+														},
+														"sink": {
+															"name": "email",
+															"type": "String"
+														}
+													},
+													{
+														"source": {
+															"path": "$['address']['street']"
+														}
+													},
+													{
+														"source": {
+															"path": "$['address']['suite']"
+														}
+													},
+													{
+														"source": {
+															"path": "$['address']['city']"
+														}
+													},
+													{
+														"source": {
+															"path": "$['address']['zipcode']"
+														}
+													},
+													{
+														"source": {
+															"path": "$['address']['geo']['lat']"
+														}
+													},
+													{
+														"source": {
+															"path": "$['address']['geo']['lng']"
+														}
+													},
+													{
+														"source": {
+															"path": "$['phone']"
+														},
+														"sink": {
+															"name": "phone",
+															"type": "String"
+														}
+													},
+													{
+														"source": {
+															"path": "$['website']"
+														},
+														"sink": {
+															"name": "website",
+															"type": "String"
+														}
+													},
+													{
+														"source": {
+															"path": "$['company']['name']"
+														},
+														"sink": {
+															"name": "name",
+															"type": "String"
+														}
+													},
+													{
+														"source": {
+															"path": "$['company']['catchPhrase']"
+														}
+													},
+													{
+														"source": {
+															"path": "$['company']['bs']"
+														}
+													}
+												],
+												"collectionReference": "$['users']"
+											}
+										},
+										"inputs": [
+											{
+												"referenceName": "DS_REST",
+												"type": "DatasetReference",
+												"parameters": {
+													"url": {
+														"value": "@concat(\n    'https://dummyjson.com/users?limit=10&skip=',\n    variables('skip')\n)",
+														"type": "Expression"
+													}
+												}
+											}
+										],
+										"outputs": [
+											{
+												"referenceName": "DS_SQL_TABLE",
+												"type": "DatasetReference",
+												"parameters": {
+													"tablename": "tgt_api_paginated_IN1735"
+												}
+											}
+										]
+									}
+								]
+							}
 						}
-					}
-				],
-				"outputs": [
-					{
-						"referenceName": "DS_SQL_TABLE",
-						"type": "DatasetReference"
-					}
-				]
+					],
+					"timeout": "0.12:00:00"
+				}
 			}
 		],
 		"variables": {
-			"totalRecords": {
-				"type": "String"
+			"skip": {
+				"type": "Integer"
 			},
-			"limit": {
-				"type": "String"
-			},
-			"iterations": {
-				"type": "String"
+			"hasRecords": {
+				"type": "Integer"
 			}
 		},
 		"folder": {
