@@ -5,6 +5,10 @@
 			"Region": {
 				"type": "string",
 				"value": " EMEA"
+			},
+			"Region1": {
+				"type": "string",
+				"value": "EMEA"
 			}
 		}
 	},
