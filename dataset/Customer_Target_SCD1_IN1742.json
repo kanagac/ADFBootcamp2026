@@ -1,0 +1,16 @@
+{
+	"name": "Customer_Target_SCD1_IN1742",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_SQL_COMMON",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "Customer_Target_SCD1_IN1742"
+		}
+	}
+}
