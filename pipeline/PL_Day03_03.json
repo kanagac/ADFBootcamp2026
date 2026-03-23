@@ -17,7 +17,10 @@
 				"typeProperties": {
 					"dataset": {
 						"referenceName": "DS_Day03_03_input",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"p_file_name": "file_name"
+						}
 					},
 					"fieldList": [
 						"childItems"
@@ -34,6 +37,8 @@
 			{
 				"name": "ForEach_03_03",
 				"type": "ForEach",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Get Metadata Child items 03_03",
