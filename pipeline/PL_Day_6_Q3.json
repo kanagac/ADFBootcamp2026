@@ -1,0 +1,208 @@
+{
+	"name": "PL_Day_6_Q3",
+	"properties": {
+		"activities": [
+			{
+				"name": "Switch1",
+				"type": "Switch",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"on": {
+						"value": "@pipeline().globalParameters.region",
+						"type": "Expression"
+					},
+					"cases": [
+						{
+							"value": "APAC",
+							"activities": [
+								{
+									"name": "Copy data1",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "AzureSqlSource",
+											"sqlReaderQuery": {
+												"value": "SELECT * FROM ORDERS_IN1727 \nWHERE CustomerID LIKE 'A%'",
+												"type": "Expression"
+											},
+											"queryTimeout": "02:00:00",
+											"partitionOption": "None"
+										},
+										"sink": {
+											"type": "AzureSqlSink",
+											"writeBehavior": "insert",
+											"sqlWriterUseTableLock": false
+										},
+										"enableStaging": false,
+										"translator": {
+											"type": "TabularTranslator",
+											"typeConversion": true,
+											"typeConversionSettings": {
+												"allowDataTruncation": true,
+												"treatBooleanAsNumber": false
+											}
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "DS_SQL_TABLE_INPUT",
+											"type": "DatasetReference",
+											"parameters": {
+												"table_name": "Orders_IN1727"
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "DS_SQL_TABLE_INPUT",
+											"type": "DatasetReference",
+											"parameters": {
+												"table_name": "Orders_APAC_IN1727"
+											}
+										}
+									]
+								}
+							]
+						},
+						{
+							"value": "EMEA",
+							"activities": [
+								{
+									"name": "Copy data2",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "AzureSqlSource",
+											"sqlReaderQuery": {
+												"value": "SELECT * FROM Orders_IN1727\nWHERE Amount > 2000",
+												"type": "Expression"
+											},
+											"queryTimeout": "02:00:00",
+											"partitionOption": "None"
+										},
+										"sink": {
+											"type": "AzureSqlSink",
+											"writeBehavior": "insert",
+											"sqlWriterUseTableLock": false
+										},
+										"enableStaging": false,
+										"translator": {
+											"type": "TabularTranslator",
+											"typeConversion": true,
+											"typeConversionSettings": {
+												"allowDataTruncation": true,
+												"treatBooleanAsNumber": false
+											}
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "DS_SQL_TABLE_INPUT",
+											"type": "DatasetReference",
+											"parameters": {
+												"table_name": "Orders_IN1727"
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "DS_SQL_TABLE_INPUT",
+											"type": "DatasetReference",
+											"parameters": {
+												"table_name": "Orders_EMEA_IN1727"
+											}
+										}
+									]
+								}
+							]
+						},
+						{
+							"value": "AMER",
+							"activities": [
+								{
+									"name": "Copy data3",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "AzureSqlSource",
+											"sqlReaderQuery": {
+												"value": "SELECT * FROM Customers_IN1727\nWHERE CustomerName LIKE '%Inc%'",
+												"type": "Expression"
+											},
+											"queryTimeout": "02:00:00",
+											"partitionOption": "None"
+										},
+										"sink": {
+											"type": "AzureSqlSink",
+											"writeBehavior": "insert",
+											"sqlWriterUseTableLock": false
+										},
+										"enableStaging": false,
+										"translator": {
+											"type": "TabularTranslator",
+											"typeConversion": true,
+											"typeConversionSettings": {
+												"allowDataTruncation": true,
+												"treatBooleanAsNumber": false
+											}
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "DS_SQL_TABLE_INPUT",
+											"type": "DatasetReference",
+											"parameters": {
+												"table_name": "Customers_IN1727"
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "DS_SQL_TABLE_INPUT",
+											"type": "DatasetReference",
+											"parameters": {
+												"table_name": "Customers_AMER_IN1727"
+											}
+										}
+									]
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"folder": {
+			"name": "Ps_Exercises_IN1727/Day_6_Exercise"
+		},
+		"annotations": []
+	}
+}
