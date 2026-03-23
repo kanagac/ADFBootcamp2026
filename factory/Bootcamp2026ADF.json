@@ -5,6 +5,10 @@
 			"Region": {
 				"type": "string",
 				"value": "APAC"
+			},
+			"Region_EMEA": {
+				"type": "string",
+				"value": "EMEA"
 			}
 		}
 	},
