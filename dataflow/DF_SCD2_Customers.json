@@ -19,7 +19,29 @@
 					"name": "CustomerTarget"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_SCD2_Customers_Target",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SCD2_Customers_Target",
+						"type": "DatasetReference"
+					},
+					"name": "sink2"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SCD2_Customers_Target",
+						"type": "DatasetReference"
+					},
+					"name": "sink3"
+				}
+			],
 			"transformations": [
 				{
 					"name": "JOIN"
@@ -29,6 +51,15 @@
 				},
 				{
 					"name": "alterRow1"
+				},
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "derivedColumn2"
+				},
+				{
+					"name": "derivedColumn3"
 				}
 			],
 			"scriptLines": [
@@ -61,8 +92,47 @@
 				"     broadcast: 'auto')~> JOIN",
 				"JOIN split(isNull(CustomerTarget@CustomerID),",
 				"     CustomerSource@CustomerID==CustomerTarget@CustomerID&&CustomerSource@City!=CustomerTarget@City&&IsCurrent == 1,",
-				"     disjoint: false) ~> split1@(insert, update)",
-				"split1@update alterRow() ~> alterRow1"
+				"     isNull(CustomerTarget@CustomerID),",
+				"     disjoint: false) ~> split1@(insert, update, insert2)",
+				"derivedColumn2 alterRow(updateIf(1==1)) ~> alterRow1",
+				"split1@insert derive(StartDate = currentDate(),",
+				"          EndDate = toDate(null()),",
+				"          IsCurrent = 1) ~> derivedColumn1",
+				"split1@update derive(EndDate = currentDate(),",
+				"          IsCurrent = 0) ~> derivedColumn2",
+				"split1@insert2 derive(StartDate = currentDate(),",
+				"          EndDate = toDate(null()),",
+				"          IsCurrent = 0) ~> derivedColumn3",
+				"derivedColumn1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink1",
+				"alterRow1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink2",
+				"derivedColumn3 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink3"
 			]
 		}
 	}
