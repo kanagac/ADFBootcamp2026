@@ -1,0 +1,43 @@
+{
+	"name": "PL_3Question",
+	"properties": {
+		"activities": [
+			{
+				"name": "Data flow1",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DF_3Question",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"OrdersSource": {
+								"P_Filename": "Orders.csv"
+							},
+							"source1": {
+								"P_Filename": "Customers.csv"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"folder": {
+			"name": "PL_Day4Excercise"
+		},
+		"annotations": []
+	}
+}
