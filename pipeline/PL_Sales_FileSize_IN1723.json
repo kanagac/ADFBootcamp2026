@@ -16,12 +16,10 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataset": {
-						"referenceName": "DelimitedText1",
+						"referenceName": "DS_Sales_FileSize",
 						"type": "DatasetReference",
 						"parameters": {
-							"container": "input",
-							"folder": "sales",
-							"file": " "
+							"P_file": " "
 						}
 					},
 					"fieldList": [
@@ -68,12 +66,10 @@
 							"userProperties": [],
 							"typeProperties": {
 								"dataset": {
-									"referenceName": "DelimitedText1",
+									"referenceName": "DS_Sales_FileSize",
 									"type": "DatasetReference",
 									"parameters": {
-										"container": "input",
-										"folder": "sales",
-										"file": {
+										"P_file": {
 											"value": "@item().name",
 											"type": "Expression"
 										}
@@ -154,15 +150,7 @@
 										"inputs": [
 											{
 												"referenceName": "DelimitedText1",
-												"type": "DatasetReference",
-												"parameters": {
-													"container": "input",
-													"folder": "sales",
-													"file": {
-														"value": "@activity('Get Metadata2').output.itemName",
-														"type": "Expression"
-													}
-												}
+												"type": "DatasetReference"
 											}
 										],
 										"outputs": [
