@@ -13,7 +13,7 @@
 				},
 				{
 					"dataset": {
-						"referenceName": "DS_Customer_Target",
+						"referenceName": "DS_Customer_Target_SCD1",
 						"type": "DatasetReference"
 					},
 					"name": "CustomerTarget"
@@ -21,17 +21,9 @@
 			],
 			"sinks": [
 				{
-					"dataset": {
-						"referenceName": "DS_Customer_Target",
-						"type": "DatasetReference"
-					},
 					"name": "SinkInsertCustomer"
 				},
 				{
-					"dataset": {
-						"referenceName": "DS_Customer_Target",
-						"type": "DatasetReference"
-					},
 					"name": "SinkUpdateCustomer"
 				}
 			],
@@ -75,35 +67,14 @@
 				"ConditionalSplit@ExistingRecords alterRow(updateIf(true())) ~> ARUpdateCustomer",
 				"ConditionalSplit@NewRecords sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     input(",
-				"          CustomerID as integer,",
-				"          Name as string,",
-				"          City as string",
-				"     ),",
-				"     deletable:false,",
-				"     insertable:true,",
-				"     updateable:false,",
-				"     upsertable:false,",
-				"     format: 'table',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     errorHandlingOption: 'stopOnFirstError') ~> SinkInsertCustomer",
+				"     format: 'table') ~> SinkInsertCustomer",
 				"ARUpdateCustomer sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     input(",
-				"          CustomerID as integer,",
-				"          Name as string,",
-				"          City as string",
-				"     ),",
-				"     deletable:false,",
-				"     insertable:false,",
-				"     updateable:true,",
-				"     upsertable:false,",
-				"     keys:['CustomerID'],",
-				"     format: 'table',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     errorHandlingOption: 'stopOnFirstError') ~> SinkUpdateCustomer"
+				"     format: 'table') ~> SinkUpdateCustomer"
 			]
 		}
 	}
