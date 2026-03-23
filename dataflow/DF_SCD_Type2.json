@@ -149,7 +149,15 @@
 				"     format: 'table',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     errorHandlingOption: 'stopOnFirstError') ~> sink3"
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          CustomerID = split1@ChangedCustomers@CustomerID,",
+				"          Name = split1@ChangedCustomers@Name,",
+				"          City = split1@ChangedCustomers@City,",
+				"          StartDate,",
+				"          EndDate,",
+				"          IsCurrent",
+				"     )) ~> sink3"
 			]
 		}
 	}

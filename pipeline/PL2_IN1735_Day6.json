@@ -30,6 +30,9 @@
 							},
 							"sink2": {
 								"tablename": "Customer_target_SCD2_IN1735"
+							},
+							"sink3": {
+								"tablename": "Customer_target_SCD2_IN1735"
 							}
 						}
 					},
