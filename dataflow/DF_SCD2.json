@@ -53,9 +53,6 @@
 					"name": "derivedColumn2"
 				},
 				{
-					"name": "alterRow1"
-				},
-				{
 					"name": "split1"
 				},
 				{
@@ -69,9 +66,6 @@
 				},
 				{
 					"name": "derivedColumn4"
-				},
-				{
-					"name": "alterRow3"
 				}
 			],
 			"scriptLines": [
@@ -106,7 +100,6 @@
 				"split1@insertNew derive(StartDate = currentDate(),",
 				"          EndDate = toDate(null()),",
 				"          IsCurrent = 1) ~> derivedColumn2",
-				"derivedColumn2 alterRow(updateIf(true())) ~> alterRow1",
 				"join1 split(isNull(TargetCustomer@CustomerID),",
 				"     !isNull(TargetCustomer@CustomerID) && SourceCustomer@City != TargetCustomer@City,",
 				"     disjoint: false) ~> split1@(insertNew, update)",
@@ -119,8 +112,7 @@
 				"split2@newVersion derive(StartDate = currentDate(),",
 				"          EndDate = toDate(null()),",
 				"          IsCurrent = 1) ~> derivedColumn4",
-				"derivedColumn4 alterRow(insertIf(true())) ~> alterRow3",
-				"alterRow1 sink(allowSchemaDrift: true,",
+				"derivedColumn2 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
 				"     insertable:true,",
@@ -141,7 +133,7 @@
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
 				"     errorHandlingOption: 'stopOnFirstError') ~> sink3",
-				"alterRow3 sink(allowSchemaDrift: true,",
+				"derivedColumn4 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
 				"     insertable:true,",
