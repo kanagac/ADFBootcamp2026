@@ -1,0 +1,16 @@
+{
+	"name": "DS_Sink_AMER",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AZURE_SQL",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "Customers_AMER_IN1734"
+		}
+	}
+}
