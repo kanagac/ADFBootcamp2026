@@ -5,6 +5,10 @@
 			"R_APAC": {
 				"type": "string",
 				"value": "APAC"
+			},
+			"R_EMEA": {
+				"type": "string",
+				"value": "EMEA"
 			}
 		}
 	},
