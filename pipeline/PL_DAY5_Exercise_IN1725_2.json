@@ -1,0 +1,142 @@
+{
+	"name": "PL_DAY5_Exercise_IN1725_2",
+	"properties": {
+		"activities": [
+			{
+				"name": "Date",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "Dates",
+					"value": {
+						"value": "@createArray(\n    utcNow('yyyy-MM-dd'),\n    addDays(utcNow(), -1, 'yyyy-MM-dd'),\n    addDays(utcNow(), -2, 'yyyy-MM-dd'),\n    addDays(utcNow(), -3, 'yyyy-MM-dd'),\n    addDays(utcNow(), -4, 'yyyy-MM-dd')\n)",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Date",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@variables('Dates')",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "Copy data1",
+							"type": "Copy",
+							"state": "Inactive",
+							"onInactiveMarkAs": "Succeeded",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "RestSource",
+									"httpRequestTimeout": "00:01:40",
+									"requestInterval": "00.00:00:00.010",
+									"requestMethod": "GET",
+									"paginationRules": {
+										"supportRFC5988": "true"
+									}
+								},
+								"sink": {
+									"type": "JsonSink",
+									"storeSettings": {
+										"type": "AzureBlobStorageWriteSettings"
+									},
+									"formatSettings": {
+										"type": "JsonWriteSettings"
+									}
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "DS_WEB_API",
+									"type": "DatasetReference",
+									"parameters": {
+										"URL": {
+											"value": "https://archive-api.open-meteo.com/v1/archive",
+											"type": "Expression"
+										},
+										"RelativeURL": {
+											"value": "@concat('?latitude=52.52&longitude=13.41&start_date=',item(),'&end_date=',item(),'&hourly=temperature_2m')",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "DS_JSON",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": "output",
+										"directory": {
+											"value": "@concat('IN1725/weather/',item())",
+											"type": "Expression"
+										},
+										"filename": "data.json"
+									}
+								}
+							]
+						},
+						{
+							"name": "Web1",
+							"type": "WebActivity",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"method": "GET",
+								"url": {
+									"value": "@concat('https://archive-api.open-meteo.com/v1/archive?latitude=52.52&longitude=13.41&start_date=',item(), '&end_date=',item(),'&hourly=temperature_2m')",
+									"type": "Expression"
+								}
+							}
+						}
+					]
+				}
+			}
+		],
+		"variables": {
+			"Dates": {
+				"type": "Array",
+				"defaultValue": []
+			}
+		},
+		"folder": {
+			"name": "DAY 5 EXERCISE"
+		},
+		"annotations": []
+	}
+}
