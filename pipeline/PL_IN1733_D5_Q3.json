@@ -1,0 +1,137 @@
+{
+	"name": "PL_IN1733_D5_Q3",
+	"properties": {
+		"activities": [
+			{
+				"name": "Web1",
+				"type": "WebActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "GET",
+					"url": "https://dummyjson.com/users?limit=10&skip=0"
+				}
+			},
+			{
+				"name": "Set total",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Web1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "totalrecord",
+					"value": {
+						"value": "@activity('Web1').output.total",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set pagecount",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Set total",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "pagecount",
+					"value": {
+						"value": "@div(int(variables('totalrecord')),10)",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Loop pages",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Set pagecount",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@range(0, variables('pagecount'))",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "copy_users",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "RestSource",
+									"httpRequestTimeout": "00:01:40",
+									"requestInterval": "00.00:00:00.010",
+									"requestMethod": "GET",
+									"paginationRules": {
+										"supportRFC5988": "true"
+									}
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "DS_REST_INP",
+									"type": "DatasetReference"
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"variables": {
+			"totalrecord": {
+				"type": "Integer"
+			},
+			"pagecount": {
+				"type": "Integer"
+			}
+		},
+		"folder": {
+			"name": "Day-5 Exercises"
+		},
+		"annotations": []
+	}
+}

@@ -5,11 +5,14 @@
 			"referenceName": "LS_REST_API",
 			"type": "LinkedServiceReference",
 			"parameters": {
-				"url": "https://jsonplaceholder.typicode.com/users"
+				"url": "https://dummyjson.com"
 			}
 		},
 		"annotations": [],
 		"type": "RestResource",
+		"typeProperties": {
+			"relativeUrl": "@concat( '/users?limit=10&skip=', string(mul(item(),10)) )"
+		},
 		"schema": []
 	}
 }
