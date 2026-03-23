@@ -1,0 +1,65 @@
+{
+	"name": "AzureSqlTable1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AZURE_SQL",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "Education",
+				"type": "nvarchar"
+			},
+			{
+				"name": "JoiningYear",
+				"type": "smallint",
+				"precision": 5
+			},
+			{
+				"name": "City",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PaymentTier",
+				"type": "tinyint",
+				"precision": 3
+			},
+			{
+				"name": "Age",
+				"type": "tinyint",
+				"precision": 3
+			},
+			{
+				"name": "Gender",
+				"type": "nvarchar"
+			},
+			{
+				"name": "EverBenched",
+				"type": "bit"
+			},
+			{
+				"name": "ExperienceInCurrentDomain",
+				"type": "tinyint",
+				"precision": 3
+			},
+			{
+				"name": "LeaveOrNot",
+				"type": "bit"
+			},
+			{
+				"name": "pipeline_run_id",
+				"type": "nvarchar"
+			},
+			{
+				"name": "load_datetime",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "tgt_sales_IN1723"
+		}
+	}
+}
