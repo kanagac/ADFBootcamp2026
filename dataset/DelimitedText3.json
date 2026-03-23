@@ -6,10 +6,13 @@
 			"type": "LinkedServiceReference"
 		},
 		"parameters": {
-			"folderPath": {
+			"container": {
 				"type": "string"
 			},
-			"fileName": {
+			"directory": {
+				"type": "string"
+			},
+			"filename": {
 				"type": "string"
 			}
 		},
@@ -18,9 +21,18 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": "Employees_USA.csv",
-				"folderPath": "dataflowinput",
-				"container": "input"
+				"fileName": {
+					"value": "@dataset().filename",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@dataset().directory",
+					"type": "Expression"
+				},
+				"container": {
+					"value": "@dataset().container",
+					"type": "Expression"
+				}
 			},
 			"columnDelimiter": ",",
 			"escapeChar": "\\",
