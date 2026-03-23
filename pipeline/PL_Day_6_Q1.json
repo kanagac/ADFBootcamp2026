@@ -24,6 +24,12 @@
 							},
 							"TargetCustomer": {
 								"table_name": "Customer_SCD1_Target_IN1727"
+							},
+							"sink1": {
+								"table_name": "Customer_SCD1_Target_IN1727"
+							},
+							"sink2": {
+								"table_name": "Customer_SCD1_Target_IN1727"
 							}
 						}
 					},

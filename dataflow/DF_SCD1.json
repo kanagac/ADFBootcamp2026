@@ -71,7 +71,7 @@
 				"     ignoreSpaces: false,",
 				"     broadcast: 'auto')~> join1",
 				"join1 split(isNull(TargetCustomer@CustomerId),",
-				"     !isNull(TargetCustomer@CustomerId),",
+				"     !isNull(TargetCustomer@CustomerId) && (SourceCustomer@Name != TargetCustomer@Name || SourceCustomer@City != TargetCustomer@City),",
 				"     disjoint: false) ~> split1@(insert, update)",
 				"split1@update alterRow(updateIf(true())) ~> alterRow1",
 				"split1@insert sink(allowSchemaDrift: true,",
