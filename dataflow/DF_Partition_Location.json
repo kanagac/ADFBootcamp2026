@@ -56,16 +56,22 @@
 				"     disjoint: true) ~> LocationSplit@(Chennai, Bangalore, Hyderabad, None)",
 				"LocationSplit@Chennai sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
+				"     partitionFileNames:['sales_Chennai.csv'],",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> ChennaiDataSink",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> ChennaiDataSink",
 				"LocationSplit@Bangalore sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
+				"     partitionFileNames:['sales_Bangalore.csv'],",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> BangaloreSink",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> BangaloreSink",
 				"LocationSplit@Hyderabad sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
+				"     partitionFileNames:['sales_Hyderabad.csv'],",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> HyderabadSink"
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> HyderabadSink"
 			]
 		}
 	}
