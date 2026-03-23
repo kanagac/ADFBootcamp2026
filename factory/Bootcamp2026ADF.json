@@ -9,6 +9,10 @@
 			"Region_EMEA": {
 				"type": "string",
 				"value": "EMEA"
+			},
+			"Region_AMER": {
+				"type": "string",
+				"value": "AMER"
 			}
 		}
 	},
