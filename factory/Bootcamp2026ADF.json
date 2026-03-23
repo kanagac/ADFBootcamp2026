@@ -4,7 +4,7 @@
 		"globalParameters": {
 			"Region": {
 				"type": "string",
-				"value": "APAC"
+				"value": " "
 			}
 		}
 	},
