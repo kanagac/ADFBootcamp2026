@@ -1,0 +1,12 @@
+{
+	"name": "OUTPUT_AMER_IN1742",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AZURE_SQL",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": []
+	}
+}
