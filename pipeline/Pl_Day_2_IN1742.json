@@ -13,7 +13,10 @@
 				"userProperties": [],
 				"typeProperties": {
 					"variableName": "dates",
-					"value": "@createArray(\n  formatDateTime(addDays(utcNow(),-5),'yyyy-MM-dd'),\n  formatDateTime(addDays(utcNow(),-4),'yyyy-MM-dd'),\n  formatDateTime(addDays(utcNow(),-3),'yyyy-MM-dd'),\n  formatDateTime(addDays(utcNow(),-2),'yyyy-MM-dd'),\n  formatDateTime(addDays(utcNow(),-1),'yyyy-MM-dd')\n)"
+					"value": {
+						"value": "@createArray(\n  formatDateTime(addDays(utcNow(),-5),'yyyy-MM-dd'),\n  formatDateTime(addDays(utcNow(),-4),'yyyy-MM-dd'),\n  formatDateTime(addDays(utcNow(),-3),'yyyy-MM-dd'),\n  formatDateTime(addDays(utcNow(),-2),'yyyy-MM-dd'),\n  formatDateTime(addDays(utcNow(),-1),'yyyy-MM-dd')\n)",
+						"type": "Expression"
+					}
 				}
 			},
 			{
@@ -48,8 +51,44 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
+								"source": {
+									"type": "BinarySource",
+									"storeSettings": {
+										"type": "HttpReadSettings",
+										"requestMethod": "GET"
+									},
+									"formatSettings": {
+										"type": "BinaryReadSettings"
+									}
+								},
+								"sink": {
+									"type": "BinarySink",
+									"storeSettings": {
+										"type": "AzureBlobStorageWriteSettings"
+									}
+								},
 								"enableStaging": false
-							}
+							},
+							"inputs": [
+								{
+									"referenceName": "Binary1",
+									"type": "DatasetReference"
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "Binary2",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": "output",
+										"directory": {
+											"value": "@concat('weather/IN1742', item())",
+											"type": "Expression"
+										},
+										"filename": "data.json"
+									}
+								}
+							]
 						}
 					]
 				}
