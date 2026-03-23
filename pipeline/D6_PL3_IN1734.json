@@ -138,7 +138,7 @@
 									"typeProperties": {
 										"source": {
 											"type": "AzureSqlSource",
-											"sqlReaderQuery": "\nSELECT *\nFROM Customers_IN1734\nWHERE CustomerName ILIKE '%Inc%\n",
+											"sqlReaderQuery": "\nSELECT *\nFROM Customers_IN1734\nWHERE CustomerName LIKE '%Inc%;\n",
 											"queryTimeout": "02:00:00",
 											"partitionOption": "None"
 										},
