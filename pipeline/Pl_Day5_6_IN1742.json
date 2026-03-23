@@ -1,0 +1,66 @@
+{
+	"name": "Pl_Day5_6_IN1742",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy data1",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "JsonSource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": true,
+							"wildcardFolderPath": "data/json",
+							"wildcardFileName": "*.json",
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "JsonReadSettings"
+						}
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"writeBehavior": "insert",
+						"sqlWriterUseTableLock": false,
+						"tableOption": "autoCreate",
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "Json1",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": "input",
+							"directory": "data/json"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DS_SQL_COMMON",
+						"type": "DatasetReference",
+						"parameters": {
+							"tableName": "json_IN1742"
+						}
+					}
+				]
+			}
+		],
+		"folder": {
+			"name": "DAY_5"
+		},
+		"annotations": []
+	}
+}
