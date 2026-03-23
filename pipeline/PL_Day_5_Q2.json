@@ -88,7 +88,7 @@
 									"parameters": {
 										"container": "output",
 										"folder": {
-											"value": "@concat(\n'IN1727/weather/',\nformatDateTime(addDays(utcNow(), sub(0,item())), 'yyyy-MM-dd')\n)",
+											"value": "@concat(\n'weather/IN1727 - ',\nformatDateTime(addDays(utcNow(), sub(0,item())), 'yyyy-MM-dd')\n)",
 											"type": "Expression"
 										},
 										"file": "data.json"
