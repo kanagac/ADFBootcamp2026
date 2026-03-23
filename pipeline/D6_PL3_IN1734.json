@@ -9,7 +9,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"on": {
-						"value": "@pipeline().globalParameters.Region",
+						"value": "@pipeline().globalParameters.Region2",
 						"type": "Expression"
 					},
 					"cases": [
