@@ -13,8 +13,12 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"folderPath": "sales",
-				"container": "input"
+				"fileName": {
+					"value": "@concat('salestransactions_1742_',formatDateTime(utcNow(),'yyyy-MM-dd'),'.csv')",
+					"type": "Expression"
+				},
+				"folderPath": "IN1742",
+				"container": "output"
 			},
 			"columnDelimiter": ",",
 			"escapeChar": "\\",
