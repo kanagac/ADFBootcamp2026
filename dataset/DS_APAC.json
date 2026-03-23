@@ -1,0 +1,37 @@
+{
+	"name": "DS_APAC",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AZURE_SQL",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "OrderID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "CustomerID",
+				"type": "varchar"
+			},
+			{
+				"name": "Amount",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "OrderDate",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "Orders_APAC_IN1734"
+		}
+	}
+}
