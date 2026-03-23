@@ -1,0 +1,17 @@
+{
+	"name": "DF_SCD_2",
+	"properties": {
+		"folder": {
+			"name": "DAY 5"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [],
+			"sinks": [],
+			"transformations": [],
+			"scriptLines": [
+				""
+			]
+		}
+	}
+}
