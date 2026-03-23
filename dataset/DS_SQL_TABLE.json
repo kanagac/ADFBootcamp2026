@@ -10,7 +10,7 @@
 		"schema": [],
 		"typeProperties": {
 			"schema": "dbo",
-			"table": "Orders_IN1734"
+			"table": "Employee"
 		}
 	}
 }
