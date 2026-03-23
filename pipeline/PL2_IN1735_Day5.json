@@ -1,0 +1,227 @@
+{
+	"name": "PL2_IN1735_Day5",
+	"properties": {
+		"activities": [
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
+				"dependsOn": [
+					{
+						"activity": "Until1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@variables('datesArray')",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Web1",
+							"type": "WebActivity",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"method": "GET",
+								"url": {
+									"value": "\nconcat(\n 'https://archive-api.open-meteo.com/v1/archive',\n '?latitude=52.52&longitude=13.41',\n '&start_date=', string(addDays(utcnow(), -item())),\n '&end_date=', string(addDays(utcnow(), -item())),\n '&hourly=temperature_2m'\n)\n",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Copy data1",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "Web1",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "RestSource",
+									"httpRequestTimeout": "00:01:40",
+									"requestInterval": "00.00:00:00.010",
+									"requestMethod": "GET",
+									"paginationRules": {
+										"supportRFC5988": "true"
+									}
+								},
+								"sink": {
+									"type": "DelimitedTextSink",
+									"storeSettings": {
+										"type": "AzureBlobStorageWriteSettings"
+									},
+									"formatSettings": {
+										"type": "DelimitedTextWriteSettings",
+										"quoteAllText": true,
+										"fileExtension": ".txt"
+									}
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "DS_REST",
+									"type": "DatasetReference"
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "DS_CSV",
+									"type": "DatasetReference",
+									"parameters": {
+										"filename": "data.json",
+										"directory_name": {
+											"value": "@IN1735/weather/{string(addDays(utcnow(), -item()))}",
+											"type": "Expression"
+										},
+										"container_name": "output"
+									}
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"name": "Until1",
+				"type": "Until",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@greaterOrEquals(length(variables('datesArray')), pipeline().parameters.days)",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Append variable1",
+							"type": "AppendVariable",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "datesArray",
+								"value": "@string(addDays(utcnow(), -sub(pipeline().parameters.days, sub(length(variables('datesArray')), -1))))\n``"
+							}
+						}
+					],
+					"timeout": "0.12:00:00"
+				}
+			},
+			{
+				"name": "ForEach2",
+				"type": "ForEach",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@range(0,add(pipeline().parameters.days,1))",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Copy data2",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "BinarySource",
+									"storeSettings": {
+										"type": "HttpReadSettings",
+										"requestMethod": "GET"
+									},
+									"formatSettings": {
+										"type": "BinaryReadSettings"
+									}
+								},
+								"sink": {
+									"type": "BinarySink",
+									"storeSettings": {
+										"type": "AzureBlobStorageWriteSettings"
+									}
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "DS_HTTP_Binary",
+									"type": "DatasetReference",
+									"parameters": {
+										"relative": {
+											"value": "/v1/archive?latitude=52.52&longitude=13.41&start_date=@{string(addDays(utcnow(), sub(0,item())))}&end_date=@{string(addDays(utcnow(), sub(0,item())))}&hourly=temperature_2m",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "DS_Binary",
+									"type": "DatasetReference",
+									"parameters": {
+										"Container": "output",
+										"Directory": {
+											"value": "@weather/'IN1735-'+ {string(addDays(utcnow(), -item()))}",
+											"type": "Expression"
+										},
+										"Filename": "data.json"
+									}
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"days": {
+				"type": "int",
+				"defaultValue": 5
+			}
+		},
+		"variables": {
+			"datesArray": {
+				"type": "Array"
+			}
+		},
+		"folder": {
+			"name": "ADF Exercise/Day5 Exercise"
+		},
+		"annotations": []
+	}
+}

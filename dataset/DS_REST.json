@@ -5,7 +5,10 @@
 			"referenceName": "LS_REST",
 			"type": "LinkedServiceReference",
 			"parameters": {
-				"url": "https://jsonplaceholder.typicode.com/users"
+				"url": {
+					"value": "concat(\n 'https://archive-api.open-meteo.com/v1/archive',\n '?latitude=52.52&longitude=13.41',\n '&start_date=', string(addDays(utcnow(), -item())),\n '&end_date=', string(addDays(utcnow(), -item())),\n '&hourly=temperature_2m'\n)",
+					"type": "Expression"
+				}
 			}
 		},
 		"annotations": [],
