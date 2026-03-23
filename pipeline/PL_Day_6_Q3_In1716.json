@@ -1,0 +1,20 @@
+{
+	"name": "PL_Day_6_Q3_In1716",
+	"properties": {
+		"activities": [
+			{
+				"name": "Switch1",
+				"type": "Switch",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"cases": []
+				}
+			}
+		],
+		"folder": {
+			"name": "PL_Day_6_IN1716"
+		},
+		"annotations": []
+	}
+}
