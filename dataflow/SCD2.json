@@ -89,7 +89,7 @@
 				"     matchType:'exact',",
 				"     ignoreSpaces: false,",
 				"     broadcast: 'auto')~> join1",
-				"join1 split(isNull(source1@CustomerID),",
+				"join1 split(isNull(source2@CustomerID),",
 				"     !isNull(source2@CustomerID) && source1@City != source2@City,",
 				"     !isNull(source2@CustomerID)  && source1@City != source2@City,",
 				"     disjoint: false) ~> split1@(New, Changed, InsertChanged, Nochange)",
