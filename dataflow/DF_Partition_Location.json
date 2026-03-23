@@ -1,0 +1,72 @@
+{
+	"name": "DF_Partition_Location",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_Day03_Q2_Input",
+						"type": "DatasetReference"
+					},
+					"name": "SourceCSV"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_SALES_Chennai",
+						"type": "DatasetReference"
+					},
+					"name": "ChennaiDataSink"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_Sales_Bangalore",
+						"type": "DatasetReference"
+					},
+					"name": "BangaloreSink"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_Hyderabad_Sink",
+						"type": "DatasetReference"
+					},
+					"name": "HyderabadSink"
+				}
+			],
+			"transformations": [
+				{
+					"name": "LocationSplit"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          OrderID as short,",
+				"          CustomerName as string,",
+				"          LocationName as string,",
+				"          Amount as short",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> SourceCSV",
+				"SourceCSV split(LocationName == 'Chennai',",
+				"     LocationName == 'Bangalore',",
+				"     LocationName == 'Hyderabad',",
+				"     disjoint: true) ~> LocationSplit@(Chennai, Bangalore, Hyderabad, None)",
+				"LocationSplit@Chennai sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> ChennaiDataSink",
+				"LocationSplit@Bangalore sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> BangaloreSink",
+				"LocationSplit@Hyderabad sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> HyderabadSink"
+			]
+		}
+	}
+}
