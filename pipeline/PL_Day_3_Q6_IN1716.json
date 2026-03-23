@@ -1,0 +1,133 @@
+{
+	"name": "PL_Day_3_Q6_IN1716",
+	"properties": {
+		"activities": [
+			{
+				"name": "LU_txt_Json",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"dataset": {
+						"referenceName": "DS_FILES",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": "input",
+							"directory": "que6",
+							"file": "listoffiles.txt"
+						}
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "FE_Files",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "LU_txt_Json",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('LU_txt_Json').output.value",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "CP_txt_JSON",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "DelimitedTextSource",
+									"storeSettings": {
+										"type": "AzureBlobStorageReadSettings",
+										"recursive": true,
+										"enablePartitionDiscovery": false
+									},
+									"formatSettings": {
+										"type": "DelimitedTextReadSettings"
+									}
+								},
+								"sink": {
+									"type": "JsonSink",
+									"storeSettings": {
+										"type": "AzureBlobStorageWriteSettings"
+									},
+									"formatSettings": {
+										"type": "JsonWriteSettings"
+									}
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "DS_FILES",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": "input",
+										"directory": "que6",
+										"file": {
+											"value": "@item().Prop_0",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "DS_JSON",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": "output",
+										"directory": "IN1716",
+										"filename": {
+											"value": "@concat('file_', replace(item().Prop_0, '.', '_'), '.json')",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"folder": {
+			"name": "PL_Day_3_IN1716"
+		},
+		"annotations": []
+	}
+}
