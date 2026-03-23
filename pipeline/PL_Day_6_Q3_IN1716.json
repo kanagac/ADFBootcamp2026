@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Switch1",
+				"name": "SW_Region",
 				"type": "Switch",
 				"dependsOn": [],
 				"userProperties": [],
