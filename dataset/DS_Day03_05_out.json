@@ -1,0 +1,26 @@
+{
+	"name": "DS_Day03_05_out",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AZURE_STORAGE",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"pFolderName": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"folderPath": {
+					"value": "@concat('IN1709/ouput_2/',dataset().pFolderName)",
+					"type": "Expression"
+				},
+				"container": "output"
+			}
+		}
+	}
+}
