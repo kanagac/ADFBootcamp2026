@@ -1,0 +1,170 @@
+{
+	"name": "df_SCD2",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "source2"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "sink2"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "sink3"
+				}
+			],
+			"transformations": [
+				{
+					"name": "join1"
+				},
+				{
+					"name": "split1"
+				},
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "split2"
+				},
+				{
+					"name": "derivedColumn2"
+				},
+				{
+					"name": "derivedColumn3"
+				},
+				{
+					"name": "alterRow1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          id as integer,",
+				"          name as string,",
+				"          city as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source1",
+				"source(output(",
+				"          CustomerSK as integer,",
+				"          CustomerID as integer,",
+				"          Name as string,",
+				"          City as string,",
+				"          StartDate as timestamp,",
+				"          EndDate as timestamp,",
+				"          IsCurrent as boolean",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source2",
+				"source1, source2 join(id == CustomerID,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join1",
+				"join1 split(isNull(CustomerID),",
+				"     !isNull(CustomerID) && source1@city != source2@City,",
+				"     disjoint: false) ~> split1@(insert, update)",
+				"split1@insert derive(StartDate = currentDate(),",
+				"          EndDate = toDate(null()),",
+				"          IsCurrent = 1) ~> derivedColumn1",
+				"split1@update split(true(),",
+				"     true(),",
+				"     disjoint: false) ~> split2@(expire, insertnew)",
+				"split2@expire derive(EndDate = currentDate(),",
+				"          IsCurrent = 0) ~> derivedColumn2",
+				"split2@insertnew derive(StartDate = currentDate(),",
+				"          EndDate = toDate(null()),",
+				"          IsCurrent = 1) ~> derivedColumn3",
+				"derivedColumn2 alterRow(updateIf(true())) ~> alterRow1",
+				"derivedColumn1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          CustomerID,",
+				"          Name = split1@insert@Name,",
+				"          City = split1@insert@City,",
+				"          StartDate,",
+				"          EndDate,",
+				"          IsCurrent",
+				"     )) ~> sink1",
+				"alterRow1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:false,",
+				"     updateable:true,",
+				"     upsertable:false,",
+				"     keys:['CustomerSK'],",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          CustomerSK,",
+				"          CustomerID,",
+				"          Name = split2@expire@Name,",
+				"          City = split2@expire@City,",
+				"          StartDate,",
+				"          EndDate,",
+				"          IsCurrent",
+				"     )) ~> sink2",
+				"derivedColumn3 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          CustomerID,",
+				"          Name = split2@insertnew@Name,",
+				"          City = split2@insertnew@City,",
+				"          StartDate,",
+				"          EndDate,",
+				"          IsCurrent",
+				"     )) ~> sink3"
+			]
+		}
+	}
+}

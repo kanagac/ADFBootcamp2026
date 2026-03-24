@@ -1,9 +1,9 @@
 {
-	"name": "Q1_IN1743",
+	"name": "PL_Q2_IN1743",
 	"properties": {
 		"activities": [
 			{
-				"name": "Data flow1",
+				"name": "DF_SCD2",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
@@ -16,22 +16,23 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "DF_SCD1",
+						"referenceName": "df_SCD2",
 						"type": "DataFlowReference",
 						"datasetParameters": {
-							"Source": {
-								"container": "input",
-								"folder": "dataflowinput",
-								"file": "Customers.csv"
+							"source1": {
+								"Tablename": "source_customer_IN1743_SCD2"
 							},
-							"Target": {
-								"Table": "target_IN1743"
+							"source2": {
+								"Tablename": "target_customer_IN1743_SCD2"
 							},
 							"sink1": {
-								"Table": "target_IN1743_scd1"
+								"Tablename": "target_customer_IN1743_SCD2"
 							},
 							"sink2": {
-								"Table": "target_IN1743_scd1"
+								"Tablename": "target_customer_IN1743_SCD2"
+							},
+							"sink3": {
+								"Tablename": "target_customer_IN1743_SCD2"
 							}
 						}
 					},
