@@ -1,0 +1,30 @@
+{
+	"name": "DS_03_04_input",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AZURE_STORAGE",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"p_FileName": {
+				"type": "string"
+			},
+			"p_FolderName": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": {
+					"value": "@dataset().p_FileName",
+					"type": "Expression"
+				},
+				"folderPath": "data",
+				"container": "input"
+			}
+		}
+	}
+}
