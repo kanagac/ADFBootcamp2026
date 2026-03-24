@@ -63,7 +63,45 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
-								"fieldList": []
+								"dataset": {
+									"referenceName": "DS_03_04_input",
+									"type": "DatasetReference",
+									"parameters": {
+										"p_FolderName": {
+											"value": "@item().name",
+											"type": "Expression"
+										}
+									}
+								},
+								"fieldList": [
+									"childItems"
+								],
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "BinaryReadSettings"
+								}
+							}
+						},
+						{
+							"name": "Execute Pipeline1",
+							"type": "ExecutePipeline",
+							"dependsOn": [
+								{
+									"activity": "Get MetadatForEach_03_04",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"waitOnCompletion": true
 							}
 						}
 					]
