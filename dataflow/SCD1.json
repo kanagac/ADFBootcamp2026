@@ -44,24 +44,18 @@
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
 				"     format: 'table') ~> source1",
-				"source1 alterRow(updateIf(true())) ~> alterRow1",
+				"source1 alterRow(updateIf(1==1)) ~> alterRow1",
 				"alterRow1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
-				"     insertable:true,",
-				"     updateable:true,",
+				"     insertable:false,",
+				"     updateable:false,",
 				"     upsertable:true,",
 				"     keys:['CustomerID'],",
 				"     format: 'table',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     errorHandlingOption: 'stopOnFirstError',",
-				"     mapColumn(",
-				"          CustomerID,",
-				"          Name,",
-				"          City,",
-				"          Updated_Date",
-				"     )) ~> sink1"
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
 			]
 		}
 	}
