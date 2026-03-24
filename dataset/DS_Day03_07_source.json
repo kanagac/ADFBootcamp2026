@@ -1,0 +1,19 @@
+{
+	"name": "DS_Day03_07_source",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AZURE_STORAGE",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"folderPath": "employees",
+				"container": "input"
+			}
+		},
+		"schema": {}
+	}
+}
