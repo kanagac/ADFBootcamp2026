@@ -247,7 +247,10 @@
 					"storedProcedureName": "[dbo].[usp_UpdateWatermark]",
 					"storedProcedureParameters": {
 						"NewWatermark": {
-							"value": "@{activity('Lookup_NewWatermark').output.firstRow.NewWatermark}",
+							"value": {
+								"value": "@{activity('Lookup_NewWatermark').output.firstRow.NewWatermark}",
+								"type": "Expression"
+							},
 							"type": "DateTime"
 						},
 						"TableName": {
