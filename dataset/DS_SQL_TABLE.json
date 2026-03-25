@@ -10,7 +10,7 @@
 		"schema": [],
 		"typeProperties": {
 			"schema": "dbo",
-			"table": "meta_watermark"
+			"table": "dw_transactions"
 		}
 	}
 }
