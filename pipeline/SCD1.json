@@ -19,11 +19,24 @@
 						"referenceName": "SCD1",
 						"type": "DataFlowReference",
 						"datasetParameters": {
-							"source1": {
+							"source": {
 								"table": "Customers_Source_IN1738"
+							},
+							"Target": {
+								"table": "Customers_target_IN1738"
 							},
 							"sink1": {
 								"table": "Customers_target_IN1738"
+							},
+							"sink2": {
+								"table": "Customers_target_IN1738"
+							}
+						},
+						"linkedServiceParameters": {
+							"Target": {
+								"schemaLinkedService": {
+									"table": " "
+								}
 							}
 						}
 					},
