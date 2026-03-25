@@ -1,0 +1,53 @@
+{
+	"name": "DF_Day04_02",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_Day04_02_India",
+						"type": "DatasetReference"
+					},
+					"name": "SourceIndia"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_Day04_02_USA",
+						"type": "DatasetReference"
+					},
+					"name": "SourceUSA"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_Day04_02_Sink",
+						"type": "DatasetReference"
+					},
+					"name": "empUnionSink"
+				}
+			],
+			"transformations": [
+				{
+					"name": "EmpUnion"
+				}
+			],
+			"scriptLines": [
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> SourceIndia",
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> SourceUSA",
+				"SourceIndia, SourceUSA union(byName: true)~> EmpUnion",
+				"EmpUnion sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['employees_Country_Union.csv'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> empUnionSink"
+			]
+		}
+	}
+}
