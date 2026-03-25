@@ -244,7 +244,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"storedProcedureName": "[dbo].[usp_UpdateWatermark]",
+					"storedProcedureName": "usp_UpdateWatermark",
 					"storedProcedureParameters": {
 						"NewWatermark": {
 							"value": {
