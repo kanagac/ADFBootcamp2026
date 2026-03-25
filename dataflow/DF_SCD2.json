@@ -25,6 +25,13 @@
 						"referenceName": "DS_SQL_TABLE_OUTPUT",
 						"type": "DatasetReference"
 					},
+					"name": "sink1"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE_OUTPUT",
+						"type": "DatasetReference"
+					},
 					"name": "sink2"
 				},
 				{
@@ -33,13 +40,6 @@
 						"type": "DatasetReference"
 					},
 					"name": "sink3"
-				},
-				{
-					"dataset": {
-						"referenceName": "DS_SQL_TABLE_OUTPUT",
-						"type": "DatasetReference"
-					},
-					"name": "sink4"
 				}
 			],
 			"transformations": [
@@ -47,22 +47,19 @@
 					"name": "join1"
 				},
 				{
-					"name": "derivedColumn2"
-				},
-				{
 					"name": "split1"
 				},
 				{
-					"name": "split2"
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "derivedColumn2"
+				},
+				{
+					"name": "alterRow1"
 				},
 				{
 					"name": "derivedColumn3"
-				},
-				{
-					"name": "alterRow2"
-				},
-				{
-					"name": "derivedColumn4"
 				}
 			],
 			"scriptLines": [
@@ -93,40 +90,19 @@
 				"     matchType:'exact',",
 				"     ignoreSpaces: false,",
 				"     broadcast: 'auto')~> join1",
-				"split1@insertNew derive(StartDate = currentDate(),",
-				"          EndDate = toDate(null()),",
-				"          IsCurrent = 1) ~> derivedColumn2",
 				"join1 split(isNull(TargetCustomer@CustomerID),",
 				"     !isNull(TargetCustomer@CustomerID) && (SourceCustomer@City != TargetCustomer@City),",
-				"     disjoint: false) ~> split1@(insertNew, update)",
-				"split1@update split(true(),",
-				"     true(),",
-				"     disjoint: false) ~> split2@(expire, newVersion)",
-				"split2@expire derive(EndDate = currentDate(),",
-				"          IsCurrent = 0) ~> derivedColumn3",
-				"derivedColumn3 alterRow(updateIf(true())) ~> alterRow2",
-				"split2@newVersion derive(StartDate = currentDate(),",
+				"     disjoint: false) ~> split1@(InsertNew, ExpireInsert)",
+				"split1@ExpireInsert derive(StartDate = currentDate(),",
 				"          EndDate = toDate(null()),",
-				"          IsCurrent = 1) ~> derivedColumn4",
-				"derivedColumn2 sink(allowSchemaDrift: true,",
-				"     validateSchema: false,",
-				"     deletable:false,",
-				"     insertable:true,",
-				"     updateable:false,",
-				"     upsertable:false,",
-				"     format: 'table',",
-				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true,",
-				"     errorHandlingOption: 'stopOnFirstError',",
-				"     mapColumn(",
-				"          CustomerID = split1@insertNew@CustomerID,",
-				"          Name = split1@insertNew@Name,",
-				"          City = split1@insertNew@City,",
-				"          StartDate,",
-				"          EndDate,",
-				"          IsCurrent",
-				"     )) ~> sink2",
-				"alterRow2 sink(allowSchemaDrift: true,",
+				"          IsCurrent = 1) ~> derivedColumn1",
+				"split1@ExpireInsert derive(EndDate = currentDate(),",
+				"          IsCurrent = 0) ~> derivedColumn2",
+				"derivedColumn2 alterRow(updateIf(true())) ~> alterRow1",
+				"split1@InsertNew derive(StartDate = currentDate(),",
+				"          EndDate = toDate(null()),",
+				"          IsCurrent = 1) ~> derivedColumn3",
+				"alterRow1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
 				"     insertable:false,",
@@ -139,14 +115,14 @@
 				"     errorHandlingOption: 'stopOnFirstError',",
 				"     mapColumn(",
 				"          CustomerSK,",
-				"          CustomerID = split2@expire@CustomerID,",
-				"          Name = split2@expire@Name,",
-				"          City = split2@expire@City,",
+				"          CustomerID = split1@ExpireInsert@CustomerID,",
+				"          Name = split1@ExpireInsert@Name,",
+				"          City = split1@ExpireInsert@City,",
 				"          StartDate,",
 				"          EndDate,",
 				"          IsCurrent",
-				"     )) ~> sink3",
-				"derivedColumn4 sink(allowSchemaDrift: true,",
+				"     )) ~> sink1",
+				"derivedColumn1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
 				"     insertable:true,",
@@ -157,13 +133,31 @@
 				"     skipDuplicateMapOutputs: true,",
 				"     errorHandlingOption: 'stopOnFirstError',",
 				"     mapColumn(",
-				"          CustomerID = split2@newVersion@CustomerID,",
-				"          Name = split2@newVersion@Name,",
-				"          City = split2@newVersion@City,",
+				"          CustomerID = split1@ExpireInsert@CustomerID,",
+				"          Name = split1@ExpireInsert@Name,",
+				"          City = split1@ExpireInsert@City,",
 				"          StartDate,",
 				"          EndDate,",
 				"          IsCurrent",
-				"     )) ~> sink4"
+				"     )) ~> sink2",
+				"derivedColumn3 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          CustomerID = split1@InsertNew@CustomerID,",
+				"          Name = split1@InsertNew@Name,",
+				"          City = split1@InsertNew@City,",
+				"          StartDate,",
+				"          EndDate,",
+				"          IsCurrent",
+				"     )) ~> sink3"
 			]
 		}
 	}
