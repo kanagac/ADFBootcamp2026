@@ -1,0 +1,49 @@
+{
+	"name": "PL_SCD1",
+	"properties": {
+		"activities": [
+			{
+				"name": "Data flowscd1",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DF_SCD1_Pr",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"sourcecustomer": {
+								"Tablename": "customer_source_IN1743"
+							},
+							"targetcustomer": {
+								"Tablename": "dim_customer_IN1743"
+							},
+							"sink1": {
+								"Tablename": "dim_customer_IN1743"
+							},
+							"sink2": {
+								"Tablename": "dim_customer_IN1743"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"folder": {
+			"name": "Practice"
+		},
+		"annotations": []
+	}
+}
