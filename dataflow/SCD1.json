@@ -12,7 +12,14 @@
 						"referenceName": "DS_SQL_TABLE",
 						"type": "DatasetReference"
 					},
-					"name": "source1"
+					"name": "source"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "Target"
 				}
 			],
 			"sinks": [
@@ -26,9 +33,26 @@
 						"referenceName": "LS_AZURE_STORAGE",
 						"type": "LinkedServiceReference"
 					}
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "sink2",
+					"rejectedDataLinkedService": {
+						"referenceName": "LS_AZURE_STORAGE",
+						"type": "LinkedServiceReference"
+					}
 				}
 			],
 			"transformations": [
+				{
+					"name": "join1"
+				},
+				{
+					"name": "split1"
+				},
 				{
 					"name": "alterRow1"
 				}
@@ -43,19 +67,46 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
-				"     format: 'table') ~> source1",
-				"source1 alterRow(updateIf(1==1)) ~> alterRow1",
+				"     format: 'table') ~> source",
+				"source(output(",
+				"          CustomerID as integer,",
+				"          Name as string,",
+				"          City as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> Target",
+				"source, Target join(source@CustomerID == Target@CustomerID,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join1",
+				"join1 split(isNull(Target@CustomerID),",
+				"     !isNull(Target@CustomerID),",
+				"     disjoint: false) ~> split1@(insert, update)",
+				"split1@update alterRow(updateIf(1==1)) ~> alterRow1",
+				"split1@insert sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink1",
 				"alterRow1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
 				"     insertable:false,",
-				"     updateable:false,",
-				"     upsertable:true,",
+				"     updateable:true,",
+				"     upsertable:false,",
 				"     keys:['CustomerID'],",
 				"     format: 'table',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink2"
 			]
 		}
 	}
