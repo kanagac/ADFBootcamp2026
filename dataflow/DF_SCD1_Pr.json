@@ -1,0 +1,203 @@
+{
+	"name": "DF_SCD1_Pr",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "sourcecustomer"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "targetcustomer"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "sink2"
+				}
+			],
+			"transformations": [
+				{
+					"name": "select1"
+				},
+				{
+					"name": "Join"
+				},
+				{
+					"name": "derivedColumn"
+				},
+				{
+					"name": "split1"
+				},
+				{
+					"name": "select3"
+				},
+				{
+					"name": "alterRow1"
+				},
+				{
+					"name": "select4"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Customer_id as integer,",
+				"          Firstname as string,",
+				"          Lastname as string,",
+				"          Contactaddress as string,",
+				"          Contactphone as string,",
+				"          Contact_email as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> sourcecustomer",
+				"source(output(",
+				"          customerKey as integer,",
+				"          customerId as integer,",
+				"          firstName as string,",
+				"          lastName as string,",
+				"          contactAddress as string,",
+				"          contactPhone as string,",
+				"          contactEmail as string,",
+				"          dwCreatedDate as timestamp,",
+				"          dwCreatedBy as string,",
+				"          dwUpdatedDate as timestamp,",
+				"          dwUpdatedBy as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> targetcustomer",
+				"targetcustomer select(mapColumn(",
+				"          customerKey,",
+				"          Target_customerId = customerId,",
+				"          Target_firstName = firstName,",
+				"          Target_lastName = lastName,",
+				"          Target_contactAddress = contactAddress,",
+				"          Target_contactPhone = contactPhone,",
+				"          Target_contactEmail = contactEmail,",
+				"          dwCreatedDate,",
+				"          dwCreatedBy,",
+				"          dwUpdatedDate,",
+				"          dwUpdatedBy",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"sourcecustomer, select1 join(Customer_id == Target_customerId,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> Join",
+				"Join derive(Firstname = upper(substring(Firstname,1,1))+lower(substring(Firstname,2)),",
+				"          Lastname = upper(substring(Lastname,1,1))+lower(substring(Lastname,2)),",
+				"          Contactaddress = concat('No:', Contactaddress,','),",
+				"          Contactphone = concat(\r",
+				"    substring(Contactphone,1,3),' ',\r",
+				"substring(Contactphone,4,3),' ',\r",
+				"substring(Contactphone,7,4)\r",
+				"),",
+				"          dwCreatedDate = currentTimestamp(),",
+				"          dwCreatedBy = 'IN1743',",
+				"          dwUpdatedDate = currentTimestamp(),",
+				"          dwUpdatedBy = 'IN1743') ~> derivedColumn",
+				"derivedColumn split(isNull(Target_customerId),",
+				"     !isNull(Target_customerId) \r",
+				"&& Contactphone != Target_contactPhone,",
+				"     disjoint: false) ~> split1@(insert, update)",
+				"alterRow1 select(mapColumn(",
+				"          Customer_id,",
+				"          Firstname,",
+				"          Lastname,",
+				"          Contactaddress,",
+				"          Contactphone,",
+				"          Contact_email,",
+				"          dwCreatedDate,",
+				"          dwCreatedBy,",
+				"          dwUpdatedDate,",
+				"          dwUpdatedBy",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select3",
+				"split1@update alterRow(updateIf(true())) ~> alterRow1",
+				"split1@insert select(mapColumn(",
+				"          Customer_id,",
+				"          Firstname,",
+				"          Lastname,",
+				"          Contactaddress,",
+				"          Contactphone,",
+				"          Contact_email,",
+				"          dwCreatedDate,",
+				"          dwCreatedBy,",
+				"          dwUpdatedDate,",
+				"          dwUpdatedBy",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select4",
+				"select4 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          Customer_id,",
+				"          Firstname,",
+				"          Lastname,",
+				"          Contactaddress,",
+				"          Contactphone,",
+				"          Contact_email,",
+				"          dwCreatedDate,",
+				"          dwCreatedBy,",
+				"          dwUpdatedDate,",
+				"          dwUpdatedBy",
+				"     )) ~> sink1",
+				"select3 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          Customer_id,",
+				"          Firstname,",
+				"          Lastname,",
+				"          Contactaddress,",
+				"          Contactphone,",
+				"          Contact_email,",
+				"          dwCreatedDate,",
+				"          dwCreatedBy,",
+				"          dwUpdatedDate,",
+				"          dwUpdatedBy",
+				"     )) ~> sink2"
+			]
+		}
+	}
+}
