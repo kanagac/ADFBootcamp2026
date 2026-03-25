@@ -37,7 +37,7 @@
 			],
 			"transformations": [
 				{
-					"name": "join1"
+					"name": "leftjoin"
 				},
 				{
 					"name": "split1"
@@ -69,11 +69,28 @@
 				"     joinType:'left',",
 				"     matchType:'exact',",
 				"     ignoreSpaces: false,",
-				"     broadcast: 'auto')~> join1",
-				"join1 split(isNull(source2@CustomerID),",
-				"     source1@CustomerID == source2@CustomerID && (source1@Name == source2@Name || source1@City == source2@City),",
-				"     disjoint: false) ~> split1@(insertion, updation)",
+				"     broadcast: 'auto')~> leftjoin",
+				"leftjoin split(source1@CustomerID == source2@CustomerID && (source1@Name == source2@Name || source1@City == source2@City),",
+				"     isNull(source1@CustomerID),",
+				"     disjoint: false) ~> split1@(updation, insertion)",
 				"split1@updation alterRow(updateIf(true())) ~> alterRow1",
+				"alterRow1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          CustomerID as integer,",
+				"          Name as string,",
+				"          City as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:false,",
+				"     updateable:false,",
+				"     upsertable:true,",
+				"     keys:['CustomerID'],",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     saveOrder: 2,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink1",
 				"split1@insertion sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
@@ -88,23 +105,13 @@
 				"     format: 'table',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     errorHandlingOption: 'stopOnFirstError') ~> sink1",
-				"alterRow1 sink(allowSchemaDrift: true,",
-				"     validateSchema: false,",
-				"     input(",
-				"          CustomerID as integer,",
-				"          Name as string,",
-				"          City as string",
-				"     ),",
-				"     deletable:false,",
-				"     insertable:false,",
-				"     updateable:true,",
-				"     upsertable:false,",
-				"     keys:['CustomerID'],",
-				"     format: 'table',",
-				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true,",
-				"     errorHandlingOption: 'stopOnFirstError') ~> sink2"
+				"     saveOrder: 1,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          CustomerID = split1@insertion@CustomerID,",
+				"          Name = split1@insertion@Name,",
+				"          City = split1@insertion@City",
+				"     )) ~> sink2"
 			]
 		}
 	}
