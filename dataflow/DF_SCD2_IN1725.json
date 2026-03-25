@@ -1,0 +1,147 @@
+{
+	"name": "DF_SCD2_IN1725",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_csv",
+						"type": "DatasetReference"
+					},
+					"name": "ReadingSourceFile"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "ReadingTargetTable"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "sink2"
+				}
+			],
+			"transformations": [
+				{
+					"name": "JoiningSRCtoTGT"
+				},
+				{
+					"name": "AddingTGTbeforecolumn"
+				},
+				{
+					"name": "RenameTarget"
+				},
+				{
+					"name": "ExistingRows"
+				},
+				{
+					"name": "AddingISActive"
+				},
+				{
+					"name": "filterTGTrows"
+				},
+				{
+					"name": "changeISActive"
+				},
+				{
+					"name": "alterRow1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          CustomerID as short,",
+				"          Name as string,",
+				"          City as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> ReadingSourceFile",
+				"source(output(",
+				"          cust_surr_key as integer,",
+				"          CustomerID as integer,",
+				"          Name as string,",
+				"          City as string,",
+				"          isActive as integer",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> ReadingTargetTable",
+				"ReadingSourceFile, RenameTarget join(CustomerID == Tgt_CustomerID,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> JoiningSRCtoTGT",
+				"ReadingTargetTable derive(each(match(true()), 'Tgt_'+$$ = $$)) ~> AddingTGTbeforecolumn",
+				"AddingTGTbeforecolumn select(mapColumn(",
+				"          Tgt_cust_surr_key,",
+				"          Tgt_CustomerID,",
+				"          Tgt_Name,",
+				"          Tgt_City,",
+				"          Tgt_isActive",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> RenameTarget",
+				"JoiningSRCtoTGT filter(!isNull(Tgt_CustomerID)) ~> ExistingRows",
+				"ReadingSourceFile derive(isActive = 1) ~> AddingISActive",
+				"ExistingRows select(mapColumn(",
+				"          Tgt_cust_surr_key,",
+				"          Tgt_CustomerID,",
+				"          Tgt_Name,",
+				"          Tgt_City,",
+				"          Tgt_isActive",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> filterTGTrows",
+				"filterTGTrows derive(Tgt_isActive = 0) ~> changeISActive",
+				"changeISActive alterRow(updateIf(1==1)) ~> alterRow1",
+				"AddingISActive sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          CustomerID,",
+				"          Name,",
+				"          City,",
+				"          isActive",
+				"     )) ~> sink1",
+				"alterRow1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          CustomerID = Tgt_CustomerID,",
+				"          Name = Tgt_Name,",
+				"          City = Tgt_City,",
+				"          isActive = Tgt_isActive",
+				"     )) ~> sink2"
+			]
+		}
+	}
+}
