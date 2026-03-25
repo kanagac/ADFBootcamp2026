@@ -1,0 +1,80 @@
+{
+	"name": "DF_DAY04_Joins",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_Day04_Orders",
+						"type": "DatasetReference"
+					},
+					"name": "Orders"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_Day04_Customers",
+						"type": "DatasetReference"
+					},
+					"name": "Customers"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_Day04_03_Sink",
+						"type": "DatasetReference"
+					},
+					"name": "OrdersJoinedSink"
+				}
+			],
+			"transformations": [
+				{
+					"name": "OrdersCustomersJoins"
+				},
+				{
+					"name": "ReOrderColumns"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          OrderID as short,",
+				"          CustomerID as short,",
+				"          OrderAmount as short",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> Orders",
+				"source(output(",
+				"          CustomerID as short,",
+				"          CustomerName as string,",
+				"          City as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> Customers",
+				"Orders, Customers join(Orders@CustomerID == Customers@CustomerID,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> OrdersCustomersJoins",
+				"OrdersCustomersJoins select(mapColumn(",
+				"          OrderID,",
+				"          CustomerID = Orders@CustomerID,",
+				"          CustomerName,",
+				"          City,",
+				"          OrderAmount,",
+				"          CustomerID = Customers@CustomerID",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> ReOrderColumns",
+				"ReOrderColumns sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['Orders_Customers_Joined.csv'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> OrdersJoinedSink"
+			]
+		}
+	}
+}
