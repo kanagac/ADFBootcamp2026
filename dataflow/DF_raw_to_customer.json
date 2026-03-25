@@ -1,0 +1,91 @@
+{
+	"name": "DF_raw_to_customer",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_GENERIC",
+						"type": "DatasetReference"
+					},
+					"name": "srcCustomer"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "SINKCustomer",
+					"rejectedDataLinkedService": {
+						"referenceName": "LS_AZURE_STORAGE",
+						"type": "LinkedServiceReference"
+					}
+				}
+			],
+			"transformations": [
+				{
+					"name": "DCCleaning"
+				},
+				{
+					"name": "DCTransform"
+				},
+				{
+					"name": "SELFinalColumns"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          cust_id as string,",
+				"          full_name as string,",
+				"          email as string,",
+				"          order_amt as string,",
+				"          order_dt as string,",
+				"          status as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> srcCustomer",
+				"srcCustomer derive(full_name = case(isNull(full_name), 'Unknown', trim(full_name)=='', 'Unknown', trim(full_name)=='NULL', 'Unknown', trim(full_name)),",
+				"          email = case(isNull(email), 'unknown@email.com', trim(email)=='', 'unknown@email.com', lower(trim(email))),",
+				"          status = case(isNull(status), 'Pending', trim(status)=='', 'Pending', initCap(lower(trim(status))))) ~> DCCleaning",
+				"DCCleaning derive(cust_id = toInteger(cust_id),",
+				"          order_amt = case(\r",
+				"  isNull(order_amt), toDecimal(0.0),\r",
+				"  toDecimal(order_amt) < 0, toDecimal(0.0),\r",
+				"  toDecimal(order_amt)\r",
+				"),",
+				"          order_dt = coalesce(\r",
+				"  toDate(order_dt, 'yyyy-MM-dd'),\r",
+				"  toDate(order_dt, 'dd-MM-yyyy'),\r",
+				"  toDate(order_dt, 'yyyy/MM/dd'),\r",
+				"  toDate('1900-01-01', 'yyyy-MM-dd')\r",
+				"),",
+				"          LoadDate = currentDate()) ~> DCTransform",
+				"DCTransform select(mapColumn(",
+				"          cust_id,",
+				"          full_name,",
+				"          email,",
+				"          order_dt,",
+				"          status,",
+				"          LoadDate",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> SELFinalColumns",
+				"SELFinalColumns sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> SINKCustomer"
+			]
+		}
+	}
+}
