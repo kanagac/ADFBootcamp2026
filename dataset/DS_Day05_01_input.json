@@ -1,0 +1,15 @@
+{
+	"name": "DS_Day05_01_input",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_Rest_json",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"typeProperties": {
+			"relativeUrl": "users"
+		},
+		"schema": []
+	}
+}
