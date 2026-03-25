@@ -45,7 +45,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "AzureSqlSource",
-						"sqlReaderQuery": "SELECT MAX(ModifiedDate) AS NewWatermark FROM SalesOrders",
+						"sqlReaderQuery": "SELECT ISNULL(MAX(ModifiedDate),'1900-01-01') AS NewWatermark FROM SalesOrders",
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
@@ -248,14 +248,14 @@
 					"storedProcedureParameters": {
 						"NewWatermark": {
 							"value": {
-								"value": "@{activity('Lookup_NewWatermark').output.firstRow.NewWatermark}",
+								"value": "@activity('Lookup_NewWatermark').output.firstRow.NewWatermark",
 								"type": "Expression"
 							},
 							"type": "DateTime"
 						},
 						"TableName": {
 							"value": {
-								"value": "SalesOrders\n",
+								"value": "SalesOrders",
 								"type": "Expression"
 							},
 							"type": "String"
