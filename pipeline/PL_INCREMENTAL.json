@@ -17,7 +17,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "AzureSqlSource",
-						"sqlReaderQuery": "SELECT WatermarkValue FROM dbo.WatermarkTable\nWHERE TableName = 'dbo.SalesOrders'",
+						"sqlReaderQuery": "SELECT WatermarkValue FROM \nWatermarkTable\nWHERE TableName = 'SalesOrders'",
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
@@ -45,7 +45,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "AzureSqlSource",
-						"sqlReaderQuery": "SELECT MAX(ModifiedDate) AS NewWatermark FROM dbo.SalesOrders",
+						"sqlReaderQuery": "SELECT MAX(ModifiedDate) AS NewWatermark FROM SalesOrders",
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
@@ -87,7 +87,7 @@
 					"source": {
 						"type": "AzureSqlSource",
 						"sqlReaderQuery": {
-							"value": "SELECT * FROM dbo.SalesOrders\nWHERE ModifiedDate > '@{activity('Lookup_OldWatermark').output.firstRow.WatermarkValue}'\nAND ModifiedDate <= '@{activity('Lookup_NewWatermark').output.firstRow.NewWatermark}'",
+							"value": "SELECT * FROM SalesOrders\nWHERE ModifiedDate > '@{activity('Lookup_OldWatermark').output.firstRow.WatermarkValue}'\nAND ModifiedDate <= '@{activity('Lookup_NewWatermark').output.firstRow.NewWatermark}'",
 							"type": "Expression"
 						},
 						"queryTimeout": "02:00:00",
@@ -255,7 +255,7 @@
 						},
 						"TableName": {
 							"value": {
-								"value": "dbo.SalesOrders\n",
+								"value": "SalesOrders\n",
 								"type": "Expression"
 							},
 							"type": "String"
