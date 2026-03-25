@@ -23,7 +23,7 @@
 			],
 			"transformations": [
 				{
-					"name": "filter1"
+					"name": "window1"
 				}
 			],
 			"scriptLines": [
@@ -36,8 +36,10 @@
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
 				"     format: 'table') ~> source1",
-				"source1 filter(aggregate1@status=='Active') ~> filter1",
-				"filter1 sink(allowSchemaDrift: true,",
+				"source1 window(over(status),",
+				"     desc(id, true),",
+				"     rn = rowNumber()) ~> window1",
+				"window1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
 				"     insertable:true,",
