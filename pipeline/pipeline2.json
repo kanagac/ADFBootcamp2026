@@ -1,0 +1,49 @@
+{
+	"name": "pipeline2",
+	"properties": {
+		"activities": [
+			{
+				"name": "Data flow1",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "dataflow2",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"source1": {
+								"name": "Customer_SCD2_source_IN1726"
+							},
+							"source2": {
+								"name": "Customer_SCD2_target_IN1726"
+							},
+							"sink1": {
+								"name": "Customer_SCD2_target_IN1726"
+							},
+							"sink2": {
+								"name": "Customer_SCD2_target_IN1726"
+							},
+							"sink3": {
+								"name": "Customer_SCD2_target_IN1726"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"annotations": []
+	}
+}
