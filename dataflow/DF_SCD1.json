@@ -2,7 +2,7 @@
 	"name": "DF_SCD1",
 	"properties": {
 		"folder": {
-			"name": "DAY 5"
+			"name": "DAY 6"
 		},
 		"type": "MappingDataFlow",
 		"typeProperties": {
@@ -93,7 +93,7 @@
 				"     skipDuplicateMapOutputs: true) ~> select1",
 				"TargetcustomerSQL select(mapColumn(",
 				"          each(match(true()),",
-				"               concat('tgt_', $$) = $$)",
+				"               concat('tgt_',$$) = $$)",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> renamedTGT",
