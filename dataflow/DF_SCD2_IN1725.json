@@ -55,10 +55,10 @@
 					"name": "filterTGTrows"
 				},
 				{
-					"name": "changeISActive"
+					"name": "alterRow1"
 				},
 				{
-					"name": "alterRow1"
+					"name": "derivedColumn1"
 				}
 			],
 			"scriptLines": [
@@ -107,8 +107,8 @@
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> filterTGTrows",
-				"filterTGTrows derive(Tgt_isActive = 0) ~> changeISActive",
-				"changeISActive alterRow(updateIf(1==1)) ~> alterRow1",
+				"filterTGTrows alterRow(updateIf(1==1)) ~> alterRow1",
+				"alterRow1 derive(Tgt_isActive = 0) ~> derivedColumn1",
 				"AddingISActive sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
@@ -125,7 +125,7 @@
 				"          City,",
 				"          isActive",
 				"     )) ~> sink1",
-				"alterRow1 sink(allowSchemaDrift: true,",
+				"derivedColumn1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
 				"     insertable:true,",
