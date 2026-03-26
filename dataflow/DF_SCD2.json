@@ -25,41 +25,41 @@
 						"referenceName": "DS_SQL_TABLE_OUTPUT",
 						"type": "DatasetReference"
 					},
-					"name": "sink1"
+					"name": "ExpireTarget"
 				},
 				{
 					"dataset": {
 						"referenceName": "DS_SQL_TABLE_OUTPUT",
 						"type": "DatasetReference"
 					},
-					"name": "sink2"
+					"name": "NewVersionTarget"
 				},
 				{
 					"dataset": {
 						"referenceName": "DS_SQL_TABLE_OUTPUT",
 						"type": "DatasetReference"
 					},
-					"name": "sink3"
+					"name": "NewInsertTarget"
 				}
 			],
 			"transformations": [
 				{
-					"name": "join1"
+					"name": "LeftJoin"
 				},
 				{
 					"name": "split1"
 				},
 				{
-					"name": "derivedColumn1"
+					"name": "NewVersionCol"
 				},
 				{
-					"name": "derivedColumn2"
+					"name": "ExpiringCol"
 				},
 				{
-					"name": "alterRow1"
+					"name": "UpdateAlter"
 				},
 				{
-					"name": "derivedColumn3"
+					"name": "NewInsertionCol"
 				}
 			],
 			"scriptLines": [
@@ -89,20 +89,21 @@
 				"     joinType:'left',",
 				"     matchType:'exact',",
 				"     ignoreSpaces: false,",
-				"     broadcast: 'auto')~> join1",
-				"join1 split(isNull(TargetCustomer@CustomerID),",
+				"     broadcast: 'auto')~> LeftJoin",
+				"LeftJoin split(isNull(TargetCustomer@CustomerID),",
 				"     !isNull(TargetCustomer@CustomerID) && (SourceCustomer@City != TargetCustomer@City),",
 				"     disjoint: false) ~> split1@(InsertNew, ExpireInsert)",
 				"split1@ExpireInsert derive(StartDate = currentDate(),",
 				"          EndDate = toDate(null()),",
-				"          IsCurrent = 1) ~> derivedColumn1",
-				"split1@ExpireInsert derive(EndDate = currentDate(),",
-				"          IsCurrent = 0) ~> derivedColumn2",
-				"derivedColumn2 alterRow(updateIf(true())) ~> alterRow1",
+				"          IsCurrent = 1) ~> NewVersionCol",
+				"split1@ExpireInsert derive(City = ERROR_FUNCTION(''),",
+				"          EndDate = currentDate(),",
+				"          IsCurrent = 0) ~> ExpiringCol",
+				"ExpiringCol alterRow(updateIf(true())) ~> UpdateAlter",
 				"split1@InsertNew derive(StartDate = currentDate(),",
 				"          EndDate = toDate(null()),",
-				"          IsCurrent = 1) ~> derivedColumn3",
-				"alterRow1 sink(allowSchemaDrift: true,",
+				"          IsCurrent = 1) ~> NewInsertionCol",
+				"UpdateAlter sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
 				"     insertable:false,",
@@ -121,8 +122,8 @@
 				"          StartDate,",
 				"          EndDate,",
 				"          IsCurrent",
-				"     )) ~> sink1",
-				"derivedColumn1 sink(allowSchemaDrift: true,",
+				"     )) ~> ExpireTarget",
+				"NewVersionCol sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
 				"     insertable:true,",
@@ -139,8 +140,8 @@
 				"          StartDate,",
 				"          EndDate,",
 				"          IsCurrent",
-				"     )) ~> sink2",
-				"derivedColumn3 sink(allowSchemaDrift: true,",
+				"     )) ~> NewVersionTarget",
+				"NewInsertionCol sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
 				"     insertable:true,",
@@ -157,7 +158,7 @@
 				"          StartDate,",
 				"          EndDate,",
 				"          IsCurrent",
-				"     )) ~> sink3"
+				"     )) ~> NewInsertTarget"
 			]
 		}
 	}
