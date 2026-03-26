@@ -25,13 +25,6 @@
 						"referenceName": "DS_SQL_TABLE",
 						"type": "DatasetReference"
 					},
-					"name": "sink1"
-				},
-				{
-					"dataset": {
-						"referenceName": "DS_SQL_TABLE",
-						"type": "DatasetReference"
-					},
 					"name": "sink2"
 				},
 				{
@@ -40,6 +33,13 @@
 						"type": "DatasetReference"
 					},
 					"name": "sink3"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "sink4"
 				}
 			],
 			"transformations": [
@@ -108,24 +108,6 @@
 				"          EndDate = toDate(null()),",
 				"          IsCurrent = 1) ~> derivedColumn3",
 				"derivedColumn2 alterRow(updateIf(true())) ~> alterRow1",
-				"derivedColumn1 sink(allowSchemaDrift: true,",
-				"     validateSchema: false,",
-				"     deletable:false,",
-				"     insertable:true,",
-				"     updateable:false,",
-				"     upsertable:false,",
-				"     format: 'table',",
-				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true,",
-				"     errorHandlingOption: 'stopOnFirstError',",
-				"     mapColumn(",
-				"          CustomerID,",
-				"          Name = split1@insert@Name,",
-				"          City = split1@insert@City,",
-				"          StartDate,",
-				"          EndDate,",
-				"          IsCurrent",
-				"     )) ~> sink1",
 				"alterRow1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
@@ -163,7 +145,25 @@
 				"          StartDate,",
 				"          EndDate,",
 				"          IsCurrent",
-				"     )) ~> sink3"
+				"     )) ~> sink3",
+				"derivedColumn1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          CustomerID,",
+				"          Name = split1@insert@Name,",
+				"          City = split1@insert@City,",
+				"          StartDate,",
+				"          EndDate,",
+				"          IsCurrent",
+				"     )) ~> sink4"
 			]
 		}
 	}
