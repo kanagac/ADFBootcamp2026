@@ -1,0 +1,49 @@
+{
+	"name": "SCD1",
+	"properties": {
+		"activities": [
+			{
+				"name": "Data flow1",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "SCD1",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"sourceSrc": {
+								"TABLENAME": "Customers_Source_IN1723"
+							},
+							"sourceTgt": {
+								"TABLENAME": "Target_Source_IN1723"
+							},
+							"sink1": {
+								"TABLENAME": "Target_Source_IN1723"
+							},
+							"sink2": {
+								"TABLENAME": "Target_Source_IN1723"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"folder": {
+			"name": "SCD"
+		},
+		"annotations": []
+	}
+}
