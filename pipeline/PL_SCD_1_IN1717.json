@@ -1,0 +1,49 @@
+{
+	"name": "PL_SCD_1_IN1717",
+	"properties": {
+		"activities": [
+			{
+				"name": "DF_SCD_1_IN1717",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DF_SCD_1_IN1717",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"sourcedata": {
+								"tablename": "in1717_src"
+							},
+							"targetdata": {
+								"tablename": "in1717_tgt"
+							},
+							"sink1": {
+								"tablename": "in1717_tgt"
+							},
+							"sink2": {
+								"tablename": "in1717_tgt"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"folder": {
+			"name": "Scd folder"
+		},
+		"annotations": []
+	}
+}
