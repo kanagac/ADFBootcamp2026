@@ -186,7 +186,7 @@
 						"referenceName": "DS_SQL_TABLE",
 						"type": "DatasetReference",
 						"parameters": {
-							"TableName": "Employee"
+							"tablename": "Employee"
 						}
 					}
 				],
@@ -195,7 +195,7 @@
 						"referenceName": "DS_SQL_TABLE",
 						"type": "DatasetReference",
 						"parameters": {
-							"TableName": "tgt_emp_IN1733"
+							"tablename": "tgt_emp_IN1733"
 						}
 					}
 				]

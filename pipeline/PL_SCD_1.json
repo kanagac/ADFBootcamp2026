@@ -1,5 +1,5 @@
 {
-	"name": "PL_Exercise_1733_D6_Q1",
+	"name": "PL_SCD_1",
 	"properties": {
 		"activities": [
 			{
@@ -15,10 +15,6 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"dataflow": {
-						"referenceName": "DF_SCD1",
-						"type": "DataFlowReference"
-					},
 					"compute": {
 						"coreCount": 8,
 						"computeType": "General"
@@ -27,9 +23,6 @@
 				}
 			}
 		],
-		"folder": {
-			"name": "Day-6"
-		},
 		"annotations": []
 	}
 }
