@@ -25,13 +25,13 @@
 							"TargetCustomer": {
 								"table_name": "Customer_SCD2_Target_IN1727"
 							},
-							"sink1": {
+							"ExpireTarget": {
 								"table_name": "Customer_SCD2_Target_IN1727"
 							},
-							"sink2": {
+							"NewVersionTarget": {
 								"table_name": "Customer_SCD2_Target_IN1727"
 							},
-							"sink3": {
+							"NewInsertTarget": {
 								"table_name": "Customer_SCD2_Target_IN1727"
 							}
 						}
