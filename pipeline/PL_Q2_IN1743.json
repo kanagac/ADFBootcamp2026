@@ -25,9 +25,6 @@
 							"source2": {
 								"Tablename": "target_customer_IN1743_SCD2"
 							},
-							"sink1": {
-								"Tablename": "target_customer_IN1743_SCD2"
-							},
 							"sink2": {
 								"Tablename": "target_customer_IN1743_SCD2"
 							},
