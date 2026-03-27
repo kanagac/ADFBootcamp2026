@@ -87,9 +87,6 @@
 					"name": "select1"
 				},
 				{
-					"name": "derivedColumn1"
-				},
-				{
 					"name": "select2"
 				},
 				{
@@ -184,7 +181,6 @@
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> select1",
-				"select1 derive(dw_loaded_at = currentDate()) ~> derivedColumn1",
 				"join3 select(mapColumn(",
 				"          payment_mode,",
 				"          payment_status,",
@@ -216,6 +212,7 @@
 				"     format: 'table',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
+				"     saveOrder: 1,",
 				"     errorHandlingOption: 'stopOnFirstError',",
 				"     mapColumn(",
 				"          customer_name,",
@@ -232,6 +229,7 @@
 				"     format: 'table',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
+				"     saveOrder: 2,",
 				"     errorHandlingOption: 'stopOnFirstError') ~> sink2",
 				"select2 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
@@ -242,8 +240,9 @@
 				"     format: 'table',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
+				"     saveOrder: 3,",
 				"     errorHandlingOption: 'stopOnFirstError') ~> sink3",
-				"derivedColumn1 sink(allowSchemaDrift: true,",
+				"select1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
 				"     insertable:true,",
@@ -252,6 +251,7 @@
 				"     format: 'table',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
+				"     saveOrder: 4,",
 				"     errorHandlingOption: 'stopOnFirstError') ~> sink4"
 			]
 		}
