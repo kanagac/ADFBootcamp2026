@@ -5,21 +5,13 @@
 			"referenceName": "LS_AZURE_STORAGE",
 			"type": "LinkedServiceReference"
 		},
-		"parameters": {
-			"pFilename": {
-				"type": "string"
-			}
-		},
 		"annotations": [],
 		"type": "DelimitedText",
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": {
-					"value": "@concat(dataset().pFilename)",
-					"type": "Expression"
-				},
-				"container": "metadatadriven"
+				"folderPath": "output",
+				"container": "check"
 			},
 			"columnDelimiter": ",",
 			"escapeChar": "\\",
