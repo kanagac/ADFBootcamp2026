@@ -1,0 +1,67 @@
+{
+	"name": "PL_Day_3_Q4_IN1716",
+	"properties": {
+		"description": "Flattern All Data files into one folder",
+		"activities": [
+			{
+				"name": "CP_INPUT_OUTPUT",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "BinarySource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": true,
+							"wildcardFolderPath": "input/data",
+							"wildcardFileName": "*",
+							"deleteFilesAfterCompletion": false
+						},
+						"formatSettings": {
+							"type": "BinaryReadSettings"
+						}
+					},
+					"sink": {
+						"type": "BinarySink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "DS_BINARY",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": "input",
+							"directory": "data"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DS_BINARY",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": "output",
+							"directory": "IN1716"
+						}
+					}
+				]
+			}
+		],
+		"folder": {
+			"name": "PL_Day_3_IN1716"
+		},
+		"annotations": []
+	}
+}
