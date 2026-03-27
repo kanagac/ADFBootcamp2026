@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Data flow1",
+				"name": "Question_2",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
@@ -15,6 +15,25 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
+					"dataflow": {
+						"referenceName": "Exercise_day_4_2",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"source1": {
+								"container": "input",
+								"foldername": "dataflowinput",
+								"filename": "Employees_India.csv"
+							},
+							"source2": {
+								"container": "input",
+								"foldername": "dataflowinput",
+								"filename": "Employees_USA.csv"
+							},
+							"sink1": {
+								"tablename": "Employee_Union_IN1717"
+							}
+						}
+					},
 					"compute": {
 						"coreCount": 8,
 						"computeType": "General"
