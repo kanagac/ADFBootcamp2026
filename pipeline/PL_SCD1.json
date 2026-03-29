@@ -1,0 +1,43 @@
+{
+	"name": "PL_SCD1",
+	"properties": {
+		"activities": [
+			{
+				"name": "DF_SCD1_TRG",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DF_SCD1_TRG",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"srcCustomer": {
+								"tableName": "STG_CUSTOMERS_IN1716"
+							},
+							"sinkSCD": {
+								"tableName": "DIM_CUSTOMER1_IN1716"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"folder": {
+			"name": "DIM_FACT"
+		},
+		"annotations": []
+	}
+}

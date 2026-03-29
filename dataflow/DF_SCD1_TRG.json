@@ -1,0 +1,90 @@
+{
+	"name": "DF_SCD1_TRG",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_GENERIC",
+						"type": "DatasetReference"
+					},
+					"name": "srcCustomer"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_GENERIC",
+						"type": "DatasetReference"
+					},
+					"name": "sinkSCD"
+				}
+			],
+			"transformations": [
+				{
+					"name": "derivedCustomer"
+				},
+				{
+					"name": "selectcolumns"
+				},
+				{
+					"name": "alterRowUPSERT"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          customer_id as string,",
+				"          customer_name as string,",
+				"          email as string,",
+				"          country as string,",
+				"          created_date as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> srcCustomer",
+				"srcCustomer derive(customer_id = toInteger(customer_id),",
+				"          contact = concat(customer_name, '-', email),",
+				"          Continent = case(country == 'Australia', 'Australia', country == 'India', 'Asia', country == 'UK' || country == 'Germany', 'Europe', country == 'Canada' || country == 'United States', 'North America', true(), 'UNKNOWN'),",
+				"          country_new = case(country == 'USA', 'United States of America', country == 'UK', 'United Kingdom', true(), country),",
+				"          created_date = iifNull(toTimestamp(created_date, 'yyyy-MM-dd'), toTimestamp('1900-01-01 00:00:00')),",
+				"          dw_created_at = currentTimestamp()) ~> derivedCustomer",
+				"derivedCustomer select(mapColumn(",
+				"          customer_id,",
+				"          customer_name,",
+				"          email,",
+				"          created_date,",
+				"          contact,",
+				"          Continent,",
+				"          country = country_new,",
+				"          dw_created_at",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> selectcolumns",
+				"selectcolumns alterRow(upsertIf(true())) ~> alterRowUPSERT",
+				"alterRowUPSERT sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:false,",
+				"     updateable:false,",
+				"     upsertable:true,",
+				"     keys:['customer_id'],",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          customer_id,",
+				"          customer_name,",
+				"          email,",
+				"          created_date,",
+				"          contact,",
+				"          Continent,",
+				"          country,",
+				"          dw_created_at",
+				"     )) ~> sinkSCD"
+			]
+		}
+	}
+}
