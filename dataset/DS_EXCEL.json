@@ -20,6 +20,7 @@
 			"location": {
 				"type": "AzureBlobStorageLocation",
 				"fileName": "source_data.xlsx",
+				"folderPath": "Excel_files",
 				"container": "input"
 			},
 			"firstRowAsHeader": true
