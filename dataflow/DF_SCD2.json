@@ -1,0 +1,177 @@
+{
+	"name": "DF_SCD2",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "DFSOURCE"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "TARGET"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "sink1",
+					"rejectedDataLinkedService": {
+						"referenceName": "LS_AZURE_STORAGE",
+						"type": "LinkedServiceReference"
+					}
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "sink2"
+				}
+			],
+			"transformations": [
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "derivedColumn2"
+				},
+				{
+					"name": "exists1"
+				},
+				{
+					"name": "derivedColumn3"
+				},
+				{
+					"name": "select1"
+				},
+				{
+					"name": "exists2"
+				},
+				{
+					"name": "exists3"
+				},
+				{
+					"name": "derivedColumn4"
+				},
+				{
+					"name": "alterRow1"
+				},
+				{
+					"name": "select2"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          user_id as integer,",
+				"          subscription as string,",
+				"          price as integer,",
+				"          location as string,",
+				"          pincode as integer",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> DFSOURCE",
+				"source(output(",
+				"          user_id as integer,",
+				"          subscription as string,",
+				"          price as integer,",
+				"          location as string,",
+				"          pincode as integer,",
+				"          isactive as integer",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> TARGET",
+				"DFSOURCE derive(Hash = md5(user_id,subscription,price,location,pincode)) ~> derivedColumn1",
+				"TARGET derive(hash = md5(user_id,subscription,price,location,pincode)) ~> derivedColumn2",
+				"derivedColumn1, derivedColumn2 exists(derivedColumn1@Hash == derivedColumn2@hash,",
+				"     negate:true,",
+				"     broadcast: 'auto')~> exists1",
+				"exists1 derive(isactive = 1) ~> derivedColumn3",
+				"derivedColumn3 select(mapColumn(",
+				"          user_id,",
+				"          subscription,",
+				"          price,",
+				"          location,",
+				"          pincode,",
+				"          isactive",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"derivedColumn2, derivedColumn1 exists(TARGET@user_id == DFSOURCE@user_id,",
+				"     negate:false,",
+				"     broadcast: 'auto')~> exists2",
+				"exists2, derivedColumn1 exists(derivedColumn2@hash == derivedColumn1@Hash,",
+				"     negate:true,",
+				"     broadcast: 'auto')~> exists3",
+				"exists3 derive(isactive = 0) ~> derivedColumn4",
+				"derivedColumn4 alterRow(updateIf(true())) ~> alterRow1",
+				"alterRow1 select(mapColumn(",
+				"          user_id,",
+				"          subscription,",
+				"          price,",
+				"          location,",
+				"          pincode,",
+				"          isactive",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select2",
+				"select1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          Education as string,",
+				"          JoiningYear as integer,",
+				"          City as string,",
+				"          PaymentTier as integer,",
+				"          Age as integer,",
+				"          Gender as string,",
+				"          EverBenched as boolean,",
+				"          ExperienceInCurrentDomain as integer,",
+				"          LeaveOrNot as boolean",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink1",
+				"select2 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          Education as string,",
+				"          JoiningYear as integer,",
+				"          City as string,",
+				"          PaymentTier as integer,",
+				"          Age as integer,",
+				"          Gender as string,",
+				"          EverBenched as boolean,",
+				"          ExperienceInCurrentDomain as integer,",
+				"          LeaveOrNot as boolean",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink2"
+			]
+		}
+	}
+}
