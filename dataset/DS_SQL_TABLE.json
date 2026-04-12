@@ -10,7 +10,7 @@
 		"schema": [],
 		"typeProperties": {
 			"schema": "dbo",
-			"table": "clean_customer_orders"
+			"table": "DIMENSION_CUSTOMER_IN1716"
 		}
 	}
 }
