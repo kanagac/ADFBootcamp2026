@@ -21,7 +21,25 @@
 			],
 			"sinks": [
 				{
+					"dataset": {
+						"referenceName": "DS_SCD2_Customers_Target",
+						"type": "DatasetReference"
+					},
 					"name": "sink1"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SCD2_Customers_Target",
+						"type": "DatasetReference"
+					},
+					"name": "sink2"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SCD2_Customers_Target",
+						"type": "DatasetReference"
+					},
+					"name": "sink3"
 				}
 			],
 			"transformations": [
@@ -54,6 +72,24 @@
 				},
 				{
 					"name": "select3"
+				},
+				{
+					"name": "derivedColumn4"
+				},
+				{
+					"name": "alterRow2"
+				},
+				{
+					"name": "select4"
+				},
+				{
+					"name": "select5"
+				},
+				{
+					"name": "derivedColumn5"
+				},
+				{
+					"name": "alterRow3"
 				}
 			],
 			"scriptLines": [
@@ -109,10 +145,6 @@
 				"     CustomerID==trg_CustomerID&&(SourceHash!=trg_TargetHash),",
 				"     disjoint: false) ~> split1@(newinsert, existing)",
 				"split1@existing select(mapColumn(",
-				"          CustomerID,",
-				"          Name,",
-				"          City,",
-				"          SourceHash,",
 				"          trg_CustomerID,",
 				"          trg_StartDate,",
 				"          trg_EndDate,",
@@ -121,10 +153,82 @@
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> select3",
+				"select3 derive(trg_EndDate = currentDate(),",
+				"          trg_IsCurrent = false()) ~> derivedColumn4",
+				"select4 alterRow(updateIf(true())) ~> alterRow2",
+				"derivedColumn4 select(mapColumn(",
+				"          CustomerID = trg_CustomerID,",
+				"          StartDate = trg_StartDate,",
+				"          EndDate = trg_EndDate,",
+				"          IsCurrent = trg_IsCurrent,",
+				"          TargetHash = trg_TargetHash",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select4",
+				"split1@existing select(mapColumn(",
+				"          CustomerID,",
+				"          Name,",
+				"          City",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select5",
+				"select5 derive(StartDate = currentDate(),",
+				"          IsCurrent = true()) ~> derivedColumn5",
+				"derivedColumn5 alterRow(insertIf(true())) ~> alterRow3",
 				"alterRow1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> sink1"
+				"     skipDuplicateMapOutputs: true,",
+				"     saveOrder: 2,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          CustomerID,",
+				"          Name,",
+				"          City,",
+				"          StartDate,",
+				"          IsCurrent",
+				"     )) ~> sink1",
+				"alterRow2 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:false,",
+				"     updateable:true,",
+				"     upsertable:false,",
+				"     keys:['CustomerID','StartDate'],",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     saveOrder: 1,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          CustomerID,",
+				"          StartDate,",
+				"          EndDate,",
+				"          IsCurrent",
+				"     )) ~> sink2",
+				"alterRow3 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     saveOrder: 3,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          CustomerID,",
+				"          Name,",
+				"          City,",
+				"          StartDate,",
+				"          IsCurrent",
+				"     )) ~> sink3"
 			]
 		}
 	}
