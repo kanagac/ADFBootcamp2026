@@ -31,13 +31,6 @@
 							"sink2": {
 								"table": "Customers_target_IN1738"
 							}
-						},
-						"linkedServiceParameters": {
-							"Target": {
-								"schemaLinkedService": {
-									"table": " "
-								}
-							}
 						}
 					},
 					"compute": {
