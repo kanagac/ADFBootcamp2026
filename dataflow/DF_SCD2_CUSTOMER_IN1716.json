@@ -1,0 +1,92 @@
+{
+	"name": "DF_SCD2_CUSTOMER_IN1716",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_CSV",
+						"type": "DatasetReference"
+					},
+					"name": "srcCustomer"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "trgCustomer"
+				}
+			],
+			"sinks": [],
+			"transformations": [
+				{
+					"name": "DCTransformations"
+				}
+			],
+			"scriptLines": [
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> srcCustomer",
+				"source(output(",
+				"          surrogate_key as integer,",
+				"          customer_id as string,",
+				"          full_name as string,",
+				"          city_clean as string,",
+				"          state_code as string,",
+				"          email_clean as string,",
+				"          phone_clean as string,",
+				"          segment_clean as string,",
+				"          signup_date as date,",
+				"          start_date as date,",
+				"          end_date as date,",
+				"          is_current as integer,",
+				"          record_source as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> trgCustomer",
+				"srcCustomer derive(full_name = concat(initCap(trim(iif(isNull(first_name) || trim(first_name) == '',\"Unknown\",first_name))), ' ',\r",
+				"initCap(trim(iif(isNull(last_name) || trim(last_name) == '',\"Unknown\",last_name)))),",
+				"          city_clean = initCap(lower(trim(coalesce(city,'Unknown')))),",
+				"          state_code = upper(trim(coalesce(state,'NA'))),",
+				"          email_clean = iif(isNull(email) || trim(email) == '' || regexMatch(email, '.*@.*') ,'Invalid email', lower(trim(email))),",
+				"          phone_clean = iif(\r",
+				"    length(regexReplace(phone, '[^0-9]', '')) >= 10,\r",
+				"    right(regexReplace(phone, '[^0-9]', ''), 10),\r",
+				"    'Invalid'\r",
+				"),",
+				"          first_name_clean = iif(isNull(first_name) || trim(first_name)=='', 'Unknown', initCap(trim(first_name))),",
+				"          last_name_clean = iif(isNull(last_name) || trim(last_name)=='', 'Unknown', initCap(trim(last_name))),",
+				"          segment_clean = case(\r",
+				"  lower(trim(segment)) == 'gold',    'Gold',\r",
+				"  lower(trim(segment)) == 'silver',  'Silver',\r",
+				"  lower(trim(segment)) == 'premium', 'Premium',\r",
+				"  lower(trim(segment)) == 'regular', 'Regular',\r",
+				"  'Unknown'\r",
+				"),",
+				"          signup_date_clean = iif(\r",
+				"    isNull(signup_date) || trim(toString(signup_date)) == '',\r",
+				"    toDate('1900-01-01', 'yyyy-MM-dd'),\r",
+				"    iif(\r",
+				"        regexMatch(trim(toString(signup_date)), `\\d{2}\\.\\d{2}\\.\\d{4}`),\r",
+				"        toDate(replace(trim(toString(signup_date)), '.', '-'), 'dd-MM-yyyy'),\r",
+				"        toDate(trim(toString(signup_date)), 'dd-MM-yyyy')\r",
+				"    )\r",
+				"),",
+				"          last_updated_clean = toDate(\r",
+				"  concat(\r",
+				"    substring(toString(last_updated), 7, 4),\r",
+				"    '-',\r",
+				"    substring(toString(last_updated), 4, 2),\r",
+				"    '-',\r",
+				"    substring(toString(last_updated), 1, 2)\r",
+				"  ),\r",
+				"  'yyyy-MM-dd'\r",
+				")) ~> DCTransformations"
+			]
+		}
+	}
+}
