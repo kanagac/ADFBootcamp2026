@@ -1,0 +1,97 @@
+{
+	"name": "PL_Truncate_Load",
+	"properties": {
+		"activities": [
+			{
+				"name": "TruncateLoadScript",
+				"type": "Script",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "LS_AZURE_SQL",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "Query",
+							"text": "TRUNCATE TABLE DIM_PRODUCTS_IN1716"
+						}
+					],
+					"scriptBlockExecutionTimeout": "02:00:00"
+				}
+			},
+			{
+				"name": "CP_Truncate_Load",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "TruncateLoadScript",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "SELECT\n    product_id,\n    product_name,\n    category,\n    CAST(CAST(unit_price AS DECIMAL(10,2)) AS INT) AS unit_price,\n    GETDATE()                 AS dw_created_at\nFROM STG_PRODUCTS_IN1716",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"writeBehavior": "insert",
+						"sqlWriterUseTableLock": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "DS_SQL_GENERIC",
+						"type": "DatasetReference",
+						"parameters": {
+							"tableName": "STG_PRODUCTS_IN1716"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DS_SQL_GENERIC",
+						"type": "DatasetReference",
+						"parameters": {
+							"tableName": "DIM_PRODUCTS_IN1716"
+						}
+					}
+				]
+			}
+		],
+		"folder": {
+			"name": "Loading_strategies"
+		},
+		"annotations": []
+	}
+}
