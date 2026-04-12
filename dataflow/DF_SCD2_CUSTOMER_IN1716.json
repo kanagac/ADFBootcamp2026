@@ -23,6 +23,15 @@
 			"transformations": [
 				{
 					"name": "DCTransformations"
+				},
+				{
+					"name": "LeftJoinSRCTRG"
+				},
+				{
+					"name": "DCDetention"
+				},
+				{
+					"name": "SplitInsertUpdate"
 				}
 			],
 			"scriptLines": [
@@ -75,17 +84,24 @@
 				"        toDate(replace(trim(toString(signup_date)), '.', '-'), 'dd-MM-yyyy'),\r",
 				"        toDate(trim(toString(signup_date)), 'dd-MM-yyyy')\r",
 				"    )\r",
-				"),",
-				"          last_updated_clean = toDate(\r",
-				"  concat(\r",
-				"    substring(toString(last_updated), 7, 4),\r",
-				"    '-',\r",
-				"    substring(toString(last_updated), 4, 2),\r",
-				"    '-',\r",
-				"    substring(toString(last_updated), 1, 2)\r",
-				"  ),\r",
-				"  'yyyy-MM-dd'\r",
-				")) ~> DCTransformations"
+				")) ~> DCTransformations",
+				"DCTransformations, trgCustomer join(srcCustomer@customer_id == trgCustomer@customer_id,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> LeftJoinSRCTRG",
+				"LeftJoinSRCTRG derive(is_new = isNull(trgCustomer@customer_id),",
+				"          is_changed = !isNull(trgCustomer@customer_id)\r",
+				"&&\r",
+				"(\r",
+				"  DCTransformations@full_name     != trgCustomer@full_name     ||\r",
+				"  city          != trgCustomer@city_clean    ||\r",
+				"  DCTransformations@email_clean   != trgCustomer@email_clean   ||\r",
+				"  DCTransformations@phone_clean   != trgCustomer@phone_clean   ||\r",
+				"  DCTransformations@segment_clean != trgCustomer@segment_clean\r",
+				")) ~> DCDetention",
+				"DCDetention split(ERROR_FUNCTION(''),",
+				"     disjoint: false) ~> SplitInsertUpdate@(, )"
 			]
 		}
 	}
