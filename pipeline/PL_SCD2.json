@@ -1,0 +1,10 @@
+{
+	"name": "PL_SCD2",
+	"properties": {
+		"description": "Implementation of the SCD2 Pipeline",
+		"folder": {
+			"name": "Loading_strategies"
+		},
+		"annotations": []
+	}
+}
