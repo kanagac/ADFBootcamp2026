@@ -1,0 +1,167 @@
+{
+	"name": "DF_hv",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "sourcesrc"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "sourcetgt"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "sinksrc"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "join1"
+				},
+				{
+					"name": "select1"
+				},
+				{
+					"name": "update"
+				},
+				{
+					"name": "select2"
+				},
+				{
+					"name": "alterRow1"
+				},
+				{
+					"name": "select3"
+				},
+				{
+					"name": "derivedColumn1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          stor_id as string,",
+				"          stor_name as string,",
+				"          stor_address as string,",
+				"          city as string,",
+				"          state as string,",
+				"          zip as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> sourcesrc",
+				"source(output(",
+				"          Store_ID as string,",
+				"          Store_Name as string,",
+				"          stor_address as string,",
+				"          City as string,",
+				"          State as string,",
+				"          Zip_Code as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> sourcetgt",
+				"sourcesrc, select1 join(stor_id == tgt_Store_ID,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join1",
+				"sourcetgt select(mapColumn(",
+				"          tgt_Store_ID = Store_ID,",
+				"          tgt_Store_Name = Store_Name,",
+				"          tgt_stor_address = stor_address,",
+				"          tgt_City = City,",
+				"          tgt_State = State,",
+				"          tgt_Zip_Code = Zip_Code",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"join1 split(isNull(tgt_Store_ID),",
+				"     stor_id==tgt_Store_ID && stor_name !=tgt_Store_Name,",
+				"     disjoint: false) ~> update@(insert, update)",
+				"derivedColumn1 select(mapColumn(",
+				"          store_id = stor_id,",
+				"          stor_name,",
+				"          stor_address,",
+				"          city,",
+				"          state,",
+				"          zip",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select2",
+				"update@update alterRow(updateIf(1==1)) ~> alterRow1",
+				"alterRow1 select(mapColumn(",
+				"          stor_id,",
+				"          stor_name,",
+				"          stor_address,",
+				"          city,",
+				"          state,",
+				"          zip",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select3",
+				"update@insert derive(stor_name = upper(stor_name),",
+				"          stor_address = initCap(stor_address)) ~> derivedColumn1",
+				"select2 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          stor_id = store_id,",
+				"          stor_name,",
+				"          stor_address,",
+				"          city,",
+				"          state,",
+				"          zip",
+				"     )) ~> sinksrc",
+				"select3 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:false,",
+				"     updateable:true,",
+				"     upsertable:false,",
+				"     keys:['stor_id'],",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          stor_id,",
+				"          stor_name,",
+				"          stor_address,",
+				"          city,",
+				"          state,",
+				"          zip",
+				"     )) ~> sink1"
+			]
+		}
+	}
+}
