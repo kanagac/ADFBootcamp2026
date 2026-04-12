@@ -16,8 +16,20 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "dataflow1",
-						"type": "DataFlowReference"
+						"referenceName": "DF_SCD1",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"source2": {
+								"TableName": "cust_target"
+							}
+						},
+						"linkedServiceParameters": {
+							"source2": {
+								"schemaLinkedService": {
+									"TableName": "cust_target"
+								}
+							}
+						}
 					},
 					"compute": {
 						"coreCount": 8,
