@@ -1,0 +1,157 @@
+{
+	"name": "SCD2_Practice",
+	"properties": {
+		"folder": {
+			"name": "SCD"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "source"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "target"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "sink2"
+				}
+			],
+			"transformations": [
+				{
+					"name": "join1"
+				},
+				{
+					"name": "split1"
+				},
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "alterRow1"
+				},
+				{
+					"name": "derivedColumn2"
+				},
+				{
+					"name": "split2"
+				},
+				{
+					"name": "select1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          customer_id as integer,",
+				"          customer_name as string,",
+				"          city as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source",
+				"source(output(",
+				"          customer_key as integer,",
+				"          customer_id as integer,",
+				"          customer_name as string,",
+				"          city as string,",
+				"          start_date as date,",
+				"          end_date as date,",
+				"          is_current as integer",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> target",
+				"source, target join(source@customer_id == target@customer_id,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join1",
+				"join1 split(isNull(target@customer_id),",
+				"     !isNull(target@customer_id) && source@city!=target@city,",
+				"     disjoint: false) ~> split1@(insert, update)",
+				"split1@insert derive(start_date = currentDate(),",
+				"          is_current = 1) ~> derivedColumn1",
+				"derivedColumn2 alterRow(updateIf(1==1)) ~> alterRow1",
+				"split2@expire derive(end_date = currentDate(),",
+				"          is_current = 0) ~> derivedColumn2",
+				"split1@update split(true(),",
+				"     true(),",
+				"     disjoint: false) ~> split2@(expire, insertnew)",
+				"split2@insertnew select(mapColumn(",
+				"          customer_id = split2@insertnew@customer_id,",
+				"          customer_name = split2@insertnew@customer_name,",
+				"          city = split2@insertnew@city,",
+				"          customer_key,",
+				"          customer_id = split2@insertnew@customer_id,",
+				"          customer_name = split2@insertnew@customer_name,",
+				"          city = split2@insertnew@city,",
+				"          start_date,",
+				"          end_date,",
+				"          is_current",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"derivedColumn1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          customer_id = split1@insert@customer_id,",
+				"          customer_name = split1@insert@customer_name,",
+				"          city = split1@insert@city,",
+				"          start_date,",
+				"          end_date,",
+				"          is_current",
+				"     )) ~> sink1",
+				"alterRow1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:false,",
+				"     updateable:true,",
+				"     upsertable:false,",
+				"     keys:['customer_key'],",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          customer_key,",
+				"          customer_id,",
+				"          city,",
+				"          start_date,",
+				"          end_date,",
+				"          is_current",
+				"     )) ~> sink2"
+			]
+		}
+	}
+}
