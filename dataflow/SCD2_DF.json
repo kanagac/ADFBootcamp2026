@@ -1,0 +1,131 @@
+{
+	"name": "SCD2_DF",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SCD2_Customers_Target",
+						"type": "DatasetReference"
+					},
+					"name": "target"
+				}
+			],
+			"sinks": [
+				{
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "select1"
+				},
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "filter1"
+				},
+				{
+					"name": "derivedColumn2"
+				},
+				{
+					"name": "derivedColumn3"
+				},
+				{
+					"name": "alterRow1"
+				},
+				{
+					"name": "lookup1"
+				},
+				{
+					"name": "select2"
+				},
+				{
+					"name": "split1"
+				},
+				{
+					"name": "select3"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          CustomerID as integer,",
+				"          Name as string,",
+				"          City as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source1",
+				"source(output(",
+				"          CustomerSK as integer,",
+				"          CustomerID as integer,",
+				"          Name as string,",
+				"          City as string,",
+				"          StartDate as date,",
+				"          EndDate as date,",
+				"          IsCurrent as boolean",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> target",
+				"source1 select(mapColumn(",
+				"          CustomerID,",
+				"          Name,",
+				"          City",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 derive(SourceHash = md5(Name,City)) ~> derivedColumn1",
+				"target filter(IsCurrent==true()) ~> filter1",
+				"filter1 derive(TargetHash = md5(Name,City)) ~> derivedColumn2",
+				"split1@newinsert derive(StartDate = currentDate(),",
+				"          IsCurrent = true()) ~> derivedColumn3",
+				"derivedColumn3 alterRow(insertIf(1==1)) ~> alterRow1",
+				"derivedColumn1, select2 lookup(CustomerID == trg_CustomerID,",
+				"     multiple: false,",
+				"     pickup: 'any',",
+				"     broadcast: 'auto')~> lookup1",
+				"derivedColumn2 select(mapColumn(",
+				"          trg_CustomerID = CustomerID,",
+				"          trg_StartDate = StartDate,",
+				"          trg_EndDate = EndDate,",
+				"          trg_IsCurrent = IsCurrent,",
+				"          trg_TargetHash = TargetHash",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select2",
+				"lookup1 split(isNull(trg_CustomerID),",
+				"     CustomerID==trg_CustomerID&&(SourceHash!=trg_TargetHash),",
+				"     disjoint: false) ~> split1@(newinsert, existing)",
+				"split1@existing select(mapColumn(",
+				"          CustomerID,",
+				"          Name,",
+				"          City,",
+				"          SourceHash,",
+				"          trg_CustomerID,",
+				"          trg_StartDate,",
+				"          trg_EndDate,",
+				"          trg_IsCurrent,",
+				"          trg_TargetHash",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select3",
+				"alterRow1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1"
+			]
+		}
+	}
+}
