@@ -26,13 +26,7 @@
 					},
 					"dataset": {
 						"referenceName": "DS_SQL_TABLE",
-						"type": "DatasetReference",
-						"parameters": {
-							"pTablename": {
-								"value": "meta_ingestion_config",
-								"type": "Expression"
-							}
-						}
+						"type": "DatasetReference"
 					},
 					"firstRowOnly": false
 				}
@@ -91,13 +85,7 @@
 											},
 											"dataset": {
 												"referenceName": "DS_SQL_TABLE",
-												"type": "DatasetReference",
-												"parameters": {
-													"pTablename": {
-														"value": "meta_watermark",
-														"type": "Expression"
-													}
-												}
+												"type": "DatasetReference"
 											},
 											"firstRowOnly": true
 										}
@@ -122,16 +110,6 @@
 										},
 										"userProperties": [],
 										"typeProperties": {
-											"dataflow": {
-												"referenceName": "dataflow1",
-												"type": "DataFlowReference",
-												"parameters": {
-													"pTxdate": {
-														"value": "'@{activity('Lookup2').output.firstRow.last_value}'",
-														"type": "Expression"
-													}
-												}
-											},
 											"compute": {
 												"coreCount": 8,
 												"computeType": "General"
@@ -223,13 +201,7 @@
 										"outputs": [
 											{
 												"referenceName": "DS_SQL_TABLE",
-												"type": "DatasetReference",
-												"parameters": {
-													"pTablename": {
-														"value": "@item().target_table",
-														"type": "Expression"
-													}
-												}
+												"type": "DatasetReference"
 											}
 										]
 									}
