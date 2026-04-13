@@ -28,7 +28,7 @@
 					},
 					"sink": {
 						"type": "AzureSqlSink",
-						"preCopyScript": "TRUNCATE TABLE title_stg",
+						"preCopyScript": "TRUNCATE TABLE TITLES",
 						"writeBehavior": "insert",
 						"sqlWriterUseTableLock": false,
 						"disableMetricsCollection": false
@@ -36,6 +36,94 @@
 					"enableStaging": false,
 					"translator": {
 						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "title_id",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "title_id",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "title",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "title_type",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "type",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "type",
+									"type": "String",
+									"physicalType": "char"
+								}
+							},
+							{
+								"source": {
+									"name": "pub_id",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "pub_id",
+									"type": "String",
+									"physicalType": "char"
+								}
+							},
+							{
+								"source": {
+									"name": "price",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "price",
+									"type": "Decimal",
+									"physicalType": "money",
+									"scale": 4,
+									"precision": 19
+								}
+							},
+							{
+								"source": {
+									"name": "notes",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "notes",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "pubdate",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "pubdate",
+									"type": "DateTime",
+									"physicalType": "datetime"
+								}
+							}
+						],
 						"typeConversion": true,
 						"typeConversionSettings": {
 							"allowDataTruncation": true,
@@ -46,12 +134,7 @@
 				"inputs": [
 					{
 						"referenceName": "DS_CSV",
-						"type": "DatasetReference",
-						"parameters": {
-							"directory": "input",
-							"container": "mock_test_IN1716",
-							"file_name": "TITLES_messy_IN1716.csv"
-						}
+						"type": "DatasetReference"
 					}
 				],
 				"outputs": [
@@ -59,7 +142,7 @@
 						"referenceName": "DS_SQL_GENERIC",
 						"type": "DatasetReference",
 						"parameters": {
-							"tableName": "title_stg"
+							"tableName": "TITLES"
 						}
 					}
 				]
