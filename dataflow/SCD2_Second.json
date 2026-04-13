@@ -105,7 +105,7 @@
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> select1",
 				"select1 derive(end_date = currentDate(),",
-				"          is_current = 1) ~> derivedColumn1",
+				"          is_current = 0) ~> derivedColumn1",
 				"derivedColumn1 alterRow(updateIf(1==1)) ~> alterRow1",
 				"join1 filter(isNull(target1@customer_id) || source1@city!=target1@city) ~> filter2",
 				"filter2 select(mapColumn(",
