@@ -63,6 +63,9 @@
 				},
 				{
 					"name": "alterRow1"
+				},
+				{
+					"name": "select1"
 				}
 			],
 			"scriptLines": [
@@ -102,12 +105,26 @@
 				"split1@update split(true(),",
 				"     true(),",
 				"     disjoint: false) ~> split2@(expire, insertnew)",
-				"split2@expire derive(EndDate = currentDate(),",
+				"select1 derive(EndDate = currentDate(),",
 				"          IsCurrent = 0) ~> derivedColumn2",
 				"split2@insertnew derive(StartDate = currentDate(),",
 				"          EndDate = toDate(null()),",
 				"          IsCurrent = 1) ~> derivedColumn3",
 				"derivedColumn2 alterRow(updateIf(true())) ~> alterRow1",
+				"split2@expire select(mapColumn(",
+				"          id,",
+				"          name = split2@expire@name,",
+				"          city = split2@expire@city,",
+				"          CustomerSK,",
+				"          CustomerID,",
+				"          Name = split2@expire@Name,",
+				"          City = split2@expire@City,",
+				"          StartDate,",
+				"          EndDate,",
+				"          IsCurrent",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
 				"alterRow1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
