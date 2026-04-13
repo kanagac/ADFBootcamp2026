@@ -5,10 +5,6 @@
 		"typeProperties": {
 			"sources": [
 				{
-					"dataset": {
-						"referenceName": "DS_CSV",
-						"type": "DatasetReference"
-					},
 					"name": "srcCustomer"
 				},
 				{
@@ -73,8 +69,7 @@
 			],
 			"scriptLines": [
 				"source(allowSchemaDrift: true,",
-				"     validateSchema: false,",
-				"     ignoreNoFilesFound: false) ~> srcCustomer",
+				"     validateSchema: false) ~> srcCustomer",
 				"source(output(",
 				"          surrogate_key as integer,",
 				"          customer_id as string,",
