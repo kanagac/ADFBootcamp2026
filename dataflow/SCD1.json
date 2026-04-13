@@ -59,7 +59,7 @@
 				"     matchType:'exact',",
 				"     ignoreSpaces: false,",
 				"     broadcast: 'auto')~> join1",
-				"join1 derive({} = ERROR_FUNCTION('')) ~> derivedColumn1"
+				"join1 derive(end_date = ERROR_FUNCTION('')) ~> derivedColumn1"
 			]
 		}
 	}
