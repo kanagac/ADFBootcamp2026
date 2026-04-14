@@ -1,0 +1,52 @@
+{
+	"name": "pipeline4",
+	"properties": {
+		"activities": [
+			{
+				"name": "Stores",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DF_Stores",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"source1": {
+								"FileName": "stores.csv"
+							},
+							"source2": {
+								"TableName": "Dim_Stores_IN1734"
+							},
+							"sink1": {
+								"TableName": "Dim_Stores_IN1734"
+							},
+							"sink2": {
+								"TableName": "Dim_Stores_IN1734"
+							},
+							"sink3": {
+								"TableName": "Dim_Stores_IN1734"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"folder": {
+			"name": "Sample"
+		},
+		"annotations": []
+	}
+}

@@ -1,0 +1,46 @@
+{
+	"name": "PL_Practice",
+	"properties": {
+		"activities": [
+			{
+				"name": "Data flow1",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DF_Practice",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"source": {
+								"FileName": "titles.csv"
+							},
+							"source1": {
+								"TableName": "Dim_Title_IN1734"
+							},
+							"DimTitles": {
+								"TableName": "Dim_Title_IN1734"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"folder": {
+			"name": "Sample"
+		},
+		"annotations": []
+	}
+}
