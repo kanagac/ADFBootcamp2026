@@ -17,7 +17,21 @@
 				"typeProperties": {
 					"dataflow": {
 						"referenceName": "DF_Authors",
-						"type": "DataFlowReference"
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"source": {
+								"FileName": "authors.csv"
+							},
+							"target": {
+								"TableName": "Dim_Author_IN1734"
+							},
+							"DimAuthors": {
+								"TableName": "Dim_Author_IN1734"
+							},
+							"DAuthor": {
+								"TableName": "Dim_Author_IN1734"
+							}
+						}
 					},
 					"compute": {
 						"coreCount": 8,
