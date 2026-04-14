@@ -1,0 +1,164 @@
+{
+	"name": "DF_SCD_2_II",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE_INPUT",
+						"type": "DatasetReference"
+					},
+					"name": "SourceCustomer"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE_INPUT",
+						"type": "DatasetReference"
+					},
+					"name": "TargetCustomer"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE_OUTPUT",
+						"type": "DatasetReference"
+					},
+					"name": "InsertLoad"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE_OUTPUT",
+						"type": "DatasetReference"
+					},
+					"name": "UpsetLoad"
+				}
+			],
+			"transformations": [
+				{
+					"name": "LeftJoin"
+				},
+				{
+					"name": "UpsetFilter"
+				},
+				{
+					"name": "InsertFilter"
+				},
+				{
+					"name": "InsertSelect"
+				},
+				{
+					"name": "UpsetSelect"
+				},
+				{
+					"name": "NewInsert"
+				},
+				{
+					"name": "ExpireInsert"
+				},
+				{
+					"name": "AlterUpdate"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          CustomerID as integer,",
+				"          Name as string,",
+				"          City as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> SourceCustomer",
+				"source(output(",
+				"          CustomerSK as integer,",
+				"          CustomerID as integer,",
+				"          Name as string,",
+				"          City as string,",
+				"          StartDate as date,",
+				"          EndDate as date,",
+				"          IsCurrent as boolean",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> TargetCustomer",
+				"SourceCustomer, TargetCustomer join(SourceCustomer@CustomerID == TargetCustomer@CustomerID,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> LeftJoin",
+				"LeftJoin filter(!isNull(TargetCustomer@CustomerID) && SourceCustomer@City != TargetCustomer@City) ~> UpsetFilter",
+				"LeftJoin filter(isNull(TargetCustomer@CustomerID) || SourceCustomer@City != TargetCustomer@City) ~> InsertFilter",
+				"InsertFilter select(mapColumn(",
+				"          CustomerID = SourceCustomer@CustomerID,",
+				"          Name = SourceCustomer@Name,",
+				"          City = SourceCustomer@City,",
+				"          StartDate,",
+				"          EndDate,",
+				"          IsCurrent",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> InsertSelect",
+				"UpsetFilter select(mapColumn(",
+				"          CustomerSK,",
+				"          CustomerID = SourceCustomer@CustomerID,",
+				"          Name = SourceCustomer@Name,",
+				"          TGT_City = TargetCustomer@City,",
+				"          StartDate,",
+				"          EndDate,",
+				"          IsCurrent",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> UpsetSelect",
+				"InsertSelect derive(StartDate = currentDate(),",
+				"          EndDate = toDate(null()),",
+				"          IsCurrent = 1) ~> NewInsert",
+				"UpsetSelect derive(EndDate = currentDate(),",
+				"          IsCurrent = 0) ~> ExpireInsert",
+				"ExpireInsert alterRow(updateIf(true())) ~> AlterUpdate",
+				"NewInsert sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     saveOrder: 2,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          CustomerID,",
+				"          Name,",
+				"          City,",
+				"          StartDate,",
+				"          EndDate,",
+				"          IsCurrent",
+				"     )) ~> InsertLoad",
+				"AlterUpdate sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:false,",
+				"     updateable:true,",
+				"     upsertable:false,",
+				"     keys:['CustomerSK'],",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     saveOrder: 1,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          CustomerSK,",
+				"          CustomerID,",
+				"          Name,",
+				"          City = TGT_City,",
+				"          StartDate,",
+				"          EndDate,",
+				"          IsCurrent",
+				"     )) ~> UpsetLoad"
+			]
+		}
+	}
+}
