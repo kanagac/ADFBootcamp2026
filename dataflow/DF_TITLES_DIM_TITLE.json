@@ -27,6 +27,9 @@
 				},
 				{
 					"name": "SelectingSRCcolumns"
+				},
+				{
+					"name": "FilterPublishDate"
 				}
 			],
 			"scriptLines": [
@@ -43,14 +46,12 @@
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
 				"     format: 'table') ~> TItlesSRC",
-				"TItlesSRC derive(Title_ID = concat('T-',iifNull(title_id, \"Field Must be Populated\"),'-001'),",
-				"          Title_Desc = \r",
-				"iif(\r",
+				"FilterPublishDate derive(Title_ID = concat('T-',iifNull(title_id, \"Field Must be Populated\"),'-001'),",
+				"          Title_Desc = iif(\r",
 				"    isNull(type) || upper(type) == 'NULL',\r",
 				"    'Title Not Found',\r",
 				"    concat(upper(type),'-',upper(title_type))\r",
-				")\r",
-				",",
+				"),",
 				"          Type = iif(\r",
 				"    isNull(type) || upper(type) == 'NULL',\r",
 				"    'Type Not Found',\r",
@@ -81,6 +82,7 @@
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> SelectingSRCcolumns",
+				"TItlesSRC filter(toDate(trim(pubdate),'yyyy-MM-dd HH:mm:ss') > toDate('2021-01-01','yyyy-MM-dd')) ~> FilterPublishDate",
 				"SelectingSRCcolumns sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
