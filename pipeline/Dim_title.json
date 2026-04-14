@@ -15,15 +15,6 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"dataflow": {
-						"referenceName": "dim_title",
-						"type": "DataFlowReference",
-						"datasetParameters": {
-							"sink1": {
-								"tablename": "DIM_TITLE_IN1733"
-							}
-						}
-					},
 					"compute": {
 						"coreCount": 8,
 						"computeType": "General"
