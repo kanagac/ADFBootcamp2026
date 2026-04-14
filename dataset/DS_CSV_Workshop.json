@@ -22,10 +22,6 @@
 					"value": "@dataset().file_name",
 					"type": "Expression"
 				},
-				"folderPath": {
-					"value": "@dataset().file_name",
-					"type": "Expression"
-				},
 				"container": {
 					"value": "@dataset().container",
 					"type": "Expression"
