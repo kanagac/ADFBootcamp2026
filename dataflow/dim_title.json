@@ -1,0 +1,98 @@
+{
+	"name": "dim_title",
+	"properties": {
+		"folder": {
+			"name": "Workshop"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "filter1"
+				},
+				{
+					"name": "select1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          title_id as string,",
+				"          title_type as string,",
+				"          type as string,",
+				"          pub_id as string,",
+				"          price as decimal(19,4),",
+				"          notes as string,",
+				"          pubdate as timestamp",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source1",
+				"filter1 derive(title_id = concat(\"T\",title_id,\"-001\"),",
+				"          title_type = concat(upper(type),\"-\",upper(title_type)),",
+				"          type = concat(\"TT\",initCap(type)),",
+				"          pub_id = trim(upper(pub_id)),",
+				"          price = case(\r",
+				"    price < 2, price * 0.3,\r",
+				"    price > 3, price * 0.1\r",
+				"),",
+				"          notes = concat(left(notes, 3),right(notes, 2)),",
+				"          pubdate = upper(toString(toDate(pubdate), 'yyyy-MMM-dd'))) ~> derivedColumn1",
+				"source1 filter(year(pubdate) < 2021) ~> filter1",
+				"derivedColumn1 select(mapColumn(",
+				"          title_id,",
+				"          title_type,",
+				"          type,",
+				"          pub_id,",
+				"          price,",
+				"          notes,",
+				"          pubdate",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          Education as string,",
+				"          JoiningYear as integer,",
+				"          City as string,",
+				"          PaymentTier as integer,",
+				"          Age as integer,",
+				"          Gender as string,",
+				"          EverBenched as boolean,",
+				"          ExperienceInCurrentDomain as integer,",
+				"          LeaveOrNot as boolean",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
+			]
+		}
+	}
+}
