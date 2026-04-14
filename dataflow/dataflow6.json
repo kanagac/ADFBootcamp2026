@@ -1,0 +1,74 @@
+{
+	"name": "dataflow6",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DelimitedText8",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "surrogateKey1"
+				},
+				{
+					"name": "select1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          title_id as string,",
+				"          title as string,",
+				"          type as string,",
+				"          pub_id as string,",
+				"          price as long,",
+				"          notes as string,",
+				"          pubdate as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     inferDriftedColumnTypes: true,",
+				"     ignoreNoFilesFound: false) ~> source1",
+				"source1 derive(title_id = concat('T-',title_id,'-001'),",
+				"          title = concat(upper(type),'-',upper(title)),",
+				"          type = concat('TT-',initCap(type)),",
+				"          pub_id = trim(upper(pub_id)),",
+				"          price = case(price < 2,(0.3 * price) + price , (0.1 * price) + price),",
+				"          notes = concat(left(notes,3),right(notes,2)),",
+				"          pubdate = toDate(pubdate, 'yyyy-MM-dd')) ~> derivedColumn1",
+				"derivedColumn1 keyGenerate(output(Title_Key as long),",
+				"     startAt: 1L,",
+				"     stepValue: 1L) ~> surrogateKey1",
+				"surrogateKey1 select(mapColumn(",
+				"          Title_Key,",
+				"          Title_Id = title_id,",
+				"          Title_Desc = title,",
+				"          Type = type,",
+				"          Pub_Id = pub_id,",
+				"          Price = price,",
+				"          Notes = notes,",
+				"          Publish_Date = pubdate",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1"
+			]
+		}
+	}
+}

@@ -1,0 +1,29 @@
+{
+	"name": "DS_workshop",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ADLS_workshop",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"P_FileName": {
+				"type": "String"
+			}
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"sheetName": "Customer",
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@dataset().P_FileName",
+					"type": "Expression"
+				},
+				"fileSystem": "workshop"
+			},
+			"firstRowAsHeader": true
+		},
+		"schema": []
+	}
+}

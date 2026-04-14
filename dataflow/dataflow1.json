@@ -71,7 +71,7 @@
 				"     ignoreSpaces: false,",
 				"     broadcast: 'auto')~> leftjoin",
 				"leftjoin split(source1@CustomerID == source2@CustomerID && (source1@Name == source2@Name || source1@City == source2@City),",
-				"     isNull(source1@CustomerID),",
+				"     isNull(source2@CustomerID),",
 				"     disjoint: false) ~> split1@(updation, insertion)",
 				"split1@updation alterRow(updateIf(true())) ~> alterRow1",
 				"alterRow1 sink(allowSchemaDrift: true,",
