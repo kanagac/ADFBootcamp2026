@@ -12,25 +12,94 @@
 					"name": "TItlesSRC"
 				}
 			],
-			"sinks": [],
-			"transformations": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_GENERIC",
+						"type": "DatasetReference"
+					},
+					"name": "trgSink"
+				}
+			],
+			"transformations": [
+				{
+					"name": "Transformations"
+				},
+				{
+					"name": "SelectingSRCcolumns"
+				}
+			],
 			"scriptLines": [
 				"source(output(",
-				"          customer_id as string,",
-				"          first_name as string,",
-				"          last_name as string,",
-				"          city as string,",
-				"          state as string,",
-				"          email as string,",
-				"          phone as string,",
-				"          segment as string,",
-				"          signup_date as string,",
-				"          last_updated as string",
+				"          title_id as string,",
+				"          title_type as string,",
+				"          type as string,",
+				"          pub_id as string,",
+				"          price as string,",
+				"          notes as string,",
+				"          pubdate as string",
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
-				"     format: 'table') ~> TItlesSRC"
+				"     format: 'table') ~> TItlesSRC",
+				"TItlesSRC derive(Title_ID = concat('T-',iifNull(title_id, \"Field Must be Populated\"),'-001'),",
+				"          Title_Desc = \r",
+				"iif(\r",
+				"    isNull(type) || upper(type) == 'NULL',\r",
+				"    'Title Not Found',\r",
+				"    concat(upper(type),'-',upper(title_type))\r",
+				")\r",
+				",",
+				"          Type = iif(\r",
+				"    isNull(type) || upper(type) == 'NULL',\r",
+				"    'Type Not Found',\r",
+				"    'TT-'+initCap(type)\r",
+				"    ),",
+				"          Pub_ID = iif(\r",
+				"    isNull(pub_id) || upper(trim(pub_id)) == 'NULL',\r",
+				"    'No Publisher ID',\r",
+				"    upper(trim(pub_id))\r",
+				"),",
+				"          Price = round(\r",
+				"    iif(\r",
+				"        iifNull(toDecimal(price,19,4),0) < 2 ,\r",
+				"        iifNull(toDecimal(price,19,4),0) * 1.30,\r",
+				"        iifNull(toDecimal(price,19,4),0) * 1.10\r",
+				"    ),2\r",
+				"),",
+				"          Notes = iifNull(concat(left(notes,3),right(notes,2)),'Notes not Found'),",
+				"          Publish_Date = iifNull(toString(toDate(pubdate,'yyyy-MM-dd HH:mm:ss'),'yyyy-MMM-dd'),'1900-Jan-01')) ~> Transformations",
+				"Transformations select(mapColumn(",
+				"          Title_ID = Transformations@Title_ID,",
+				"          Title_Desc,",
+				"          Type = Transformations@Type,",
+				"          Pub_ID = Transformations@Pub_ID,",
+				"          Price = Transformations@Price,",
+				"          Notes = Transformations@Notes,",
+				"          Publish_Date",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> SelectingSRCcolumns",
+				"SelectingSRCcolumns sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          Title_ID,",
+				"          Title_Desc,",
+				"          Type,",
+				"          Pub_ID,",
+				"          Price,",
+				"          Notes,",
+				"          Publish_Date",
+				"     )) ~> trgSink"
 			]
 		}
 	}
