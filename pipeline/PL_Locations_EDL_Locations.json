@@ -1,0 +1,52 @@
+{
+	"name": "PL_Locations_EDL_Locations",
+	"properties": {
+		"activities": [
+			{
+				"name": "DF_Locations_EDL_Locations",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DF_Locations_EDL_Locations",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"SRCLocations": {
+								"tableName": "Raw_Locations_IN1716"
+							},
+							"TrgLocations": {
+								"tableName": "EDL_Location_IN1716"
+							},
+							"NewSink": {
+								"tableName": "EDL_Location_IN1716"
+							},
+							"UpdatedSink": {
+								"tableName": "EDL_Location_IN1716"
+							},
+							"NewVersionSink": {
+								"tableName": "EDL_Location_IN1716"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"folder": {
+			"name": "Workshop_End_to_End"
+		},
+		"annotations": []
+	}
+}
