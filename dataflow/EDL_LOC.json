@@ -40,17 +40,18 @@
 						"type": "DatasetReference"
 					},
 					"name": "sink3"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_COMMON",
+						"type": "DatasetReference"
+					},
+					"name": "sink4"
 				}
 			],
 			"transformations": [
 				{
 					"name": "derivedColumn1"
-				},
-				{
-					"name": "derivedColumn2"
-				},
-				{
-					"name": "join1"
 				},
 				{
 					"name": "split1"
@@ -66,31 +67,81 @@
 				},
 				{
 					"name": "derivedColumn5"
+				},
+				{
+					"name": "join2"
 				}
 			],
 			"scriptLines": [
-				"source(allowSchemaDrift: true,",
+				"source(output(",
+				"          Location_Key as short,",
+				"          Location_Id as short,",
+				"          Name as string,",
+				"          City as string,",
+				"          Country as string,",
+				"          State as string,",
+				"          Zipcode as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false) ~> source1",
-				"source(allowSchemaDrift: true,",
+				"source(output(",
+				"          Location_ID as integer,",
+				"          Location_key as integer,",
+				"          Name as string,",
+				"          Country as string,",
+				"          City as string,",
+				"          State as string,",
+				"          Zipcode as string,",
+				"          Delete_Flg as string,",
+				"          Active_Flag as string,",
+				"          Date_Last_Modified as timestamp,",
+				"          Created_By as string,",
+				"          Created_Timestamp as timestamp,",
+				"          Last_Updated_By as string,",
+				"          Last_Update_Timestamp as binary",
+				"     ),",
+				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
 				"     format: 'table') ~> source2",
-				"source1 derive() ~> derivedColumn1",
-				"derivedColumn1 derive() ~> derivedColumn2",
-				"derivedColumn2 join(ERROR_FUNCTION('') == ERROR_FUNCTION(''),",
-				"     joinType:'inner',",
+				"join2 derive(Location_ID = source1@Location_Id,",
+				"          Location_KEY = source1@Location_Key,",
+				"          Name = source1@Name,",
+				"          Country = source1@Country,",
+				"          City = source1@City,",
+				"          State = source1@State,",
+				"          Zipcode = source1@Zipcode,",
+				"          Date_Late_Modified = currentTimestamp(),",
+				"          Delete_Flg = 'N',",
+				"          Active_Flag = iif(!isNull(source2@Location_ID) && (source1@Country != source2@Country || source1@City != source2@City),\r",
+				"    'N',\r",
+				"    'Y'\r",
+				"),",
+				"          Created_By = 'Razz',",
+				"          Created_Timestamp = currentTimestamp(),",
+				"          Last_Updated_By = 'razz',",
+				"          Last_Updated_Timestamp = currentTimestamp()\r",
+				") ~> derivedColumn1",
+				"derivedColumn1 split(isNull(source2@Location_key),",
+				"     !isNull(source1@Location_Key)\r",
+				"&& Country == Country\r",
+				"&& City == City,",
+				"     \r",
+				"!isNull(source2@Location_key) && (Country != Country || City != City),",
+				"     disjoint: false) ~> split1@(NEW, UPDATE, INSERT, DEFAULT)",
+				"split1@NEW derive(Active_Flg = 1,",
+				"          Delete_Flg = 0) ~> derivedColumn3",
+				"split1@UPDATE derive(Active_Flg = 1,",
+				"          Delete_Flg = 1) ~> derivedColumn4",
+				"derivedColumn4 alterRow(updateIf(true())) ~> alterRow1",
+				"split1@INSERT derive(Active_Flg = 1,",
+				"          Delete_Flg = 0) ~> derivedColumn5",
+				"source1, source2 join(source1@Location_Id == source2@Location_ID,",
+				"     joinType:'left',",
 				"     matchType:'exact',",
 				"     ignoreSpaces: false,",
-				"     broadcast: 'auto')~> join1",
-				"join1 split(ERROR_FUNCTION(''),",
-				"     ERROR_FUNCTION(''),",
-				"     ERROR_FUNCTION(''),",
-				"     disjoint: false) ~> split1@(NEW, UPDATE, INSERT, DEFAULT)",
-				"split1@NEW derive() ~> derivedColumn3",
-				"split1@UPDATE derive() ~> derivedColumn4",
-				"derivedColumn4 alterRow() ~> alterRow1",
-				"split1@INSERT derive() ~> derivedColumn5",
+				"     broadcast: 'auto')~> join2",
 				"derivedColumn3 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
@@ -120,7 +171,17 @@
 				"     format: 'table',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     errorHandlingOption: 'stopOnFirstError') ~> sink3"
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink3",
+				"split1@DEFAULT sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink4"
 			]
 		}
 	}
