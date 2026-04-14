@@ -5,6 +5,8 @@
 			{
 				"name": "Title_CSV_To_Table",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -154,6 +156,8 @@
 			{
 				"name": "Author_CSV_To_Table",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -264,8 +268,8 @@
 								},
 								"sink": {
 									"name": "contract",
-									"type": "Boolean",
-									"physicalType": "bit"
+									"type": "Int32",
+									"physicalType": "int"
 								}
 							}
 						],
@@ -300,6 +304,8 @@
 			{
 				"name": "Store_CSV_To_Table",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
