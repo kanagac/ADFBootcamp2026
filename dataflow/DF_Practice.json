@@ -1,0 +1,116 @@
+{
+	"name": "DF_Practice",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_CSV",
+						"type": "DatasetReference"
+					},
+					"name": "source"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "DimTitles"
+				}
+			],
+			"transformations": [
+				{
+					"name": "Cast"
+				},
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "select1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          title_id as string,",
+				"          title as string,",
+				"          type as string,",
+				"          pub_id as string,",
+				"          price as double,",
+				"          notes as string,",
+				"          pubdate as date",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source",
+				"source(output(",
+				"          Title_Key as integer,",
+				"          Title_ID as string,",
+				"          Title_Desc as string,",
+				"          Type as string,",
+				"          Pub_ID as string,",
+				"          Price as decimal(8,4),",
+				"          Notes as string,",
+				"          Publish_Date as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source1",
+				"source derive(title_id = toString(title_id),",
+				"          type = toString(type),",
+				"          pub_id = toString(pub_id),",
+				"          price = toDecimal(price),",
+				"          notes = toString(notes),",
+				"          pubdate = toString(pubdate)) ~> Cast",
+				"Cast derive(Title_Id = concat('T-',title_id,'-001'),",
+				"          Title_Desc = concat(upper(type),'-',upper(title)),",
+				"          Type = initCap(concat('TT-', type)),",
+				"          Pub_id = upper(trim(pub_id)),",
+				"          Price = iif(price<2,price+0.30,price+0.10),",
+				"          Notes = concat(left(notes,3),right(notes,2)),",
+				"          Publish_Date = toString(toDate(pubdate, 'yyyy-MM-dd'),'yyyy-MMM-dd')\r",
+				") ~> derivedColumn1",
+				"derivedColumn1 select(mapColumn(",
+				"          Title_ID = derivedColumn1@Title_Id,",
+				"          Title_Desc,",
+				"          Type = derivedColumn1@Type,",
+				"          Pub_ID = derivedColumn1@Pub_id,",
+				"          Price = derivedColumn1@Price,",
+				"          Notes = derivedColumn1@Notes,",
+				"          Publish_Date",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          Title_ID,",
+				"          Title_Desc,",
+				"          Type,",
+				"          Pub_ID,",
+				"          Price,",
+				"          Notes,",
+				"          Publish_Date",
+				"     )) ~> DimTitles"
+			]
+		}
+	}
+}
