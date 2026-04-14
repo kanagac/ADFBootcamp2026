@@ -1,0 +1,44 @@
+{
+	"name": "flowlet31",
+	"properties": {
+		"type": "Flowlet",
+		"typeProperties": {
+			"sources": [],
+			"sinks": [],
+			"transformations": [
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "select1"
+				},
+				{
+					"name": "Source"
+				}
+			],
+			"scriptLines": [
+				"input(output(",
+				"          customer_id as integer,",
+				"          customer_name as string,",
+				"          email as string,",
+				"          phone as string,",
+				"          city as string",
+				"     ),",
+				"     order: 0,",
+				"     allowSchemaDrift: true) ~> Source",
+				"Source derive(column1 = concat(this, that),",
+				"          column2 = ERROR_FUNCTION('')) ~> derivedColumn1",
+				"derivedColumn1 select(mapColumn(",
+				"          customer_id,",
+				"          customer_name,",
+				"          email,",
+				"          phone,",
+				"          city,",
+				"          column1",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1"
+			]
+		}
+	}
+}
