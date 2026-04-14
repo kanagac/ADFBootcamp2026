@@ -1,0 +1,49 @@
+{
+	"name": "AzureSqlTable2",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AZURE_SQL",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "title_id",
+				"type": "varchar"
+			},
+			{
+				"name": "title",
+				"type": "varchar"
+			},
+			{
+				"name": "type",
+				"type": "char"
+			},
+			{
+				"name": "pub_id",
+				"type": "char"
+			},
+			{
+				"name": "price",
+				"type": "money",
+				"precision": 19,
+				"scale": 4
+			},
+			{
+				"name": "notes",
+				"type": "varchar"
+			},
+			{
+				"name": "pubdate",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "src_titles_IN1726"
+		}
+	}
+}

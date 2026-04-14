@@ -6,7 +6,7 @@
 			"sources": [
 				{
 					"dataset": {
-						"referenceName": "DelimitedText8",
+						"referenceName": "AzureSqlTable3",
 						"type": "DatasetReference"
 					},
 					"name": "source1"
@@ -14,6 +14,10 @@
 			],
 			"sinks": [
 				{
+					"dataset": {
+						"referenceName": "AzureSqlTable4",
+						"type": "DatasetReference"
+					},
 					"name": "sink1"
 				}
 			],
@@ -34,14 +38,15 @@
 				"          title as string,",
 				"          type as string,",
 				"          pub_id as string,",
-				"          price as long,",
+				"          price as decimal(19,4),",
 				"          notes as string,",
 				"          pubdate as string",
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     inferDriftedColumnTypes: true,",
-				"     ignoreNoFilesFound: false) ~> source1",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source1",
 				"source1 derive(title_id = concat('T-',title_id,'-001'),",
 				"          title = concat(upper(type),'-',upper(title)),",
 				"          type = concat('TT-',initCap(type)),",
@@ -66,8 +71,14 @@
 				"     skipDuplicateMapOutputs: true) ~> select1",
 				"select1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> sink1"
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
 			]
 		}
 	}

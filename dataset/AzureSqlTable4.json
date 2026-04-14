@@ -1,0 +1,16 @@
+{
+	"name": "AzureSqlTable4",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AZURE_SQL",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "tgt_titles_IN1726"
+		}
+	}
+}
