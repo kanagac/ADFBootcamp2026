@@ -1,0 +1,144 @@
+{
+	"name": "DF_Author",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE_INPUT",
+						"type": "DatasetReference"
+					},
+					"name": "SourceAuthor"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE_OUTPUT",
+						"type": "DatasetReference"
+					},
+					"name": "TargetAuthor"
+				}
+			],
+			"sinks": [
+				{
+					"name": "sink1"
+				},
+				{
+					"name": "sink2"
+				}
+			],
+			"transformations": [
+				{
+					"name": "LeftJoin"
+				},
+				{
+					"name": "filter1"
+				},
+				{
+					"name": "filter2"
+				},
+				{
+					"name": "select1"
+				},
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "select2"
+				},
+				{
+					"name": "derivedColumn2"
+				},
+				{
+					"name": "alterRow1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          au_lname as string,",
+				"          phone as string,",
+				"          address as string,",
+				"          city as string,",
+				"          state as string,",
+				"          zip as string,",
+				"          contract as integer",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> SourceAuthor",
+				"source(output(",
+				"          Author_Key as integer,",
+				"          Author_Name as string,",
+				"          Author_Phone as string,",
+				"          Author_Address as string,",
+				"          Author_City as string,",
+				"          Author_State as string,",
+				"          Author_Zip as string,",
+				"          AU_Contract_Status as integer,",
+				"          Start_Date as timestamp,",
+				"          End_Date as timestamp,",
+				"          Is_Active as integer",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> TargetAuthor",
+				"SourceAuthor, TargetAuthor join(phone == Author_Phone,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> LeftJoin",
+				"LeftJoin filter(ERROR_FUNCTION('')) ~> filter1",
+				"LeftJoin filter(ERROR_FUNCTION('')) ~> filter2",
+				"filter2 select(mapColumn(",
+				"          au_lname,",
+				"          phone,",
+				"          address,",
+				"          city,",
+				"          state,",
+				"          zip,",
+				"          contract,",
+				"          Author_Name,",
+				"          Author_Phone,",
+				"          Author_Address,",
+				"          Author_City,",
+				"          Author_State,",
+				"          Author_Zip,",
+				"          AU_Contract_Status",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 derive() ~> derivedColumn1",
+				"filter1 select(mapColumn(",
+				"          au_lname,",
+				"          phone,",
+				"          address,",
+				"          city,",
+				"          state,",
+				"          zip,",
+				"          contract,",
+				"          Author_Name,",
+				"          Author_Phone,",
+				"          Author_Address,",
+				"          Author_City,",
+				"          Author_State,",
+				"          Author_Zip,",
+				"          AU_Contract_Status",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select2",
+				"select2 derive() ~> derivedColumn2",
+				"derivedColumn2 alterRow() ~> alterRow1",
+				"alterRow1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1",
+				"derivedColumn1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink2"
+			]
+		}
+	}
+}
