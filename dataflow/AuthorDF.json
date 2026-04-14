@@ -64,9 +64,6 @@
 					"name": "InsertFilter"
 				},
 				{
-					"name": "InsertSelect"
-				},
-				{
 					"name": "InsertDC"
 				}
 			],
@@ -140,20 +137,7 @@
 				"AuthorSCDUpdate derive(END_DATE = currentDate()) ~> AuthorUpdate",
 				"AuthorUpdate alterRow(updateIf(1==1)) ~> alterRow1",
 				"AuthorJoin filter(isNull(AuthorTarget@AUTHOR_PHONE) || AuthorSelect@Author_City!=AuthorTarget@AUTHOR_CITY) ~> InsertFilter",
-				"InsertFilter select(mapColumn(",
-				"          Author_Name = AuthorSelect@Author_Name,",
-				"          Author_Phone = AuthorSelect@Author_Phone,",
-				"          Author_Address = AuthorSelect@Author_Address,",
-				"          Author_City = AuthorSelect@Author_City,",
-				"          Author_State = AuthorSelect@Author_State,",
-				"          Author_Zip = AuthorSelect@Author_Zip,",
-				"          AU_Contract_Status = AuthorSelect@AU_Contract_Status,",
-				"          START_DATE,",
-				"          END_DATE",
-				"     ),",
-				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> InsertSelect",
-				"InsertSelect derive(START_DATE = currentDate(),",
+				"InsertFilter derive(START_DATE = currentDate(),",
 				"          END_DATE = toDate(null())) ~> InsertDC",
 				"alterRow1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
@@ -188,13 +172,13 @@
 				"     skipDuplicateMapOutputs: true,",
 				"     errorHandlingOption: 'stopOnFirstError',",
 				"     mapColumn(",
-				"          Author_Name,",
-				"          Author_Phone,",
-				"          Author_Address,",
-				"          Author_City,",
-				"          Author_State,",
-				"          Author_Zip,",
-				"          AU_Contract_Status,",
+				"          AUTHOR_NAME = AuthorSelect@Author_Name,",
+				"          AUTHOR_PHONE = AuthorSelect@Author_Phone,",
+				"          AUTHOR_ADDRESS = AuthorSelect@Author_Address,",
+				"          AUTHOR_CITY = AuthorSelect@Author_City,",
+				"          AUTHOR_STATE = AuthorSelect@Author_State,",
+				"          AUTHOR_ZIP = AuthorSelect@Author_Zip,",
+				"          AU_CONTRACT_STATUS = AuthorSelect@AU_Contract_Status,",
 				"          START_DATE,",
 				"          END_DATE",
 				"     )) ~> AuthorInsertSink"
