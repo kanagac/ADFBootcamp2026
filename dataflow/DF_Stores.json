@@ -1,0 +1,267 @@
+{
+	"name": "DF_Stores",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_CSV",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "source2"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "sink2"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "sink3"
+				}
+			],
+			"transformations": [
+				{
+					"name": "select1"
+				},
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "select2"
+				},
+				{
+					"name": "derivedColumn2"
+				},
+				{
+					"name": "select3"
+				},
+				{
+					"name": "lookup1"
+				},
+				{
+					"name": "derivedColumn3"
+				},
+				{
+					"name": "split1"
+				},
+				{
+					"name": "derivedColumn4"
+				},
+				{
+					"name": "alterRow1"
+				},
+				{
+					"name": "derivedColumn5"
+				},
+				{
+					"name": "derivedColumn6"
+				},
+				{
+					"name": "select4"
+				},
+				{
+					"name": "alterRow2"
+				},
+				{
+					"name": "select5"
+				},
+				{
+					"name": "alterRow3"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          stor_id as string,",
+				"          stor_name as string,",
+				"          stor_address as string,",
+				"          city as string,",
+				"          state as string,",
+				"          zip as integer",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source1",
+				"source(output(",
+				"          Store_Key as integer,",
+				"          Store_id as string,",
+				"          Store_name as string,",
+				"          Store_address as string,",
+				"          Store_city as string,",
+				"          Store_state as string,",
+				"          Store_zip as string,",
+				"          Start_Date as date,",
+				"          End_Date as date",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source2",
+				"derivedColumn3 select(mapColumn(",
+				"          Store_id,",
+				"          Store_name,",
+				"          Store_address,",
+				"          Store_city,",
+				"          Store_state,",
+				"          Store_zip",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 derive(SourceHash = md5(Store_name,Store_address,Store_city,Store_state,Store_zip)) ~> derivedColumn1",
+				"derivedColumn1 select(mapColumn(",
+				"          Store_id,",
+				"          Store_name,",
+				"          Store_address,",
+				"          Store_city,",
+				"          Store_state,",
+				"          Store_zip,",
+				"          SourceHash",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select2",
+				"source2 derive(TargetHash = md5(Store_name,Store_address,Store_city,Store_state,Store_zip)) ~> derivedColumn2",
+				"derivedColumn2 select(mapColumn(",
+				"          t_Store_Key = Store_Key,",
+				"          t_Store_id = Store_id,",
+				"          t_Store_name = Store_name,",
+				"          t_Store_address = Store_address,",
+				"          t_Store_city = Store_city,",
+				"          t_Store_state = Store_state,",
+				"          t_Store_zip = Store_zip,",
+				"          Start_Date,",
+				"          End_Date,",
+				"          TargetHash",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select3",
+				"select2, select3 lookup(Store_id == t_Store_id,",
+				"     multiple: false,",
+				"     pickup: 'any',",
+				"     broadcast: 'auto')~> lookup1",
+				"source1 derive(Store_id = stor_id,",
+				"          Store_name = stor_name,",
+				"          Store_address = concat(\r",
+				"  regexReplace(stor_address, '^([^ ]+ [^ ]+)', '$1,'),\r",
+				"  '.'\r",
+				"),",
+				"          Store_city = city,",
+				"          Store_state = case(\r",
+				"    state=='MH','Maharashtra',\r",
+				"    state=='WB','WestBengal',\r",
+				"    state=='TS','Telugana',\r",
+				"    state=='TN','TamilNadu',\r",
+				"    state=='KA','Karnataka',\r",
+				"    state=='DL','Delhi'\r",
+				"),",
+				"          Store_zip = toString(lpad(toString(zip),6,'0'))) ~> derivedColumn3",
+				"lookup1 split(isNull(t_Store_id),",
+				"     Store_id==t_Store_id&&SourceHash!=TargetHash,",
+				"     disjoint: false) ~> split1@(newinsert, existing)",
+				"split1@newinsert derive(StartDate = currentDate()) ~> derivedColumn4",
+				"derivedColumn4 alterRow(insertIf(1==1)) ~> alterRow1",
+				"split1@existing derive(End_Date = currentDate()) ~> derivedColumn5",
+				"split1@existing derive(StartDate = currentDate()) ~> derivedColumn6",
+				"derivedColumn5 select(mapColumn(",
+				"          Store_id = t_Store_id,",
+				"          Start_Date,",
+				"          End_Date,",
+				"          TargetHash",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select4",
+				"select4 alterRow(updateIf(1==1)) ~> alterRow2",
+				"derivedColumn6 select(mapColumn(",
+				"          Store_id,",
+				"          Store_name,",
+				"          Store_address,",
+				"          Store_city,",
+				"          Store_state,",
+				"          Store_zip,",
+				"          SourceHash,",
+				"          StartDate",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select5",
+				"select5 alterRow(insertIf(1==1)) ~> alterRow3",
+				"alterRow1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     saveOrder: 2,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          Store_id,",
+				"          Store_name,",
+				"          Store_address,",
+				"          Store_city,",
+				"          Store_state,",
+				"          Store_zip,",
+				"          StartDate",
+				"     )) ~> sink1",
+				"alterRow2 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:false,",
+				"     updateable:true,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     saveOrder: 1,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          Store_id,",
+				"          Start_Date,",
+				"          End_Date",
+				"     )) ~> sink2",
+				"alterRow3 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     saveOrder: 3,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          Store_id,",
+				"          Store_name,",
+				"          Store_address,",
+				"          Store_city,",
+				"          Store_state,",
+				"          Store_zip,",
+				"          StartDate",
+				"     )) ~> sink3"
+			]
+		}
+	}
+}
