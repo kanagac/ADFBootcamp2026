@@ -1,0 +1,220 @@
+{
+	"name": "DF_Locations_EDL_Locations",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_GENERIC",
+						"type": "DatasetReference"
+					},
+					"name": "SRCLocations"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_GENERIC",
+						"type": "DatasetReference"
+					},
+					"name": "TrgLocations"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_GENERIC",
+						"type": "DatasetReference"
+					},
+					"name": "NewSink"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_GENERIC",
+						"type": "DatasetReference"
+					},
+					"name": "UpdatedSink"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_GENERIC",
+						"type": "DatasetReference"
+					},
+					"name": "NewVersionSink"
+				}
+			],
+			"transformations": [
+				{
+					"name": "Transformations"
+				},
+				{
+					"name": "SelectColumns"
+				},
+				{
+					"name": "LeftJoin"
+				},
+				{
+					"name": "SPLITSrcTrg"
+				},
+				{
+					"name": "NewChanges"
+				},
+				{
+					"name": "UpdatedChanged"
+				},
+				{
+					"name": "AlterUpdate"
+				},
+				{
+					"name": "NewVersion"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Location_Key as string,",
+				"          Location_Id as string,",
+				"          Name as string,",
+				"          City as string,",
+				"          Country as string,",
+				"          State as string,",
+				"          Zipcode as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> SRCLocations",
+				"source(output(",
+				"          Location_key as integer,",
+				"          Location_ID as integer,",
+				"          Name as string,",
+				"          Country as string,",
+				"          City as string,",
+				"          State as string,",
+				"          Zipcode as string,",
+				"          Delete_Flg as string,",
+				"          Active_Flag as string,",
+				"          Date_Last_Modified as timestamp,",
+				"          Created_By as string,",
+				"          Created_Timestamp as timestamp,",
+				"          Last_Updated_By as string,",
+				"          Last_Update_Timestamp as timestamp",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> TrgLocations",
+				"SRCLocations derive(Date_last_Modified = currentTimestamp(),",
+				"          Location_Id = toInteger(Location_Id)) ~> Transformations",
+				"Transformations select(mapColumn(",
+				"          Location_Id,",
+				"          Name,",
+				"          City,",
+				"          Country,",
+				"          State,",
+				"          Zipcode,",
+				"          Date_last_Modified",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> SelectColumns",
+				"SelectColumns, TrgLocations join(SelectColumns@Location_Id == TrgLocations@Location_ID,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> LeftJoin",
+				"LeftJoin split(isNull(TrgLocations@Location_ID),",
+				"     !isNull(TrgLocations@Location_ID) &&\r",
+				"SelectColumns@Country != TrgLocations@Country ||\r",
+				"SelectColumns@City != TrgLocations@City,",
+				"     !isNull(TrgLocations@Location_ID) &&\r",
+				"SelectColumns@Country != TrgLocations@Country ||\r",
+				"SelectColumns@City != TrgLocations@City,",
+				"     disjoint: false) ~> SPLITSrcTrg@(NewRecords, ExpiredRecords, NewVersionRecords, UnchangedRecords)",
+				"SPLITSrcTrg@NewRecords derive(Active_Flag = 'Y',",
+				"          Delete_Flg = 'N',",
+				"          Created_By = 'DE-IN1716',",
+				"          Created_Timestamp = currentTimestamp(),",
+				"          Last_Update_Timestamp = currentTimestamp()) ~> NewChanges",
+				"SPLITSrcTrg@ExpiredRecords derive(Active_Flag = 'N',",
+				"          Last_Updated_By = 'DE-IN1716',",
+				"          Last_Update_Timestamp = currentTimestamp()) ~> UpdatedChanged",
+				"UpdatedChanged alterRow(updateIf(true())) ~> AlterUpdate",
+				"SPLITSrcTrg@NewVersionRecords derive(Active_Flag = 'Y',",
+				"          Delete_Flg = 'N',",
+				"          Created_By = 'DE-IN1716',",
+				"          Created_Timestamp = currentTimestamp(),",
+				"          Last_Updated_By = 'DE-IN1716',",
+				"          Last_Update_Timestamp = currentTimestamp()) ~> NewVersion",
+				"NewChanges sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          Location_Id = SPLITSrcTrg@NewRecords@Location_Id,",
+				"          Name = SPLITSrcTrg@NewRecords@Name,",
+				"          City = SPLITSrcTrg@NewRecords@City,",
+				"          Country = SPLITSrcTrg@NewRecords@Country,",
+				"          State = SPLITSrcTrg@NewRecords@State,",
+				"          Zipcode = SPLITSrcTrg@NewRecords@Zipcode,",
+				"          Date_last_Modified = SPLITSrcTrg@NewRecords@Date_last_Modified,",
+				"          Delete_Flg,",
+				"          Active_Flag,",
+				"          Created_By,",
+				"          Created_Timestamp,",
+				"          Last_Updated_By,",
+				"          Last_Update_Timestamp",
+				"     )) ~> NewSink",
+				"AlterUpdate sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:false,",
+				"     updateable:true,",
+				"     upsertable:false,",
+				"     keys:['Location_key'],",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          Location_key,",
+				"          Active_Flag,",
+				"          Last_Updated_By,",
+				"          Last_Update_Timestamp,",
+				"          Location_ID = SPLITSrcTrg@ExpiredRecords@Location_Id",
+				"     ),",
+				"     partitionBy('hash', 2,",
+				"          Location_ID",
+				"     )) ~> UpdatedSink",
+				"NewVersion sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          Location_Id = SPLITSrcTrg@NewVersionRecords@Location_Id,",
+				"          Name = SPLITSrcTrg@NewVersionRecords@Name,",
+				"          City = SPLITSrcTrg@NewVersionRecords@City,",
+				"          Country = SPLITSrcTrg@NewVersionRecords@Country,",
+				"          State = SPLITSrcTrg@NewVersionRecords@State,",
+				"          Zipcode = SPLITSrcTrg@NewVersionRecords@Zipcode,",
+				"          Date_last_Modified = SPLITSrcTrg@NewVersionRecords@Date_last_Modified,",
+				"          Delete_Flg,",
+				"          Active_Flag,",
+				"          Created_By,",
+				"          Created_Timestamp,",
+				"          Last_Updated_By,",
+				"          Last_Update_Timestamp",
+				"     )) ~> NewVersionSink"
+			]
+		}
+	}
+}
