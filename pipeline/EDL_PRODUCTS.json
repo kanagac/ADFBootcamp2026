@@ -1,0 +1,409 @@
+{
+	"name": "EDL_PRODUCTS",
+	"properties": {
+		"activities": [
+			{
+				"name": "itemProd",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"writeBehavior": "insert",
+						"sqlWriterUseTableLock": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "Item_Id",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Item_ID",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "Item_key",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Item_Key",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "Generic_Description",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Generic_Description",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "PurchaseDescription",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "PurchaseDescription",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Artwork",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Artwork",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Color",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Color",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Package_Type",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Package_Type",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Special_Requirements",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Special_Requirements",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Case_Pack",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Case_pack",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Full_Name",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Full_Name",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Display_Name",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Display_Name",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Account_Manager_Name",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Account_Manager_Name",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Brand_Name",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Brand_Name",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Brand_Manager_Name",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Brand_Manager_Name",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Item_Status",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Item_Status",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Item_Type",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Item_Type",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Maker_Name",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Maker_Name",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Product_Manager_Name",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Product_Manager_Name",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Master_Carton_Rqmnts",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Master_Carton_Rqmnts",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Trade_Partner_Name",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Trade_Partner_Name",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Type_Name",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Type_Name",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Trade_Partner_Code",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Trade_Partner_Code",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "VendorName",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "VendorName",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "UPC",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "UPC",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "QunatityOnHand",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "QuantityOnHand",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "SSCC14",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "SSCC14",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Master_Carton_Markings_Item_N",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Master_Carton_Markings_Item_N",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "Part_Of_Assembly_Item",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Part_Of_Assembly_Item",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "DelimitedText4",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": "input",
+							"directory": "IN1742",
+							"filename": "Products.csv"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DS_SQL_COMMON",
+						"type": "DatasetReference",
+						"parameters": {
+							"tableName": "EDL_Products"
+						}
+					}
+				]
+			}
+		],
+		"folder": {
+			"name": "workshop"
+		},
+		"annotations": []
+	}
+}
