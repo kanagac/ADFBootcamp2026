@@ -1,0 +1,56 @@
+{
+	"name": "PL_Customers_DIM_Customers",
+	"properties": {
+		"activities": [
+			{
+				"name": "DF_Customers_DIM_Customers",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DF_Customer_DIM_Customer",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"CustomerSRC": {
+								"tableName": "Raw_Customers_IN1716"
+							},
+							"EDLCustomerTRG": {
+								"tableName": "EDL_Customer_IN1716"
+							},
+							"NewSink": {
+								"tableName": "EDL_Customer_IN1716"
+							},
+							"UpdateSink": {
+								"tableName": "EDL_Customer_IN1716"
+							}
+						},
+						"linkedServiceParameters": {
+							"CustomerSRC": {
+								"schemaLinkedService": {
+									"tableName": "Raw_Customers_IN1716"
+								}
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"folder": {
+			"name": "Workshop_End_to_End"
+		},
+		"annotations": []
+	}
+}

@@ -1,0 +1,168 @@
+{
+	"name": "DF_Customer_DIM_Customer",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_GENERIC",
+						"type": "DatasetReference"
+					},
+					"name": "CustomerSRC"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_GENERIC",
+						"type": "DatasetReference"
+					},
+					"name": "EDLCustomerTRG"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_GENERIC",
+						"type": "DatasetReference"
+					},
+					"name": "NewSink"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_GENERIC",
+						"type": "DatasetReference"
+					},
+					"name": "UpdateSink"
+				}
+			],
+			"transformations": [
+				{
+					"name": "Transformation"
+				},
+				{
+					"name": "SelectingColumns"
+				},
+				{
+					"name": "LEFTJOIN"
+				},
+				{
+					"name": "ConditionalSplit"
+				},
+				{
+					"name": "NewRecordsAudit"
+				},
+				{
+					"name": "UpdatedRecords"
+				},
+				{
+					"name": "AlterUpdate"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Customer_Key as string,",
+				"          Customer_Id as string,",
+				"          Company_Name as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> CustomerSRC",
+				"source(output(",
+				"          Customer_ID as integer,",
+				"          Customer_key as integer,",
+				"          Company_Name as string,",
+				"          Delete_Flg as string,",
+				"          Create_Date as timestamp,",
+				"          Date_Last_Modified as timestamp,",
+				"          Created_By as string,",
+				"          Created_Timestamp as timestamp,",
+				"          Last_Updated_By as string,",
+				"          Last_Update_Timestamp as timestamp,",
+				"          Active_Flag as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> EDLCustomerTRG",
+				"CustomerSRC derive(Create_Date = currentTimestamp(),",
+				"          Date_Last_Modified = currentTimestamp(),",
+				"          Customer_Id = toInteger(Customer_Id)) ~> Transformation",
+				"Transformation select(mapColumn(",
+				"          Customer_ID = Customer_Id,",
+				"          Company_Name,",
+				"          Create_Date,",
+				"          Date_Last_Modified",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> SelectingColumns",
+				"SelectingColumns, EDLCustomerTRG join(SelectingColumns@Customer_ID == EDLCustomerTRG@Customer_ID,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> LEFTJOIN",
+				"LEFTJOIN split(isNull(EDLCustomerTRG@Customer_ID),",
+				"     !isNull(EDLCustomerTRG@Customer_ID) &&\r",
+				"SelectingColumns@Company_Name != EDLCustomerTRG@Company_Name,",
+				"     disjoint: false) ~> ConditionalSplit@(NewRecords, UpdatedRecords)",
+				"ConditionalSplit@NewRecords derive(Active_Flag = 'Y',",
+				"          Delete_Flg = 'N',",
+				"          Created_By = 'DE-IN1716',",
+				"          Created_Timestamp = currentTimestamp(),",
+				"          Last_Updated_By = currentTimestamp(),",
+				"          Last_Update_Timestamp = currentTimestamp()) ~> NewRecordsAudit",
+				"ConditionalSplit@UpdatedRecords derive(Company_Name = ConditionalSplit@UpdatedRecords@Company_Name,",
+				"          Last_Updated_By = 'DE-IN1716',",
+				"          Last_Update_Timestamp = currentTimestamp()) ~> UpdatedRecords",
+				"UpdatedRecords alterRow(updateIf(true())) ~> AlterUpdate",
+				"NewRecordsAudit sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          Customer_ID = ConditionalSplit@NewRecords@Customer_ID,",
+				"          Company_Name = ConditionalSplit@NewRecords@Company_Name,",
+				"          Create_Date = ConditionalSplit@NewRecords@Create_Date,",
+				"          Date_Last_Modified = ConditionalSplit@NewRecords@Date_Last_Modified,",
+				"          Delete_Flg,",
+				"          Date_Last_Modified = ConditionalSplit@NewRecords@Date_Last_Modified,",
+				"          Created_By,",
+				"          Created_Timestamp,",
+				"          Last_Updated_By,",
+				"          Last_Update_Timestamp,",
+				"          Active_Flag",
+				"     )) ~> NewSink",
+				"AlterUpdate sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:false,",
+				"     updateable:true,",
+				"     upsertable:false,",
+				"     keys:['Customer_ID'],",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          Company_Name,",
+				"          Date_Last_Modified = ConditionalSplit@UpdatedRecords@Date_Last_Modified,",
+				"          Customer_ID = ConditionalSplit@UpdatedRecords@Customer_ID,",
+				"          Delete_Flg,",
+				"          Create_Date = ConditionalSplit@UpdatedRecords@Create_Date,",
+				"          Date_Last_Modified = ConditionalSplit@UpdatedRecords@Date_Last_Modified,",
+				"          Created_By,",
+				"          Created_Timestamp,",
+				"          Last_Updated_By,",
+				"          Last_Update_Timestamp,",
+				"          Active_Flag",
+				"     )) ~> UpdateSink"
+			]
+		}
+	}
+}
