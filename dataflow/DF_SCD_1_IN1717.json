@@ -50,15 +50,13 @@
 				},
 				{
 					"name": "alterRow1"
+				},
+				{
+					"name": "select2"
 				}
 			],
 			"scriptLines": [
-				"source(output(",
-				"          id as integer,",
-				"          name as string,",
-				"          city as string",
-				"     ),",
-				"     allowSchemaDrift: true,",
+				"source(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
 				"     format: 'table') ~> sourcedata",
@@ -83,11 +81,18 @@
 				"     matchType:'exact',",
 				"     ignoreSpaces: false,",
 				"     broadcast: 'auto')~> join1",
-				"join1 derive(name = upper(name)) ~> derivedColumn1",
-				"derivedColumn1 split(isNull(tgt_id),",
+				"join1 derive(name = upper(name),",
+				"          {} = upper(column1),",
+				"          Dat_ingestion = currentDate()) ~> derivedColumn1",
+				"select2 split(isNull(tgt_id),",
 				"     (name!=tgt_name)&&(city!=tgt_city),",
 				"     disjoint: false) ~> split1@(insert, update)",
 				"split1@update alterRow(updateIf(true())) ~> alterRow1",
+				"derivedColumn1 select(mapColumn(",
+				"          Dat_ingestion",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select2",
 				"split1@insert sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",

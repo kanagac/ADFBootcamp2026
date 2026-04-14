@@ -1,0 +1,9 @@
+{
+	"name": "EDL_Customers",
+	"properties": {
+		"folder": {
+			"name": "Workshop_src_to_edl"
+		},
+		"annotations": []
+	}
+}
