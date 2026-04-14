@@ -6,14 +6,14 @@
 			"sources": [
 				{
 					"dataset": {
-						"referenceName": "DelimitedText4",
+						"referenceName": "DS_SQL_COMMON",
 						"type": "DatasetReference"
 					},
 					"name": "sourceCustomers"
 				},
 				{
 					"dataset": {
-						"referenceName": "DS_SQL_COMMON",
+						"referenceName": "DelimitedText4",
 						"type": "DatasetReference"
 					},
 					"name": "targetscd1"
@@ -40,9 +40,6 @@
 					"name": "processed"
 				},
 				{
-					"name": "join1"
-				},
-				{
 					"name": "split1"
 				},
 				{
@@ -50,24 +47,19 @@
 				},
 				{
 					"name": "loading"
+				},
+				{
+					"name": "join3"
 				}
 			],
 			"scriptLines": [
-				"source(output(",
-				"          Customer_Key as integer,",
-				"          Customer_Id as integer,",
-				"          Company_Name as string",
-				"     ),",
-				"     allowSchemaDrift: true,",
-				"     validateSchema: false,",
-				"     ignoreNoFilesFound: false) ~> sourceCustomers",
 				"source(output(",
 				"          Customer_ID as integer,",
 				"          Customer_key as integer,",
 				"          Company_Name as string,",
 				"          Delete_Flg as string,",
-				"          Create_Date as date,",
-				"          Date_Last_Modified as date,",
+				"          Create_Date as timestamp,",
+				"          Date_Last_Modified as timestamp,",
 				"          Created_By as string,",
 				"          Created_Timestamp as timestamp,",
 				"          Last_Updated_By as string,",
@@ -77,32 +69,39 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
-				"     format: 'table') ~> targetscd1",
+				"     format: 'table') ~> sourceCustomers",
+				"source(output(",
+				"          Customer_Key as integer,",
+				"          Customer_Id as integer,",
+				"          Company_Name as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> targetscd1",
 				"loading derive(Delete_Flg = iif(Active_Flag == 'Y', 'Y', 'N'),",
 				"          Active_Flag = iif(currentTimestamp() <= Last_Update_Timestamp,    'Y',    'N')) ~> processed",
-				"processed, targetscd1 join(loading@Customer_Key == targetscd1@Customer_ID,",
-				"     joinType:'left',",
-				"     matchType:'exact',",
-				"     ignoreSpaces: false,",
-				"     broadcast: 'auto')~> join1",
-				"join1 split(isNull(processed@Active_Flag),",
+				"processed split(isNull(Company_Name),",
 				"     disjoint: false) ~> split1@(NEW, CHANGED)",
 				"split1@CHANGED alterRow(updateIf(true())) ~> alterRow1",
-				"sourceCustomers derive(Customer_Key = Customer_Id,",
+				"join3 derive(Customer_Key = sourceCustomers@Customer_key,",
 				"          Delete_Flg = 'N',",
 				"          Active_Flag = 'Y',",
 				"          Created_By = 'ADF',",
 				"          Created_Timestamp = currentTimestamp(),",
 				"          Last_Updated_By = 'ADF',",
 				"          Last_Update_Timestamp = currentTimestamp(),",
-				"          Company_Name = Company_Name) ~> loading",
+				"          Company_Name = sourceCustomers@Company_Name) ~> loading",
+				"sourceCustomers, targetscd1 join(sourceCustomers@Customer_key == targetscd1@Customer_Key,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join3",
 				"split1@NEW sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
 				"     insertable:true,",
 				"     updateable:false,",
 				"     upsertable:false,",
-				"     recreate:true,",
 				"     format: 'table',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",

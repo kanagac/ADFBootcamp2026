@@ -1,9 +1,9 @@
 {
-	"name": "EDL_CUSTOMERS",
+	"name": "EDL_LOCATIONS",
 	"properties": {
 		"activities": [
 			{
-				"name": "Customeres",
+				"name": "locations",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
@@ -16,35 +16,34 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "Customers",
+						"referenceName": "EDL_LOC",
 						"type": "DataFlowReference",
 						"datasetParameters": {
-							"sourceCustomers": {
-								"tableName": "EDL_Customer"
-							},
-							"targetscd1": {
+							"source1": {
 								"container": "input",
 								"directory": "IN1742",
-								"filename": "Customers.csv"
+								"filename": "Locations.csv"
+							},
+							"source2": {
+								"tableName": "EDL_Location"
 							},
 							"sink1": {
-								"tableName": "EDL_Customer"
+								"tableName": "EDL_Location"
 							},
 							"sink2": {
-								"tableName": "EDL_Customer"
+								"tableName": "EDL_Location"
+							},
+							"sink3": {
+								"tableName": "EDL_Location"
+							},
+							"sink4": {
+								"tableName": "EDL_Location"
 							}
 						},
 						"linkedServiceParameters": {
-							"sourceCustomers": {
+							"sink4": {
 								"schemaLinkedService": {
-									"tableName": "EDL_Customer"
-								}
-							},
-							"targetscd1": {
-								"schemaLinkedService": {
-									"container": "input",
-									"directory": "IN1742",
-									"filename": "Customers.csv"
+									"tableName": "EDL_Location"
 								}
 							}
 						}
