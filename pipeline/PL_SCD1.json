@@ -19,11 +19,17 @@
 						"referenceName": "DF_SCD1",
 						"type": "DataFlowReference",
 						"datasetParameters": {
-							"source": {
-								"P_TableName": "SourceTableCustomerIN1720"
+							"source1": {
+								"P_TableName": "src_customer_IN1720"
+							},
+							"source2": {
+								"P_TableName": "dim_customer__IN1720"
 							},
 							"sink1": {
-								"P_TableName": "targetTableCustomerIN1720"
+								"P_TableName": " "
+							},
+							"sink2": {
+								"P_TableName": " "
 							}
 						}
 					},
