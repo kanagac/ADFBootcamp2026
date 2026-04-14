@@ -1,0 +1,191 @@
+{
+	"name": "SCD2",
+	"properties": {
+		"folder": {
+			"name": "Workshop"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "source2"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "sink2",
+					"rejectedDataLinkedService": {
+						"referenceName": "LS_AZURE_STORAGE",
+						"type": "LinkedServiceReference"
+					}
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "sink3"
+				}
+			],
+			"transformations": [
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "derivedColumn2"
+				},
+				{
+					"name": "exists2"
+				},
+				{
+					"name": "exists3"
+				},
+				{
+					"name": "derivedColumn4"
+				},
+				{
+					"name": "select2"
+				},
+				{
+					"name": "alterRow1"
+				},
+				{
+					"name": "exists4"
+				},
+				{
+					"name": "derivedColumn5"
+				},
+				{
+					"name": "select3"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Education as string,",
+				"          JoiningYear as integer,",
+				"          City as string,",
+				"          PaymentTier as integer,",
+				"          Age as integer,",
+				"          Gender as string,",
+				"          EverBenched as boolean,",
+				"          ExperienceInCurrentDomain as integer,",
+				"          LeaveOrNot as boolean",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source1",
+				"source(output(",
+				"          SCD_Key as integer,",
+				"          EmpID as integer,",
+				"          Name as string,",
+				"          Department as string,",
+				"          Salary as decimal(10,2),",
+				"          Start_Date as date,",
+				"          End_Date as date,",
+				"          Is_Current as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source2",
+				"source1 derive(hash = md5(EmpID,Name,Department,Salary)) ~> derivedColumn1",
+				"source2 derive(hash = md5(EmpID,Name,Department,Salary)) ~> derivedColumn2",
+				"derivedColumn2, derivedColumn1 exists(source2@EmpID == source1@EmpID,",
+				"     negate:false,",
+				"     broadcast: 'auto')~> exists2",
+				"exists2, derivedColumn1 exists(derivedColumn2@hash == derivedColumn1@hash,",
+				"     negate:true,",
+				"     broadcast: 'auto')~> exists3",
+				"exists3 derive(End_Date = currentDate(),",
+				"          Is_Current = \"N\") ~> derivedColumn4",
+				"alterRow1 select(mapColumn(",
+				"          EmpID,",
+				"          Name,",
+				"          Department,",
+				"          Salary,",
+				"          Start_Date,",
+				"          End_Date,",
+				"          Is_Current",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select2",
+				"derivedColumn4 alterRow(updateIf(1==1)) ~> alterRow1",
+				"derivedColumn1, derivedColumn2 exists(derivedColumn1@hash == derivedColumn2@hash,",
+				"     negate:true,",
+				"     broadcast: 'auto')~> exists4",
+				"exists4 derive(Is_Current = \"Y\",",
+				"          Start_Date = currentDate(),",
+				"          End_Date = toDate(null())) ~> derivedColumn5",
+				"derivedColumn5 select(mapColumn(",
+				"          EmpID,",
+				"          Name,",
+				"          Department,",
+				"          Salary,",
+				"          Is_Current,",
+				"          Start_Date,",
+				"          End_Date",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select3",
+				"select2 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          Education as string,",
+				"          JoiningYear as integer,",
+				"          City as string,",
+				"          PaymentTier as integer,",
+				"          Age as integer,",
+				"          Gender as string,",
+				"          EverBenched as boolean,",
+				"          ExperienceInCurrentDomain as integer,",
+				"          LeaveOrNot as boolean",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink2",
+				"select3 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          Education as string,",
+				"          JoiningYear as integer,",
+				"          City as string,",
+				"          PaymentTier as integer,",
+				"          Age as integer,",
+				"          Gender as string,",
+				"          EverBenched as boolean,",
+				"          ExperienceInCurrentDomain as integer,",
+				"          LeaveOrNot as boolean",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink3"
+			]
+		}
+	}
+}
