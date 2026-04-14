@@ -1,9 +1,9 @@
 {
-	"name": "SCD_1_Practice",
+	"name": "DIM_Title",
 	"properties": {
 		"activities": [
 			{
-				"name": "DF_SCD_1",
+				"name": "DF_Title",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
@@ -16,20 +16,14 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "DF_SCD_1_II",
+						"referenceName": "DF_Title",
 						"type": "DataFlowReference",
 						"datasetParameters": {
-							"SourceCustomer": {
-								"table_name": "Customer_SCD1_Source_IN1727"
+							"SourceTitle": {
+								"table_name": "TITLES_IN1727"
 							},
-							"TargetCustomer": {
-								"table_name": "Customer_SCD1_Target_IN1727"
-							},
-							"InsertLoad": {
-								"table_name": "Customer_SCD1_Target_IN1727"
-							},
-							"UpdateLoad": {
-								"table_name": "Customer_SCD1_Target_IN1727"
+							"LoadTitle": {
+								"table_name": "DIM_TITLE_IN1727"
 							}
 						}
 					},
@@ -42,7 +36,7 @@
 			}
 		],
 		"folder": {
-			"name": "Ps_Exercises_IN1727/Practice/SCD_Practice"
+			"name": "Ps_Exercises_IN1727/Practice/Mock_Test_Practice"
 		},
 		"annotations": []
 	}
