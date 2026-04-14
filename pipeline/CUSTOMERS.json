@@ -22,7 +22,7 @@
 							"sourceCustomers": {
 								"container": "input",
 								"directory": "IN1742",
-								"filename": "Customer.csv"
+								"filename": "Customers.csv"
 							},
 							"targetscd1": {
 								"tableName": "EDL_Customer"
