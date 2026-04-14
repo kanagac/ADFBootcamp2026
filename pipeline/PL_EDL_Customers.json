@@ -1,0 +1,111 @@
+{
+	"name": "PL_EDL_Customers",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy data customers",
+				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"writeBehavior": "insert",
+						"sqlWriterUseTableLock": false,
+						"tableOption": "autoCreate",
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "DS_Folder",
+						"type": "DatasetReference",
+						"parameters": {
+							"file": "Customers.csv"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference",
+						"parameters": {
+							"tablename": "Customers_IN1735"
+						}
+					}
+				]
+			},
+			{
+				"name": "DataForEdlCustomers",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DF_EDL_CUSTOMER",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"sourceCustomer": {
+								"tablename": "Customers_IN1735"
+							},
+							"targetEdlCustomer": {
+								"tablename": "EDL_Customer_IN1735"
+							},
+							"sinkForNewCustomers": {
+								"tablename": "EDL_Customer_IN1735"
+							},
+							"sinkForUpdate": {
+								"tablename": "EDL_Customer_IN1735"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"folder": {
+			"name": "Workshop"
+		},
+		"annotations": []
+	}
+}

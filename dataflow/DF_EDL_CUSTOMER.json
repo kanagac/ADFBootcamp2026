@@ -1,0 +1,169 @@
+{
+	"name": "DF_EDL_CUSTOMER",
+	"properties": {
+		"folder": {
+			"name": "Workshop"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "sourceCustomer"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "targetEdlCustomer"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "sinkForNewCustomers"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "sinkForUpdate"
+				}
+			],
+			"transformations": [
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "select1"
+				},
+				{
+					"name": "lookupWithEDLCustomer"
+				},
+				{
+					"name": "splitforSCD1"
+				},
+				{
+					"name": "alterRow1"
+				},
+				{
+					"name": "tranformNewCustomers"
+				},
+				{
+					"name": "derivedColumn2"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Customer_Key as integer,",
+				"          Customer_Id as integer,",
+				"          Company_Name as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> sourceCustomer",
+				"source(output(",
+				"          Customer_ID as integer,",
+				"          Customer_key as integer,",
+				"          Company_Name as string,",
+				"          Delete_Flg as string,",
+				"          Create_Date as timestamp,",
+				"          Date_Last_Modified as timestamp,",
+				"          Created_By as string,",
+				"          Created_Timestamp as timestamp,",
+				"          Last_Updated_By as string,",
+				"          Last_Update_Timestamp as timestamp,",
+				"          Active_Flag as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> targetEdlCustomer",
+				"sourceCustomer derive(SRC_Date_Last_Modified = currentDate(),",
+				"          Create_Date = currentDate()) ~> derivedColumn1",
+				"targetEdlCustomer select(mapColumn(",
+				"          SRC_Customer_ID = Customer_ID,",
+				"          SRC_Customer_key = Customer_key,",
+				"          SRC_Company_Name = Company_Name,",
+				"          SRC_Delete_Flg = Delete_Flg,",
+				"          SRC_Create_Date = Create_Date,",
+				"          SRC_Date_Last_Modified = Date_Last_Modified,",
+				"          SRC_Created_By = Created_By,",
+				"          SRC_Created_Timestamp = Created_Timestamp,",
+				"          SRC_Last_Updated_By = Last_Updated_By,",
+				"          SRC_Last_Update_Timestamp = Last_Update_Timestamp,",
+				"          SRC_Active_Flag = Active_Flag",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"derivedColumn1, select1 lookup(Customer_Key == SRC_Customer_key,",
+				"     multiple: false,",
+				"     pickup: 'any',",
+				"     broadcast: 'auto')~> lookupWithEDLCustomer",
+				"lookupWithEDLCustomer split(isNull(SRC_Customer_ID),",
+				"     !isNull(SRC_Customer_ID) && Company_Name != SRC_Company_Name,",
+				"     disjoint: false) ~> splitforSCD1@(newCustomers, oldCustomers)",
+				"derivedColumn2 alterRow(updateIf(1 == 1)) ~> alterRow1",
+				"splitforSCD1@newCustomers derive(SRC_Date_Last_Modified = currentTimestamp(),",
+				"          SRC_Delete_Flg = 'N',",
+				"          SRC_Created_By = 'System',",
+				"          SRC_Created_Timestamp = currentTimestamp(),",
+				"          SRC_Last_Updated_By = 'Source',",
+				"          SRC_Active_Flag = 'Y',",
+				"          SRC_Last_Update_Timestamp = currentTimestamp()) ~> tranformNewCustomers",
+				"splitforSCD1@oldCustomers derive(Last_Updated_By = 'Target',",
+				"          Last_Update_Timestamp = currentDate()) ~> derivedColumn2",
+				"tranformNewCustomers sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          Customer_ID = Customer_Id,",
+				"          Customer_key = Customer_Key,",
+				"          Company_Name,",
+				"          Delete_Flg = SRC_Delete_Flg,",
+				"          Create_Date,",
+				"          Date_Last_Modified = SRC_Date_Last_Modified,",
+				"          Created_By = Create_Date,",
+				"          Created_Timestamp = SRC_Created_Timestamp,",
+				"          Last_Updated_By = SRC_Last_Updated_By,",
+				"          Last_Update_Timestamp = SRC_Last_Update_Timestamp,",
+				"          Active_Flag = SRC_Active_Flag",
+				"     )) ~> sinkForNewCustomers",
+				"alterRow1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          Customer_ID = Customer_Id,",
+				"          Customer_key = Customer_Key,",
+				"          Company_Name,",
+				"          Created_Timestamp = SRC_Created_Timestamp,",
+				"          Last_Updated_By,",
+				"          Last_Update_Timestamp",
+				"     )) ~> sinkForUpdate"
+			]
+		}
+	}
+}
