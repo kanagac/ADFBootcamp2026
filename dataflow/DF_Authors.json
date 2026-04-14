@@ -1,0 +1,185 @@
+{
+	"name": "DF_Authors",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "AuthorDataflow"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "target"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "AuthorUpdateSink"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "AuthorInsertSink"
+				}
+			],
+			"transformations": [
+				{
+					"name": "Authors"
+				},
+				{
+					"name": "select1"
+				},
+				{
+					"name": "join1"
+				},
+				{
+					"name": "update"
+				},
+				{
+					"name": "insert"
+				},
+				{
+					"name": "select2"
+				},
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "alterRow1"
+				},
+				{
+					"name": "derivedColumn2"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          au_lname as string,",
+				"          au_fname as string,",
+				"          phone as string,",
+				"          address as string,",
+				"          city as string,",
+				"          state as string,",
+				"          zip as string,",
+				"          contract as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> AuthorDataflow",
+				"source(output(",
+				"          AUTHOR_NAME as string,",
+				"          AUTHOR_PHONE as string,",
+				"          AUTHOR_ADDRESS as string,",
+				"          AUTHOR_CITY as string,",
+				"          AUTHOR_STATE as string,",
+				"          AUTHOR_ZIP as string,",
+				"          AU_CONTRACT_STATUS as boolean,",
+				"          START_DATE as date,",
+				"          END_DATE as date",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> target",
+				"AuthorDataflow derive(Author_Name = concat(left(au_lname,1), '-',au_fname),",
+				"          Author_Phone = concat('+91','-(',substring(phone,1,3),')-(',substring(phone,4,3),')-',substring(phone,5,length(phone))),",
+				"          Author_Address = replace(regexReplace(address,'[0-9]',''),\" \",\",\"),",
+				"          Author_City = city,",
+				"          Author_State = upper(trim(state)),",
+				"          Author_Zip = concat(left(rpad(zip,6,'0'),3), ' ', right(rpad(zip,6,'0'),3)),",
+				"          AU_contract_status = case(contract=='1','Active', 'De-activate')) ~> Authors",
+				"Authors select(mapColumn(",
+				"          Author_Name,",
+				"          Author_Phone,",
+				"          Author_Address,",
+				"          Author_City,",
+				"          Author_State,",
+				"          Author_Zip,",
+				"          AU_contract_status",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1, target join(select1@Author_Phone == target@AUTHOR_PHONE,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join1",
+				"join1 filter(!isNull(target@AUTHOR_PHONE) && select1@Author_City != target@AUTHOR_CITY) ~> update",
+				"join1 filter(isNull(target@AUTHOR_PHONE) || select1@Author_City !=target@AUTHOR_CITY) ~> insert",
+				"update select(mapColumn(",
+				"          AUTHOR_NAME = target@AUTHOR_NAME,",
+				"          AUTHOR_PHONE = target@AUTHOR_PHONE,",
+				"          AUTHOR_ADDRESS = target@AUTHOR_ADDRESS,",
+				"          TGT_AUTHOR_CITY = target@AUTHOR_CITY,",
+				"          AUTHOR_STATE = target@AUTHOR_STATE,",
+				"          AUTHOR_ZIP = target@AUTHOR_ZIP,",
+				"          AU_CONTRACT_STATUS = target@AU_CONTRACT_STATUS,",
+				"          START_DATE,",
+				"          END_DATE",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select2",
+				"select2 derive(END_DATE = currentDate()) ~> derivedColumn1",
+				"derivedColumn1 alterRow(updateIf(1==1)) ~> alterRow1",
+				"insert derive(START_DATE = currentDate(),",
+				"          END_DATE = toDate(null())) ~> derivedColumn2",
+				"alterRow1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:false,",
+				"     updateable:true,",
+				"     upsertable:false,",
+				"     keys:['AUTHOR_PHONE'],",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          AUTHOR_NAME,",
+				"          AUTHOR_PHONE,",
+				"          AUTHOR_ADDRESS,",
+				"          AUTHOR_CITY = TGT_AUTHOR_CITY,",
+				"          AUTHOR_STATE,",
+				"          AUTHOR_ZIP,",
+				"          AU_CONTRACT_STATUS,",
+				"          START_DATE,",
+				"          END_DATE",
+				"     )) ~> AuthorUpdateSink",
+				"derivedColumn2 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          AUTHOR_NAME = select1@Author_Name,",
+				"          AUTHOR_PHONE = select1@Author_Phone,",
+				"          AUTHOR_ADDRESS = select1@Author_Address,",
+				"          AUTHOR_CITY = select1@Author_City,",
+				"          AUTHOR_STATE = select1@Author_State,",
+				"          AUTHOR_ZIP = select1@Author_Zip,",
+				"          AU_CONTRACT_STATUS = select1@AU_contract_status,",
+				"          START_DATE,",
+				"          END_DATE",
+				"     )) ~> AuthorInsertSink"
+			]
+		}
+	}
+}
