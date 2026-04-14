@@ -49,10 +49,13 @@
 					"name": "split1"
 				},
 				{
-					"name": "alterRow1"
+					"name": "alterRow2"
 				},
 				{
-					"name": "alterRow2"
+					"name": "select2"
+				},
+				{
+					"name": "select3"
 				}
 			],
 			"scriptLines": [
@@ -121,11 +124,39 @@
 				"     matchType:'exact',",
 				"     ignoreSpaces: false,",
 				"     broadcast: 'auto')~> join1",
-				"join1 split(isNull(target@Author_Phone),",
+				"select2 split(isNull(t_Author_Phone),",
 				"     disjoint: false) ~> split1@(insert, update)",
-				"split1@insert alterRow(insertIf(1==1)) ~> alterRow1",
 				"split1@update alterRow(updateIf(1==1)) ~> alterRow2",
-				"alterRow1 sink(allowSchemaDrift: true,",
+				"join1 select(mapColumn(",
+				"          Author_Name = select1@Author_Name,",
+				"          Author_Phone = select1@Author_Phone,",
+				"          Author_Address = select1@Author_Address,",
+				"          Author_City = select1@Author_City,",
+				"          Author_State = select1@Author_State,",
+				"          Author_Zip = select1@Author_Zip,",
+				"          AU_Contract_Status = select1@AU_Contract_Status,",
+				"          t_Author_Name = target@Author_Name,",
+				"          t_Author_Phone = target@Author_Phone,",
+				"          t_Author_Address = target@Author_Address,",
+				"          t_Author_City = target@Author_City,",
+				"          t_Author_State = target@Author_State,",
+				"          t_Author_Zip = target@Author_Zip,",
+				"          t_AU_Contract_Status = target@AU_Contract_Status",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select2",
+				"split1@insert select(mapColumn(",
+				"          Author_Name,",
+				"          Author_Phone,",
+				"          Author_Address,",
+				"          Author_City,",
+				"          Author_State,",
+				"          Author_Zip,",
+				"          AU_Contract_Status",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select3",
+				"select3 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
 				"     insertable:true,",
