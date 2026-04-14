@@ -17,7 +17,18 @@
 				"typeProperties": {
 					"dataflow": {
 						"referenceName": "DF_Practice",
-						"type": "DataFlowReference"
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"source": {
+								"FileName": "titles.csv"
+							},
+							"source1": {
+								"TableName": "Dim_Title_IN1734"
+							},
+							"DimTitles": {
+								"TableName": "Dim_Title_IN1734"
+							}
+						}
 					},
 					"compute": {
 						"coreCount": 8,
