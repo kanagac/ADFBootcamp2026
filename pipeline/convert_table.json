@@ -5,6 +5,8 @@
 			{
 				"name": "Copy data1",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -151,8 +153,6 @@
 			{
 				"name": "Copy data2",
 				"type": "Copy",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -205,7 +205,7 @@
 						"referenceName": "DS_SQL_TABLE",
 						"type": "DatasetReference",
 						"parameters": {
-							"tablename": "STORES_IN1727"
+							"tablename": "STORES_IN1733"
 						}
 					}
 				]

@@ -1,0 +1,93 @@
+{
+	"name": "DIM_STORES",
+	"properties": {
+		"folder": {
+			"name": "Workshop"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "SRC"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "TGT"
+				}
+			],
+			"sinks": [],
+			"transformations": [
+				{
+					"name": "join1"
+				},
+				{
+					"name": "split1"
+				},
+				{
+					"name": "derivedColumn1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          stor_id as string,",
+				"          stor_name as string,",
+				"          stor_address as string,",
+				"          city as string,",
+				"          state as string,",
+				"          zip as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> SRC",
+				"source(output(",
+				"          Store_Key as integer,",
+				"          Store_id as string,",
+				"          Store_name as string,",
+				"          Store_address as string,",
+				"          Store_city as string,",
+				"          Store_state as string,",
+				"          Store_zip as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> TGT",
+				"SRC, TGT join(stor_id == Store_id,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join1",
+				"derivedColumn1 split(isNull(stor_id),",
+				"     !isNull(stor_id),",
+				"     disjoint: false) ~> split1@(Insert, Update)",
+				"join1 derive(Store_address = concat(\r",
+				"    split(stor_address, ' ')[0], ' ',\r",
+				"    split(stor_address, ' ')[1], ', ',\r",
+				"    substring(\r",
+				"        stor_address,\r",
+				"        length(split(stor_address, ' ')[0]) + length(split(stor_address, ' ')[1]) + 2,\r",
+				"        length(stor_address)\r",
+				"    ),\r",
+				"    '.'\r",
+				"),",
+				"          Store_state = case(\r",
+				"    state=='WA','Washington',\r",
+				"    state=='CA','California',\r",
+				"    state=='OR','Oregon',\r",
+				"    state=='NY','New York',\r",
+				"    state=='FL','Florida',\r",
+				"    state\r",
+				"),",
+				"          Store_zip = lpad(toString(zip), 6, '0')) ~> derivedColumn1"
+			]
+		}
+	}
+}
