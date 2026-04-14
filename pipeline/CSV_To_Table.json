@@ -1,5 +1,5 @@
 {
-	"name": "CSV_SQL",
+	"name": "CSV_To_Table",
 	"properties": {
 		"activities": [
 			{
