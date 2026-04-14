@@ -1,0 +1,70 @@
+{
+	"name": "DF_Title",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "source"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "DerivedColumnTitle"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          title_id as string,",
+				"          title_type as string,",
+				"          type as string,",
+				"          pub_id as string,",
+				"          price as string,",
+				"          notes as string,",
+				"          pubdate as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source",
+				"source derive(Title_ID = concat('T-', title_id,'-001'),",
+				"          Title_Desc = concat(upper(type),'-',upper(title_type)),",
+				"          Type = 'TT-' + initCap(type),",
+				"          Pub_ID = upper(trim(pub_id)),",
+				"          Price = ERROR_FUNCTION('')) ~> DerivedColumnTitle",
+				"DerivedColumnTitle sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          title_id,",
+				"          title_type,",
+				"          type,",
+				"          pub_id,",
+				"          price,",
+				"          notes,",
+				"          pubdate",
+				"     )) ~> sink1"
+			]
+		}
+	}
+}
