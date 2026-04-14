@@ -1,9 +1,9 @@
 {
-	"name": "PL_Customers_DIM_Customers",
+	"name": "PL_Customers_EDL_Customers",
 	"properties": {
 		"activities": [
 			{
-				"name": "DF_Customers_DIM_Customers",
+				"name": "DF_Customers_EDL_Customers",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "DF_Customer_DIM_Customer",
+						"referenceName": "DF_Customer_EDL_Customer",
 						"type": "DataFlowReference",
 						"datasetParameters": {
 							"CustomerSRC": {
@@ -30,13 +30,6 @@
 							},
 							"UpdateSink": {
 								"tableName": "EDL_Customer_IN1716"
-							}
-						},
-						"linkedServiceParameters": {
-							"CustomerSRC": {
-								"schemaLinkedService": {
-									"tableName": "Raw_Customers_IN1716"
-								}
 							}
 						}
 					},
