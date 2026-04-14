@@ -1,0 +1,51 @@
+{
+	"name": "CUSTOMERS",
+	"properties": {
+		"activities": [
+			{
+				"name": "Customeres",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "Customers",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"sourceCustomers": {
+								"container": "input",
+								"directory": "IN1742",
+								"filename": "Customer.csv"
+							},
+							"targetscd1": {
+								"tableName": "EDL_Customer"
+							},
+							"sink1": {
+								"tableName": "EDL_Customer"
+							},
+							"sink2": {
+								"tableName": "EDL_Customer"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"folder": {
+			"name": "workshop"
+		},
+		"annotations": []
+	}
+}
