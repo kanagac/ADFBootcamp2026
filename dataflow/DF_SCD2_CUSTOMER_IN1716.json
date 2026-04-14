@@ -1,0 +1,211 @@
+{
+	"name": "DF_SCD2_CUSTOMER_IN1716",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"name": "srcCustomer"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "trgCustomer"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "NewSink"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "ChangedSink"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "NewVersionSink"
+				}
+			],
+			"transformations": [
+				{
+					"name": "DCTransformations"
+				},
+				{
+					"name": "LeftJoinSRCTRG"
+				},
+				{
+					"name": "split1"
+				},
+				{
+					"name": "NewRecords"
+				},
+				{
+					"name": "ChangedRecords"
+				},
+				{
+					"name": "AlterInsert"
+				},
+				{
+					"name": "AlterUpdate"
+				},
+				{
+					"name": "Newversion"
+				},
+				{
+					"name": "AlterNew"
+				}
+			],
+			"scriptLines": [
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false) ~> srcCustomer",
+				"source(output(",
+				"          surrogate_key as integer,",
+				"          customer_id as string,",
+				"          full_name as string,",
+				"          city_clean as string,",
+				"          state_code as string,",
+				"          email_clean as string,",
+				"          phone_clean as string,",
+				"          segment_clean as string,",
+				"          signup_date as date,",
+				"          start_date as date,",
+				"          end_date as date,",
+				"          is_current as integer,",
+				"          record_source as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> trgCustomer",
+				"srcCustomer derive(full_name = concat(initCap(trim(iif(isNull(first_name) || trim(first_name) == '',\"Unknown\",first_name))), ' ',\r",
+				"initCap(trim(iif(isNull(last_name) || trim(last_name) == '',\"Unknown\",last_name)))),",
+				"          city_clean = initCap(lower(trim(coalesce(city,'Unknown')))),",
+				"          state_code = upper(trim(coalesce(state,'NA'))),",
+				"          email_clean = iif(isNull(email) || trim(email) == '' || regexMatch(email, '.*@.*') ,'Invalid email', lower(trim(email))),",
+				"          phone_clean = iif(\r",
+				"    length(regexReplace(phone, '[^0-9]', '')) >= 10,\r",
+				"    right(regexReplace(phone, '[^0-9]', ''), 10),\r",
+				"    'Invalid'\r",
+				"),",
+				"          first_name_clean = iif(isNull(first_name) || trim(first_name)=='', 'Unknown', initCap(trim(first_name))),",
+				"          last_name_clean = iif(isNull(last_name) || trim(last_name)=='', 'Unknown', initCap(trim(last_name))),",
+				"          segment_clean = case(\r",
+				"  lower(trim(segment)) == 'gold',    'Gold',\r",
+				"  lower(trim(segment)) == 'silver',  'Silver',\r",
+				"  lower(trim(segment)) == 'premium', 'Premium',\r",
+				"  lower(trim(segment)) == 'regular', 'Regular',\r",
+				"  'Unknown'\r",
+				"),",
+				"          signup_date_clean = iif(\r",
+				"    isNull(signup_date) || trim(toString(signup_date)) == '',\r",
+				"    toDate('1900-01-01', 'yyyy-MM-dd'),\r",
+				"    iif(\r",
+				"        regexMatch(trim(toString(signup_date)), `\\d{2}\\.\\d{2}\\.\\d{4}`),\r",
+				"        toDate(replace(trim(toString(signup_date)), '.', '-'), 'dd-MM-yyyy'),\r",
+				"        toDate(trim(toString(signup_date)), 'dd-MM-yyyy')\r",
+				"    )\r",
+				")) ~> DCTransformations",
+				"DCTransformations, trgCustomer join(srcCustomer@customer_id == trgCustomer@customer_id,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> LeftJoinSRCTRG",
+				"LeftJoinSRCTRG split(isNull(trgCustomer@customer_id),",
+				"     !isNull(trgCustomer@customer_id) && (   DCTransformations@full_name     != trgCustomer@full_name     ||   city          != trgCustomer@city_clean    ||   DCTransformations@email_clean   != trgCustomer@email_clean   ||   DCTransformations@phone_clean   != trgCustomer@phone_clean   ||   DCTransformations@segment_clean != trgCustomer@segment_clean ),",
+				"     !isNull(trgCustomer@customer_id) && (   DCTransformations@full_name     != trgCustomer@full_name     ||   city          != trgCustomer@city_clean    ||   DCTransformations@email_clean   != trgCustomer@email_clean   ||   DCTransformations@phone_clean   != trgCustomer@phone_clean   ||   DCTransformations@segment_clean != trgCustomer@segment_clean ),",
+				"     disjoint: false) ~> split1@(isNew, isChanged, NewVersion, isUnchaged)",
+				"split1@isNew derive(start_date = currentDate(),",
+				"          end_date = toDate(null()),",
+				"          is_current = 1) ~> NewRecords",
+				"split1@isChanged derive(end_date = currentDate(),",
+				"          is_current = 0) ~> ChangedRecords",
+				"NewRecords alterRow(insertIf(true())) ~> AlterInsert",
+				"ChangedRecords alterRow(updateIf(true())) ~> AlterUpdate",
+				"split1@NewVersion derive(start_date = currentDate(),",
+				"          end_date = toDate(null()),",
+				"          is_current = 1) ~> Newversion",
+				"Newversion alterRow(insertIf(true())) ~> AlterNew",
+				"AlterInsert sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          customer_id = {split1@isNew@customer_id},",
+				"          full_name = split1@isNew@full_name,",
+				"          city = split1@isNew@city_clean,",
+				"          state = split1@isNew@state_code,",
+				"          email = split1@isNew@email_clean,",
+				"          phone = split1@isNew@phone_clean,",
+				"          first_name = first_name_clean,",
+				"          last_name = last_name_clean,",
+				"          segment = split1@isNew@segment_clean,",
+				"          signup_date = signup_date_clean,",
+				"          start_date,",
+				"          end_date,",
+				"          is_current",
+				"     )) ~> NewSink",
+				"AlterUpdate sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:false,",
+				"     updateable:true,",
+				"     upsertable:false,",
+				"     keys:['surrogate_key'],",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          surrogate_key,",
+				"          start_date,",
+				"          end_date,",
+				"          is_current",
+				"     )) ~> ChangedSink",
+				"AlterNew sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          customer_id = {split1@NewVersion@customer_id},",
+				"          last_updated,",
+				"          full_name = split1@NewVersion@full_name,",
+				"          city = split1@NewVersion@city_clean,",
+				"          state = split1@NewVersion@state_code,",
+				"          email = split1@NewVersion@email_clean,",
+				"          phone = split1@NewVersion@phone_clean,",
+				"          first_name = first_name_clean,",
+				"          last_name = last_name_clean,",
+				"          segment = split1@NewVersion@segment_clean,",
+				"          signup_date = signup_date_clean,",
+				"          start_date,",
+				"          end_date,",
+				"          is_current",
+				"     )) ~> NewVersionSink"
+			]
+		}
+	}
+}
