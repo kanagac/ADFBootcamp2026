@@ -1,0 +1,167 @@
+{
+	"name": "DF_Authors",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_CSV",
+						"type": "DatasetReference"
+					},
+					"name": "source"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "target"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "DimAuthors"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "DAuthor"
+				}
+			],
+			"transformations": [
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "select1"
+				},
+				{
+					"name": "join1"
+				},
+				{
+					"name": "split1"
+				},
+				{
+					"name": "alterRow1"
+				},
+				{
+					"name": "alterRow2"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          au_lname as string,",
+				"          au_fname as string,",
+				"          phone as string,",
+				"          address as string,",
+				"          city as string,",
+				"          state as string,",
+				"          zip as integer,",
+				"          contract as boolean",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source",
+				"source(output(",
+				"          Author_Name as string,",
+				"          Author_Phone as string,",
+				"          Author_Address as string,",
+				"          Author_City as string,",
+				"          Author_State as string,",
+				"          Author_Zip as string,",
+				"          AU_Contract_Status as boolean",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> target",
+				"source derive(Author_Name = coalesce(toString(concat(substring(au_lname,1,1),'-',au_fname)),'unknown'),",
+				"          Author_Phone = coalesce(toString(concat(\r",
+				"  '+91-(',\r",
+				"  left(replace(phone,'-',''),3),\r",
+				"  ')-(',\r",
+				"  substring(replace(phone,'-',''),4,3),\r",
+				"  ')-',\r",
+				"  right(replace(phone,'-',''),4)\r",
+				")),'91+(999)-(999)-9999')\r",
+				",",
+				"          Author_Address = coalesce(toString(replace(regexReplace(address, '[0-9]',''),\r",
+				"' ',\r",
+				"','\r",
+				")),'ABC12345'),",
+				"          Author_City = coalesce(toString(address),'N/A'),",
+				"          Author_State = coalesce(toString(upper(replace(state,' ',''))),'N/A'),",
+				"          Author_Zip = coalesce(toString(concat(\r",
+				"    left(rpad(toString(zip), 6, '0'), 3),\r",
+				"    '-',\r",
+				"    right(rpad(toString(zip), 6, '0'), 3)\r",
+				")),\r",
+				"'N/A'),",
+				"          AU_Contract_Status = coalesce(iif(contract==true(),'Active','De_Active'),'N/A')) ~> derivedColumn1",
+				"derivedColumn1 select(mapColumn(",
+				"          Author_Name,",
+				"          Author_Phone,",
+				"          Author_Address,",
+				"          Author_City,",
+				"          Author_State,",
+				"          Author_Zip,",
+				"          AU_Contract_Status",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1, target join(select1@Author_Phone == target@Author_Phone,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join1",
+				"join1 split(isNull(target@Author_Phone),",
+				"     disjoint: false) ~> split1@(insert, update)",
+				"split1@insert alterRow(insertIf(1==1)) ~> alterRow1",
+				"split1@update alterRow(updateIf(1==1)) ~> alterRow2",
+				"alterRow1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          Author_Name = split1@insert@Author_Name,",
+				"          Author_Phone = split1@insert@Author_Phone,",
+				"          Author_Address = split1@insert@Author_Address,",
+				"          Author_City = split1@insert@Author_City,",
+				"          Author_State = split1@insert@Author_State,",
+				"          Author_Zip = split1@insert@Author_Zip,",
+				"          AU_Contract_Status = split1@insert@AU_Contract_Status,",
+				"          Author_Name = split1@insert@Author_Name,",
+				"          Author_Phone = split1@insert@Author_Phone,",
+				"          Author_Address = split1@insert@Author_Address,",
+				"          Author_City = split1@insert@Author_City,",
+				"          Author_State = split1@insert@Author_State,",
+				"          Author_Zip = split1@insert@Author_Zip,",
+				"          AU_Contract_Status = split1@insert@AU_Contract_Status",
+				"     )) ~> DimAuthors",
+				"alterRow2 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> DAuthor"
+			]
+		}
+	}
+}
