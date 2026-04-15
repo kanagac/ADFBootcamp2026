@@ -1,0 +1,46 @@
+{
+	"name": "PL_Authors_SCD2",
+	"properties": {
+		"activities": [
+			{
+				"name": "DF_Authors",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DF_Authors_SCD2",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"SrcAuthors": {
+								"TABLENAME": "DIM_AUTHORS_IN1723"
+							},
+							"TgtAuthors": {
+								"TABLENAME": "DIM_AUTHOR_IN1723"
+							},
+							"sink1": {
+								"TABLENAME": "DIM_AUTHOR_IN1723"
+							},
+							"sink2": {
+								"TABLENAME": "DIM_AUTHOR_IN1723"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"annotations": []
+	}
+}
