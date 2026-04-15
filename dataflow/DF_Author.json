@@ -177,6 +177,7 @@
 				"          Author_Name = au_lname,",
 				"          Author_Phone = phone,",
 				"          Author_Address = address,",
+				"          Author_City = tgt_city,",
 				"          Author_State = state,",
 				"          Author_Zip = zip,",
 				"          AU_Contract_Status = contract,",
