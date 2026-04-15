@@ -16,20 +16,20 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "SCD_2",
+						"referenceName": "SCD2_practises",
 						"type": "DataFlowReference",
 						"datasetParameters": {
-							"Source": {
-								"tablename": "Source_SCD2_33"
+							"source1": {
+								"tablename": "Customer_Source_SCD21733"
 							},
-							"Target": {
-								"tablename": "Target_SCD2_33"
+							"source2": {
+								"tablename": "Customer_Target_SCD21733"
 							},
 							"sink1": {
-								"tablename": "Target_SCD2_33"
+								"tablename": "Customer_Target_SCD21733"
 							},
 							"sink2": {
-								"tablename": "Target_SCD2_33"
+								"tablename": "Customer_Target_SCD21733"
 							}
 						}
 					},
