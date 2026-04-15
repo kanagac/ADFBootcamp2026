@@ -22,7 +22,14 @@
 					"name": "TGT"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"name": "sink1"
+				},
+				{
+					"name": "sink2"
+				}
+			],
 			"transformations": [
 				{
 					"name": "join1"
@@ -32,6 +39,9 @@
 				},
 				{
 					"name": "derivedColumn1"
+				},
+				{
+					"name": "alterRow1"
 				}
 			],
 			"scriptLines": [
@@ -79,14 +89,23 @@
 				"    '.'\r",
 				"),",
 				"          Store_state = case(\r",
-				"    state=='WA','Washington',\r",
-				"    state=='CA','California',\r",
-				"    state=='OR','Oregon',\r",
-				"    state=='NY','New York',\r",
-				"    state=='FL','Florida',\r",
-				"    state\r",
+				"    state=='MH','Maharastra',\r",
+				"    state=='TN','Tamil Nadu',\r",
+				"    state=='KA','Karnataka',\r",
+				"    state=='WB','West Bengal',\r",
+				"    state=='TS','Telungana',\r",
+				"    state=='DL',\"Delhi\"\r",
 				"),",
-				"          Store_zip = lpad(toString(zip), 6, '0')) ~> derivedColumn1"
+				"          Store_zip = lpad(toString(zip), 6, '0')) ~> derivedColumn1",
+				"split1@Update alterRow(updateIf(1==1)) ~> alterRow1",
+				"split1@Insert sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1",
+				"alterRow1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink2"
 			]
 		}
 	}
