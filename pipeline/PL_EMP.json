@@ -28,6 +28,7 @@
 					},
 					"sink": {
 						"type": "AzureSqlSink",
+						"preCopyScript": "TRUNCATE TABLE Employee_IN1716",
 						"writeBehavior": "insert",
 						"sqlWriterUseTableLock": false,
 						"tableOption": "autoCreate",
@@ -59,7 +60,7 @@
 						"referenceName": "DS_SQL_GENERIC",
 						"type": "DatasetReference",
 						"parameters": {
-							"tableName": "Employee_IN1716"
+							"tableName": "src_Employee_IN1716"
 						}
 					}
 				]
