@@ -1,5 +1,5 @@
 {
-	"name": "SCD1",
+	"name": "PL_SCD1",
 	"properties": {
 		"activities": [
 			{
@@ -15,6 +15,24 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
+					"dataflow": {
+						"referenceName": "scd_1",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"source1": {
+								"tablename": "Source_scd"
+							},
+							"source2": {
+								"tablename": "Target_scd1"
+							},
+							"sink1": {
+								"tablename": "Target_scd1"
+							},
+							"sink2": {
+								"tablename": "Target_scd1"
+							}
+						}
+					},
 					"compute": {
 						"coreCount": 8,
 						"computeType": "General"

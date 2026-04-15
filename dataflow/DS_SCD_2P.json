@@ -1,0 +1,170 @@
+{
+	"name": "DS_SCD_2P",
+	"properties": {
+		"folder": {
+			"name": "Workshop"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "source2"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "sink2"
+				}
+			],
+			"transformations": [
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "derivedColumn2"
+				},
+				{
+					"name": "exists1"
+				},
+				{
+					"name": "derivedColumn3"
+				},
+				{
+					"name": "exists2"
+				},
+				{
+					"name": "exists3"
+				},
+				{
+					"name": "select1"
+				},
+				{
+					"name": "derivedColumn4"
+				},
+				{
+					"name": "alterRow1"
+				},
+				{
+					"name": "select2"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Customer_ID as integer,",
+				"          Name as string,",
+				"          City as string,",
+				"          Email as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source1",
+				"source(output(",
+				"          Customer_ID as integer,",
+				"          Name as string,",
+				"          City as string,",
+				"          Email as string,",
+				"          Start_Date as date,",
+				"          End_Date as date,",
+				"          Is_Current as integer",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source2",
+				"source1 derive(hash = md5(Customer_ID,Name,City,Email)) ~> derivedColumn1",
+				"source2 derive(hash = md5(Customer_ID,Name,City,Email)) ~> derivedColumn2",
+				"derivedColumn1, derivedColumn2 exists(derivedColumn1@hash == derivedColumn2@hash,",
+				"     negate:true,",
+				"     broadcast: 'auto')~> exists1",
+				"exists1 derive(Start_Date = currentDate(),",
+				"          End_Date = toDate(null()),",
+				"          Is_Current = 1) ~> derivedColumn3",
+				"derivedColumn2, derivedColumn1 exists(source2@Customer_ID == source1@Customer_ID,",
+				"     negate:false,",
+				"     broadcast: 'auto')~> exists2",
+				"exists2, derivedColumn1 exists(derivedColumn2@hash == derivedColumn1@hash,",
+				"     negate:true,",
+				"     broadcast: 'auto')~> exists3",
+				"derivedColumn3 select(mapColumn(",
+				"          Customer_ID,",
+				"          Name,",
+				"          City,",
+				"          Email,",
+				"          Start_Date,",
+				"          End_Date,",
+				"          Is_Current",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"exists3 derive(End_Date = currentDate(),",
+				"          Is_Current = 0) ~> derivedColumn4",
+				"derivedColumn4 alterRow(updateIf(1==1)) ~> alterRow1",
+				"alterRow1 select(mapColumn(",
+				"          Customer_ID,",
+				"          Name,",
+				"          tgt_City = City,",
+				"          Email,",
+				"          Start_Date,",
+				"          End_Date,",
+				"          Is_Current",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select2",
+				"select1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     saveOrder: 2,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink1",
+				"select2 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     saveOrder: 1,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          Customer_ID,",
+				"          Name,",
+				"          City = tgt_City,",
+				"          Email,",
+				"          Start_Date,",
+				"          End_Date,",
+				"          Is_Current",
+				"     )) ~> sink2"
+			]
+		}
+	}
+}
