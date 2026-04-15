@@ -9,16 +9,10 @@
 				}
 			],
 			"sinks": [],
-			"transformations": [
-				{
-					"name": "derivedColumn1"
-				}
-			],
+			"transformations": [],
 			"scriptLines": [
 				"source(allowSchemaDrift: true,",
-				"     validateSchema: false) ~> source1",
-				"source1 derive(column1 = ERROR_FUNCTION(''),",
-				"          each(match(type == 'string' ), $$ = iifNull($$,'unknown'))) ~> derivedColumn1"
+				"     validateSchema: false) ~> source1"
 			]
 		}
 	}
