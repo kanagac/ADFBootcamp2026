@@ -155,7 +155,18 @@
 				"     format: 'table',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     errorHandlingOption: 'stopOnFirstError') ~> sink2"
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          Author_Name,",
+				"          Author_Phone,",
+				"          Author_Address,",
+				"          Author_City = Tgt_Author_City,",
+				"          Author_State,",
+				"          Author_Zip,",
+				"          AU_Contract_Status,",
+				"          START_DATE,",
+				"          END_DATE",
+				"     )) ~> sink2"
 			]
 		}
 	}
