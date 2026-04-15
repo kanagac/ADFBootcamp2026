@@ -16,14 +16,22 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "AzureSqlSource",
-						"queryTimeout": "02:00:00",
-						"partitionOption": "None"
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
 					},
 					"sink": {
 						"type": "AzureSqlSink",
 						"writeBehavior": "insert",
-						"sqlWriterUseTableLock": false
+						"sqlWriterUseTableLock": false,
+						"tableOption": "autoCreate",
+						"disableMetricsCollection": false
 					},
 					"enableStaging": false,
 					"translator": {
@@ -37,14 +45,22 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "AzureSqlTable1",
-						"type": "DatasetReference"
+						"referenceName": "DS_CSV_Mock",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": "csv",
+							"directory": " ",
+							"file": "authors.csv"
+						}
 					}
 				],
 				"outputs": [
 					{
 						"referenceName": "AzureSqlTable1",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"tablename": "DIM_AUTHORS_IN1723"
+						}
 					}
 				]
 			}

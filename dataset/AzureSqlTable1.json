@@ -5,6 +5,11 @@
 			"referenceName": "LS_AZURE_SQL",
 			"type": "LinkedServiceReference"
 		},
+		"parameters": {
+			"tablename": {
+				"type": "string"
+			}
+		},
 		"annotations": [],
 		"type": "AzureSqlTable",
 		"schema": [
@@ -59,7 +64,7 @@
 		],
 		"typeProperties": {
 			"schema": "dbo",
-			"table": "tgt_sales_IN1723"
+			"table": "DIM_AUTHORS_IN1723"
 		}
 	}
 }
