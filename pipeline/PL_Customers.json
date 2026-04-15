@@ -17,7 +17,22 @@
 				"typeProperties": {
 					"dataflow": {
 						"referenceName": "DF_WCustomers",
-						"type": "DataFlowReference"
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"source": {
+								"FileName": "Customers.csv",
+								"Container": "workshop"
+							},
+							"trg": {
+								"TableName": "EDL_Customer_IN1734"
+							},
+							"sink1": {
+								"TableName": "EDL_Customer_IN1734"
+							},
+							"sink2": {
+								"TableName": "EDL_Customer_IN1734"
+							}
+						}
 					},
 					"compute": {
 						"coreCount": 8,
