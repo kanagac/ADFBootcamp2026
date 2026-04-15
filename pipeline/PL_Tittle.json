@@ -17,17 +17,6 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"source": {
-						"type": "DelimitedTextSource",
-						"storeSettings": {
-							"type": "AzureBlobStorageReadSettings",
-							"recursive": true,
-							"enablePartitionDiscovery": false
-						},
-						"formatSettings": {
-							"type": "DelimitedTextReadSettings"
-						}
-					},
 					"sink": {
 						"type": "AzureSqlSink",
 						"writeBehavior": "insert",
@@ -35,27 +24,8 @@
 						"tableOption": "autoCreate",
 						"disableMetricsCollection": false
 					},
-					"enableStaging": false,
-					"translator": {
-						"type": "TabularTranslator",
-						"typeConversion": true,
-						"typeConversionSettings": {
-							"allowDataTruncation": true,
-							"treatBooleanAsNumber": false
-						}
-					}
+					"enableStaging": false
 				},
-				"inputs": [
-					{
-						"referenceName": "DS_Tittle",
-						"type": "DatasetReference",
-						"parameters": {
-							"P_container": "csv",
-							"P_directory": " ",
-							"P_file": "titles.csv"
-						}
-					}
-				],
 				"outputs": [
 					{
 						"referenceName": "DF_Tgt_table",
@@ -99,25 +69,8 @@
 						"tableOption": "autoCreate",
 						"disableMetricsCollection": false
 					},
-					"enableStaging": false,
-					"translator": {
-						"type": "TabularTranslator",
-						"typeConversion": true,
-						"typeConversionSettings": {
-							"allowDataTruncation": true,
-							"treatBooleanAsNumber": false
-						}
-					}
+					"enableStaging": false
 				},
-				"inputs": [
-					{
-						"referenceName": "DF_stores",
-						"type": "DatasetReference",
-						"parameters": {
-							"P_filename": "stores.csv"
-						}
-					}
-				],
 				"outputs": [
 					{
 						"referenceName": "DF_Tgt_table",
@@ -161,25 +114,8 @@
 						"tableOption": "autoCreate",
 						"disableMetricsCollection": false
 					},
-					"enableStaging": false,
-					"translator": {
-						"type": "TabularTranslator",
-						"typeConversion": true,
-						"typeConversionSettings": {
-							"allowDataTruncation": true,
-							"treatBooleanAsNumber": false
-						}
-					}
+					"enableStaging": false
 				},
-				"inputs": [
-					{
-						"referenceName": "DF_stores",
-						"type": "DatasetReference",
-						"parameters": {
-							"P_filename": "authors.csv"
-						}
-					}
-				],
 				"outputs": [
 					{
 						"referenceName": "DF_Tgt_table",

@@ -1,0 +1,89 @@
+{
+	"name": "DF_stores",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "select1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          stor_id as string,",
+				"          stor_name as string,",
+				"          stor_address as string,",
+				"          city as string,",
+				"          state as string,",
+				"          zip as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source1",
+				"source1 derive(stor_address = concat(\r",
+				"    split(stor_address, ' ')[0],\r",
+				"    ' ',\r",
+				"    split(stor_address, ' ')[1],\r",
+				"    ', ',\r",
+				"    split(stor_address, ' ')[2],\r",
+				"    ' ',\r",
+				"    split(stor_address, ' ')[3],\r",
+				"    '.'\r",
+				")\r",
+				",",
+				"          store_state = case(state == 'TN',\"Tamil Nadu\",state == \"WB\",\"West Bengal\",state==\"TS\",\"Telugana\",state == \"MH\",\"Maharastra\",state == \"KA\",\"Karnataka\" ),",
+				"          store_zip = lpad(zip,6,'0')) ~> derivedColumn1",
+				"derivedColumn1 select(mapColumn(",
+				"          stor_id,",
+				"          stor_name,",
+				"          stor_address,",
+				"          city,",
+				"          store_state = state,",
+				"          store_zip = zip",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          stor_id,",
+				"          stor_name,",
+				"          stor_address,",
+				"          city,",
+				"          store_state,",
+				"          store_zip",
+				"     )) ~> sink1"
+			]
+		}
+	}
+}
