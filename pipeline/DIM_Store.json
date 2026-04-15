@@ -17,7 +17,21 @@
 				"typeProperties": {
 					"dataflow": {
 						"referenceName": "DF_Store",
-						"type": "DataFlowReference"
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"SourceStore": {
+								"table_name": "STORES_IN1727"
+							},
+							"TargetStore": {
+								"table_name": "DIM_STORES_IN1727"
+							},
+							"LoadInsert": {
+								"table_name": "DIM_STORES_IN1727"
+							},
+							"LoadUpdate": {
+								"table_name": "DIM_STORES_IN1727"
+							}
+						}
 					},
 					"compute": {
 						"coreCount": 8,
