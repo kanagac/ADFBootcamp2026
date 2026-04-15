@@ -20,16 +20,16 @@
 						"type": "DataFlowReference",
 						"datasetParameters": {
 							"source1": {
-								"P_TableName": "SourceTableCustomerIN1720"
+								"P_tableName": "src_cust"
 							},
 							"source2": {
-								"P_TableName": "targetTableCustomerIN1720"
+								"P_tableName": "dim_cust"
 							},
 							"sink1": {
-								"P_TableName": " "
+								"P_tableName": "dim_cust"
 							},
 							"sink2": {
-								"P_TableName": " "
+								"P_tableName": "dim_cust"
 							}
 						}
 					},
