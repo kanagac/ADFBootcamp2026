@@ -46,6 +46,9 @@
 				},
 				{
 					"name": "exists2"
+				},
+				{
+					"name": "exists3"
 				}
 			],
 			"scriptLines": [
@@ -92,9 +95,12 @@
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> select1",
-				"derivedColumn2, derivedColumn1 exists(tgt_hash==src_hash,",
+				"derivedColumn2, derivedColumn1 exists(dimcust@customer_id==srccust@customer_id,",
 				"     negate:false,",
 				"     broadcast: 'auto')~> exists2",
+				"exists2, derivedColumn2 exists(ERROR_FUNCTION(''),",
+				"     negate:true,",
+				"     broadcast: 'auto')~> exists3",
 				"select1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
