@@ -6,14 +6,14 @@
 			"sources": [
 				{
 					"dataset": {
-						"referenceName": "DS_SQL_TABLE_INPUT",
+						"referenceName": "AzureSqlTable1",
 						"type": "DatasetReference"
 					},
 					"name": "SourceCustomer"
 				},
 				{
 					"dataset": {
-						"referenceName": "DS_SQL_TABLE_INPUT",
+						"referenceName": "AzureSqlTable1",
 						"type": "DatasetReference"
 					},
 					"name": "TargetCustomer"
@@ -22,14 +22,14 @@
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "DS_SQL_TABLE_OUTPUT",
+						"referenceName": "AzureSqlTable1",
 						"type": "DatasetReference"
 					},
 					"name": "InsertLoad"
 				},
 				{
 					"dataset": {
-						"referenceName": "DS_SQL_TABLE_OUTPUT",
+						"referenceName": "AzureSqlTable1",
 						"type": "DatasetReference"
 					},
 					"name": "UpsetLoad"
@@ -72,19 +72,17 @@
 				"     isolationLevel: 'READ_UNCOMMITTED',",
 				"     format: 'table') ~> SourceCustomer",
 				"source(output(",
-				"          CustomerSK as integer,",
-				"          CustomerID as integer,",
-				"          Name as string,",
-				"          City as string,",
-				"          StartDate as date,",
-				"          EndDate as date,",
-				"          IsCurrent as boolean",
+				"          customer_id as integer,",
+				"          customer_name as string,",
+				"          email as string,",
+				"          phone as string,",
+				"          city as string",
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
 				"     format: 'table') ~> TargetCustomer",
-				"SourceCustomer, TargetCustomer join(SourceCustomer@CustomerID == TargetCustomer@CustomerID,",
+				"SourceCustomer, TargetCustomer join(CustomerID == customer_id,",
 				"     joinType:'left',",
 				"     matchType:'exact',",
 				"     ignoreSpaces: false,",
@@ -120,6 +118,13 @@
 				"ExpireInsert alterRow(updateIf(true())) ~> AlterUpdate",
 				"NewInsert sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
+				"     input(",
+				"          customer_id as integer,",
+				"          customer_name as string,",
+				"          email as string,",
+				"          phone as string,",
+				"          city as string",
+				"     ),",
 				"     deletable:false,",
 				"     insertable:true,",
 				"     updateable:false,",
@@ -139,6 +144,13 @@
 				"     )) ~> InsertLoad",
 				"AlterUpdate sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
+				"     input(",
+				"          customer_id as integer,",
+				"          customer_name as string,",
+				"          email as string,",
+				"          phone as string,",
+				"          city as string",
+				"     ),",
 				"     deletable:false,",
 				"     insertable:false,",
 				"     updateable:true,",
