@@ -26,6 +26,9 @@
 						"type": "DatasetReference"
 					},
 					"name": "sink1"
+				},
+				{
+					"name": "sink2"
 				}
 			],
 			"transformations": [
@@ -49,6 +52,15 @@
 				},
 				{
 					"name": "exists3"
+				},
+				{
+					"name": "derivedColumn4"
+				},
+				{
+					"name": "alterRow1"
+				},
+				{
+					"name": "select2"
 				}
 			],
 			"scriptLines": [
@@ -98,9 +110,23 @@
 				"derivedColumn2, derivedColumn1 exists(dimcust@customer_id==srccust@customer_id,",
 				"     negate:false,",
 				"     broadcast: 'auto')~> exists2",
-				"exists2, derivedColumn2 exists(ERROR_FUNCTION(''),",
+				"exists2, derivedColumn1 exists(tgt_hash==src_hash,",
 				"     negate:true,",
 				"     broadcast: 'auto')~> exists3",
+				"exists3 derive(end_date = currentDate(),",
+				"          is_current = false()) ~> derivedColumn4",
+				"derivedColumn4 alterRow(updateIf(true())) ~> alterRow1",
+				"alterRow1 select(mapColumn(",
+				"          customer_id,",
+				"          customer_name,",
+				"          city,",
+				"          email,",
+				"          start_date,",
+				"          end_date,",
+				"          is_current",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select2",
 				"select1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
@@ -119,7 +145,11 @@
 				"          start_date,",
 				"          end_date,",
 				"          is_current",
-				"     )) ~> sink1"
+				"     )) ~> sink1",
+				"select2 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink2"
 			]
 		}
 	}
