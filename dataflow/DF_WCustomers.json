@@ -1,0 +1,176 @@
+{
+	"name": "DF_WCustomers",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_CSV",
+						"type": "DatasetReference"
+					},
+					"name": "source"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "trg"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "sink2"
+				}
+			],
+			"transformations": [
+				{
+					"name": "derivedColumns"
+				},
+				{
+					"name": "select1"
+				},
+				{
+					"name": "join"
+				},
+				{
+					"name": "split1"
+				},
+				{
+					"name": "select2"
+				},
+				{
+					"name": "alterRow1"
+				},
+				{
+					"name": "select3"
+				},
+				{
+					"name": "alterRow2"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Customer_Key as integer,",
+				"          Customer_Id as integer,",
+				"          Company_Name as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source",
+				"source(output(",
+				"          CustomerID as integer,",
+				"          Customer_Key as integer,",
+				"          Company_Name as string,",
+				"          Delete_Flag as string,",
+				"          Create_Date as timestamp,",
+				"          Date_Last_modified as timestamp,",
+				"          Created_By as string,",
+				"          Created_Timestamp as timestamp,",
+				"          Last_Updated_By as string,",
+				"          Last_Update_Timestamp as timestamp,",
+				"          Active_Flag as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> trg",
+				"source derive(Create_Date = currentTimestamp(),",
+				"          Date_Last_Modified = currentTimestamp(),",
+				"          Delete_Flag = 'N',",
+				"          Created_By = 'System',",
+				"          Created_Timestamp = currentTimestamp(),",
+				"          Last_Updated_By = 'System',",
+				"          Last_Update_Timestamp = currentTimestamp(),",
+				"          Active_Flag = 'Y') ~> derivedColumns",
+				"trg select(mapColumn(",
+				"          t_CustomerID = CustomerID,",
+				"          t_Customer_Key = Customer_Key,",
+				"          t_Company_Name = Company_Name,",
+				"          t_Delete_Flag = Delete_Flag,",
+				"          t_Create_Date = Create_Date,",
+				"          t_Date_Last_modified = Date_Last_modified,",
+				"          t_Created_By = Created_By,",
+				"          t_Created_Timestamp = Created_Timestamp,",
+				"          t_Last_Updated_By = Last_Updated_By,",
+				"          t_Last_Update_Timestamp = Last_Update_Timestamp,",
+				"          t_Active_Flag = Active_Flag",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"derivedColumns, select1 join(Customer_Id == t_CustomerID,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join",
+				"join split(isNull(t_CustomerID),",
+				"     Customer_Id==t_CustomerID&&Company_Name!=t_Company_Name,",
+				"     disjoint: false) ~> split1@(insertnew, update)",
+				"split1@insertnew select(mapColumn(",
+				"          Customer_Key,",
+				"          Customer_Id,",
+				"          Company_Name,",
+				"          Create_Date,",
+				"          Date_Last_Modified,",
+				"          Delete_Flag,",
+				"          Created_By,",
+				"          Created_Timestamp,",
+				"          Last_Updated_By,",
+				"          Last_Update_Timestamp,",
+				"          Active_Flag",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select2",
+				"select2 alterRow(insertIf(1==1)) ~> alterRow1",
+				"split1@update select(mapColumn(",
+				"          Customer_Key,",
+				"          Customer_Id,",
+				"          Company_Name,",
+				"          Create_Date,",
+				"          Date_Last_Modified,",
+				"          Delete_Flag,",
+				"          Created_By,",
+				"          Created_Timestamp,",
+				"          Last_Updated_By,",
+				"          Last_Update_Timestamp,",
+				"          Active_Flag",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select3",
+				"select3 alterRow(updateIf(1==1)) ~> alterRow2",
+				"alterRow1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink1",
+				"alterRow2 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink2"
+			]
+		}
+	}
+}
