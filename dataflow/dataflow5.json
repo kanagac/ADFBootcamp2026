@@ -6,33 +6,182 @@
 			"sources": [
 				{
 					"dataset": {
-						"referenceName": "DelimitedText8",
+						"referenceName": "DS_Source_scd2",
 						"type": "DatasetReference"
 					},
 					"name": "source1"
 				},
 				{
+					"dataset": {
+						"referenceName": "DS_TGT_SCD2",
+						"type": "DatasetReference"
+					},
 					"name": "source2"
 				}
 			],
-			"sinks": [],
-			"transformations": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_TGT_SCD2",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_TGT_SCD2",
+						"type": "DatasetReference"
+					},
+					"name": "sink2"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_TGT_SCD2",
+						"type": "DatasetReference"
+					},
+					"name": "sink3"
+				}
+			],
+			"transformations": [
+				{
+					"name": "join1"
+				},
+				{
+					"name": "split1"
+				},
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "derivedColumn2"
+				},
+				{
+					"name": "derivedColumn3"
+				},
+				{
+					"name": "alterRow1"
+				},
+				{
+					"name": "select1"
+				},
+				{
+					"name": "select2"
+				},
+				{
+					"name": "select3"
+				}
+			],
 			"scriptLines": [
 				"source(output(",
-				"          title_id as string,",
-				"          title as string,",
-				"          type as string,",
-				"          pub_id as string,",
-				"          price as string,",
-				"          notes as string,",
-				"          pubdate as string",
+				"          CustomerID as integer,",
+				"          Name as string,",
+				"          city as string",
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     inferDriftedColumnTypes: true,",
-				"     ignoreNoFilesFound: false) ~> source1",
-				"source(allowSchemaDrift: true,",
-				"     validateSchema: false) ~> source2"
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source1",
+				"source(output(",
+				"          CustomerID as integer,",
+				"          Name as string,",
+				"          city as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source2",
+				"source1, source2 join(source1@CustomerID == source2@CustomerID,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join1",
+				"join1 split(isNull(source2@CustomerID),",
+				"     (source1@CustomerID == source2@CustomerID) && (source1@city !=  source2@city) ,",
+				"     (source1@CustomerID == source2@CustomerID) && (source1@city !=  source2@city) ,",
+				"     disjoint: false) ~> split1@(insertion, insertafterupdation, updation)",
+				"split1@insertion derive(is_active = 1,",
+				"          Start_date = currentDate(),",
+				"          End_date = toDate(null())) ~> derivedColumn1",
+				"split1@updation derive(End_date = currentDate(),",
+				"          is_active = 0) ~> derivedColumn2",
+				"split1@insertafterupdation derive(is_active = 1,",
+				"          Start_date = currentDate(),",
+				"          End_date = toDate(null())) ~> derivedColumn3",
+				"derivedColumn2 alterRow(updateIf(true())) ~> alterRow1",
+				"derivedColumn1 select(mapColumn(",
+				"          CustomerID = split1@insertion@CustomerID,",
+				"          Name = split1@insertion@Name,",
+				"          city = split1@insertion@city,",
+				"          is_active,",
+				"          Start_date,",
+				"          End_date",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"alterRow1 select(mapColumn(",
+				"          CustomerID = split1@updation@CustomerID,",
+				"          Name = split1@updation@Name,",
+				"          city = split1@updation@city,",
+				"          End_date,",
+				"          is_active",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select2",
+				"derivedColumn3 select(mapColumn(",
+				"          CustomerID = split1@insertafterupdation@CustomerID,",
+				"          Name = split1@insertafterupdation@Name,",
+				"          city = split1@insertafterupdation@city,",
+				"          is_active,",
+				"          Start_date,",
+				"          End_date",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select3",
+				"select1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          CustomerID as integer,",
+				"          Name as string,",
+				"          city as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink1",
+				"select2 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          CustomerID as integer,",
+				"          Name as string,",
+				"          city as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink2",
+				"select3 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          CustomerID as integer,",
+				"          Name as string,",
+				"          city as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink3"
 			]
 		}
 	}

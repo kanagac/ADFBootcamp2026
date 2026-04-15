@@ -36,15 +36,6 @@
 							},
 							"sink1": {
 								"name": "FACT_SALES_IN1726"
-							},
-							"sink2": {
-								"name": "FACT_SALES_IN1726"
-							},
-							"sink3": {
-								"name": "FACT_SALES_IN1726"
-							},
-							"sink4": {
-								"name": "FACT_SALES_IN1726"
 							}
 						}
 					},

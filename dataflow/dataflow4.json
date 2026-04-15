@@ -88,9 +88,6 @@
 				},
 				{
 					"name": "select5"
-				},
-				{
-					"name": "filter1"
 				}
 			],
 			"scriptLines": [
@@ -257,8 +254,7 @@
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> select5",
-				"select5 filter(ERROR_FUNCTION('')) ~> filter1",
-				"filter1 sink(allowSchemaDrift: true,",
+				"select5 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
 				"     insertable:true,",
