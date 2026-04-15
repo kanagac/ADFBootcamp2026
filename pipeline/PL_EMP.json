@@ -28,7 +28,6 @@
 					},
 					"sink": {
 						"type": "AzureSqlSink",
-						"preCopyScript": "TRUNCATE TABLE Employee_IN1716",
 						"writeBehavior": "insert",
 						"sqlWriterUseTableLock": false,
 						"tableOption": "autoCreate",
@@ -46,12 +45,12 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "DS_CSV_FILES",
+						"referenceName": "DS_CSV_SRC",
 						"type": "DatasetReference",
 						"parameters": {
 							"container": "input",
 							"directory": "src_IN1716",
-							"filename": "SRC_EMPLOYEE_RAW_IN1716.csv"
+							"file_name": "SRC_EMPLOYEE_RAW_IN1716.csv"
 						}
 					}
 				],
@@ -60,7 +59,7 @@
 						"referenceName": "DS_SQL_GENERIC",
 						"type": "DatasetReference",
 						"parameters": {
-							"tableName": "src_Employee_IN1716"
+							"tableName": "src_Employees_IN1716"
 						}
 					}
 				]
