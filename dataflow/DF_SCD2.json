@@ -5,19 +5,115 @@
 		"typeProperties": {
 			"sources": [
 				{
-					"name": "source1"
+					"dataset": {
+						"referenceName": "DS_SCD_2",
+						"type": "DatasetReference"
+					},
+					"name": "srccust"
 				},
 				{
-					"name": "source2"
+					"dataset": {
+						"referenceName": "DS_SCD_2",
+						"type": "DatasetReference"
+					},
+					"name": "dimcust"
 				}
 			],
-			"sinks": [],
-			"transformations": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_SCD_2",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "derivedColumn2"
+				},
+				{
+					"name": "exists1"
+				},
+				{
+					"name": "derivedColumn3"
+				},
+				{
+					"name": "select1"
+				},
+				{
+					"name": "exists2"
+				}
+			],
 			"scriptLines": [
-				"source(allowSchemaDrift: true,",
-				"     validateSchema: false) ~> source1",
-				"source(allowSchemaDrift: true,",
-				"     validateSchema: false) ~> source2"
+				"source(output(",
+				"          customer_id as integer,",
+				"          customer_name as string,",
+				"          city as string,",
+				"          email as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> srccust",
+				"source(output(",
+				"          customer_key as integer,",
+				"          customer_id as integer,",
+				"          customer_name as string,",
+				"          city as string,",
+				"          email as string,",
+				"          start_date as date,",
+				"          end_date as date,",
+				"          is_current as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> dimcust",
+				"srccust derive(src_hash = md5(customer_id,customer_name,city,email)) ~> derivedColumn1",
+				"dimcust derive(tgt_hash = md5(customer_id,customer_name,city,email)) ~> derivedColumn2",
+				"derivedColumn1, derivedColumn2 exists(src_hash==tgt_hash,",
+				"     negate:true,",
+				"     broadcast: 'auto')~> exists1",
+				"exists1 derive(start_date = currentDate(),",
+				"          end_date = toDate(null()),",
+				"          is_current = true()) ~> derivedColumn3",
+				"derivedColumn3 select(mapColumn(",
+				"          customer_id,",
+				"          customer_name,",
+				"          city,",
+				"          email,",
+				"          start_date,",
+				"          end_date,",
+				"          is_current",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"derivedColumn2, derivedColumn1 exists(tgt_hash==src_hash,",
+				"     negate:false,",
+				"     broadcast: 'auto')~> exists2",
+				"select1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          customer_id,",
+				"          customer_name,",
+				"          city,",
+				"          email,",
+				"          start_date,",
+				"          end_date,",
+				"          is_current",
+				"     )) ~> sink1"
 			]
 		}
 	}
