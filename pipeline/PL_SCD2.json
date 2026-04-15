@@ -18,7 +18,31 @@
 				"typeProperties": {
 					"dataflow": {
 						"referenceName": "DF_SCD2_CUSTOMER_IN1716",
-						"type": "DataFlowReference"
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"srcCustomer": {
+								"table_name": "Customer_SRC_In1722"
+							},
+							"trgCustomer": {
+								"P_SQL": "Customer_DIM_IN1722"
+							},
+							"NewSink": {
+								"P_SQL": "Customer_DIM_IN1722"
+							},
+							"ChangedSink": {
+								"P_SQL": "Customer_DIM_IN1722"
+							},
+							"NewVersionSink": {
+								"P_SQL": "Customer_DIM_IN1722"
+							}
+						},
+						"linkedServiceParameters": {
+							"srcCustomer": {
+								"schemaLinkedService": {
+									"table_name": "Customer_SRC_In1722"
+								}
+							}
+						}
 					},
 					"compute": {
 						"coreCount": 8,

@@ -5,6 +5,10 @@
 		"typeProperties": {
 			"sources": [
 				{
+					"dataset": {
+						"referenceName": "AzureSqlTable1",
+						"type": "DatasetReference"
+					},
 					"name": "srcCustomer"
 				},
 				{
@@ -68,8 +72,17 @@
 				}
 			],
 			"scriptLines": [
-				"source(allowSchemaDrift: true,",
-				"     validateSchema: false) ~> srcCustomer",
+				"source(output(",
+				"          customer_id as integer,",
+				"          customer_name as string,",
+				"          email as string,",
+				"          phone as string,",
+				"          city as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> srcCustomer",
 				"source(output(",
 				"          surrogate_key as integer,",
 				"          customer_id as string,",
@@ -148,7 +161,7 @@
 				"     skipDuplicateMapOutputs: true,",
 				"     errorHandlingOption: 'stopOnFirstError',",
 				"     mapColumn(",
-				"          customer_id = {split1@isNew@customer_id},",
+				"          customer_id = split1@isNew@customer_id,",
 				"          full_name = split1@isNew@full_name,",
 				"          city = split1@isNew@city_clean,",
 				"          state = split1@isNew@state_code,",
@@ -190,7 +203,7 @@
 				"     skipDuplicateMapOutputs: true,",
 				"     errorHandlingOption: 'stopOnFirstError',",
 				"     mapColumn(",
-				"          customer_id = {split1@NewVersion@customer_id},",
+				"          customer_id = split1@NewVersion@customer_id,",
 				"          last_updated,",
 				"          full_name = split1@NewVersion@full_name,",
 				"          city = split1@NewVersion@city_clean,",
