@@ -15,10 +15,7 @@
 		"schema": [],
 		"typeProperties": {
 			"schema": "dbo",
-			"table": {
-				"value": "@dataset().table_name",
-				"type": "Expression"
-			}
+			"table": "emp_IN1722"
 		}
 	}
 }
