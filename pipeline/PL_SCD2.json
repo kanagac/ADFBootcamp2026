@@ -4,7 +4,7 @@
 		"description": "Implementation of the SCD2 Pipeline",
 		"activities": [
 			{
-				"name": "DF_SCD2_CUSTOMER_IN1716",
+				"name": "DF_SCD2_CUSTOMER_IN1722",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {

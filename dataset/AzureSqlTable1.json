@@ -12,29 +12,7 @@
 		},
 		"annotations": [],
 		"type": "AzureSqlTable",
-		"schema": [
-			{
-				"name": "customer_id",
-				"type": "int",
-				"precision": 10
-			},
-			{
-				"name": "customer_name",
-				"type": "varchar"
-			},
-			{
-				"name": "email",
-				"type": "varchar"
-			},
-			{
-				"name": "phone",
-				"type": "varchar"
-			},
-			{
-				"name": "city",
-				"type": "varchar"
-			}
-		],
+		"schema": [],
 		"typeProperties": {
 			"schema": "dbo",
 			"table": {
