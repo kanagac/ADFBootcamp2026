@@ -22,6 +22,15 @@
 						"datasetParameters": {
 							"SourceCustomer": {
 								"table_name": "Customer_SRC_In1722"
+							},
+							"TargetCustomer": {
+								"table_name": "Customer_DIM_IN1722"
+							},
+							"InsertLoad": {
+								"table_name": "Customer_DIM_IN1722"
+							},
+							"UpsetLoad": {
+								"table_name": "Customer_DIM_IN1722"
 							}
 						}
 					},
