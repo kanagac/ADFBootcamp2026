@@ -1,5 +1,5 @@
 {
-	"name": "PL_SCD2",
+	"name": "PL_SCD2_IN1722",
 	"properties": {
 		"description": "Implementation of the SCD2 Pipeline",
 		"activities": [
@@ -17,7 +17,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "DF_SCD_2_II",
+						"referenceName": "DF_SCD_2_IN1722",
 						"type": "DataFlowReference",
 						"datasetParameters": {
 							"SourceCustomer": {
