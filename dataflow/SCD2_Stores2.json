@@ -52,9 +52,6 @@
 					"name": "UpdateFilter"
 				},
 				{
-					"name": "InsertFilter"
-				},
-				{
 					"name": "UpdateUpdate"
 				},
 				{
@@ -64,10 +61,13 @@
 					"name": "UpdateAlterRow"
 				},
 				{
-					"name": "InsertColumnsSelection"
+					"name": "InsertUpdate"
 				},
 				{
-					"name": "InsertUpdate"
+					"name": "StoresSelect"
+				},
+				{
+					"name": "StoresFilter"
 				}
 			],
 			"scriptLines": [
@@ -125,7 +125,6 @@
 				"     ignoreSpaces: false,",
 				"     broadcast: 'auto')~> StoresJoin",
 				"StoresJoin filter(!isNull(AuthorsTarget@Author_Phone) && AuhtorsSelect@Author_City!=AuthorsTarget@Author_city) ~> UpdateFilter",
-				"StoresJoin filter(isNull(AuthorsTarget@Author_Phone) || AuhtorsSelect@Author_City!=AuthorsTarget@Author_city) ~> InsertFilter",
 				"UpdateColumnSelection derive(End_date = currentDate(),",
 				"          isActive = 0) ~> UpdateUpdate",
 				"UpdateFilter select(mapColumn(",
@@ -143,7 +142,10 @@
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> UpdateColumnSelection",
 				"UpdateUpdate alterRow(updateIf(1==1)) ~> UpdateAlterRow",
-				"InsertFilter select(mapColumn(",
+				"StoresSelect derive(Start_date = currentDate(),",
+				"          End_date = toDate(null()),",
+				"          isActive = 1) ~> InsertUpdate",
+				"StoresFilter select(mapColumn(",
 				"          Author_Name = AuhtorsSelect@Author_Name,",
 				"          Author_Phone = AuhtorsSelect@Author_Phone,",
 				"          Author_Address = AuhtorsSelect@Author_Address,",
@@ -156,10 +158,8 @@
 				"          isActive",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> InsertColumnsSelection",
-				"InsertColumnsSelection derive(Start_date = currentDate(),",
-				"          End_date = toDate(null()),",
-				"          isActive = 1) ~> InsertUpdate",
+				"     skipDuplicateMapOutputs: true) ~> StoresSelect",
+				"StoresJoin filter(isNull(AuthorsTarget@Author_Phone) || AuhtorsSelect@Author_City!=AuthorsTarget@Author_city) ~> StoresFilter",
 				"UpdateAlterRow sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
