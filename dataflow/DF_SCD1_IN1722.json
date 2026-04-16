@@ -19,13 +19,37 @@
 					"name": "target"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_SCD1",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SCD1",
+						"type": "DatasetReference"
+					},
+					"name": "sink2"
+				}
+			],
 			"transformations": [
 				{
 					"name": "join1"
 				},
 				{
 					"name": "split1"
+				},
+				{
+					"name": "select1"
+				},
+				{
+					"name": "alterRow1"
+				},
+				{
+					"name": "select2"
 				}
 			],
 			"scriptLines": [
@@ -56,7 +80,44 @@
 				"     broadcast: 'auto')~> join1",
 				"join1 split(isNull(source@customer_id),",
 				"     !isNull(source@customer_id)&&source@city==source@city,",
-				"     disjoint: false) ~> split1@(Insert, Update)"
+				"     disjoint: false) ~> split1@(Insert, Update)",
+				"split1@Insert select(mapColumn(",
+				"          customer_id = split1@Insert@customer_id,",
+				"          customer_name = split1@Insert@customer_name,",
+				"          email = split1@Insert@email,",
+				"          city = split1@Insert@city",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"split1@Update alterRow(updateIf(1==1)) ~> alterRow1",
+				"alterRow1 select(mapColumn(",
+				"          customer_id = split1@Update@customer_id,",
+				"          customer_name = split1@Update@customer_name,",
+				"          email = split1@Update@email,",
+				"          city = split1@Update@city",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select2",
+				"select1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink1",
+				"select2 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink2"
 			]
 		}
 	}
