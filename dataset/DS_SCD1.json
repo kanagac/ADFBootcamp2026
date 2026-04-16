@@ -1,0 +1,24 @@
+{
+	"name": "DS_SCD1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_AZURE_SQL",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"P_Table_name": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": {
+				"value": "@dataset().P_Table_name",
+				"type": "Expression"
+			}
+		}
+	}
+}
