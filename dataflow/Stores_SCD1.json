@@ -1,0 +1,154 @@
+{
+	"name": "Stores_SCD1",
+	"properties": {
+		"folder": {
+			"name": "SCD"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "sourceStores"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "TargetStores"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "StoresInsertsink"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "UpdateSink"
+				}
+			],
+			"transformations": [
+				{
+					"name": "StoresDerivedColumn"
+				},
+				{
+					"name": "StoresSelect"
+				},
+				{
+					"name": "StoresJoin"
+				},
+				{
+					"name": "StoresSplit"
+				},
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "alterRow1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          stor_id as string,",
+				"          stor_name as string,",
+				"          stor_address as string,",
+				"          city as string,",
+				"          state as string,",
+				"          zip as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> sourceStores",
+				"source(output(",
+				"          Store_Key as integer,",
+				"          Store_id as string,",
+				"          Store_name as string,",
+				"          Store_address as string,",
+				"          Store_city as string,",
+				"          Store_state as string,",
+				"          Store_zip as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> TargetStores",
+				"sourceStores derive(Store_id = stor_id,",
+				"          Store_name = stor_name,",
+				"          Store_address = stor_address,",
+				"          Store_city = city,",
+				"          Store_state = case(city=='Washington', 'WA', city=='California','CA','N/A'),",
+				"          Store_zip = lpad(zip, 6, '0')) ~> StoresDerivedColumn",
+				"StoresDerivedColumn select(mapColumn(",
+				"          Store_id,",
+				"          Store_name,",
+				"          Store_address,",
+				"          Store_city,",
+				"          Store_state,",
+				"          Store_zip",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> StoresSelect",
+				"StoresSelect, TargetStores join(StoresSelect@Store_id == TargetStores@Store_id,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> StoresJoin",
+				"StoresJoin split(isNull(TargetStores@Store_id),",
+				"     !isNull(TargetStores@Store_id) && StoresSelect@Store_city!=TargetStores@Store_id,",
+				"     disjoint: false) ~> StoresSplit@(insert, update)",
+				"StoresSplit@update derive(Store_city = StoresSplit@update@Store_city) ~> derivedColumn1",
+				"derivedColumn1 alterRow(updateIf(1==1)) ~> alterRow1",
+				"StoresSplit@insert sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          Store_id = StoresSplit@insert@Store_id,",
+				"          Store_name = StoresSplit@insert@Store_name,",
+				"          Store_address = StoresSplit@insert@Store_address,",
+				"          Store_city = StoresSplit@insert@Store_city,",
+				"          Store_state = StoresSplit@insert@Store_state,",
+				"          Store_zip = StoresSplit@insert@Store_zip",
+				"     )) ~> StoresInsertsink",
+				"alterRow1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:false,",
+				"     updateable:true,",
+				"     upsertable:false,",
+				"     keys:['Store_Key'],",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          Store_Key,",
+				"          Store_id = StoresSplit@update@Store_id,",
+				"          Store_name = StoresSplit@update@Store_name,",
+				"          Store_city,",
+				"          Store_address = StoresSplit@update@Store_address,",
+				"          Store_state = StoresSplit@update@Store_state,",
+				"          Store_zip = StoresSplit@update@Store_zip",
+				"     )) ~> UpdateSink"
+			]
+		}
+	}
+}
