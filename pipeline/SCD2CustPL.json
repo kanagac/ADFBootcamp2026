@@ -1,0 +1,46 @@
+{
+	"name": "SCD2CustPL",
+	"properties": {
+		"activities": [
+			{
+				"name": "CustSCD2",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "SCD2Stores2Derived",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"source": {
+								"table": "Customer_SCD2_Source_IN1738"
+							},
+							"Target": {
+								"table": "Customer_SCD2_Target_IN1738"
+							},
+							"UpdateSink": {
+								"table": "Customer_SCD2_Target_IN1738"
+							},
+							"InsertSink": {
+								"table": "Customer_SCD2_Target_IN1738"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"annotations": []
+	}
+}
