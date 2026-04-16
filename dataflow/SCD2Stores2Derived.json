@@ -1,0 +1,143 @@
+{
+	"name": "SCD2Stores2Derived",
+	"properties": {
+		"folder": {
+			"name": "SCD"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "source"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "Target"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "UpdateSink"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "InsertSink"
+				}
+			],
+			"transformations": [
+				{
+					"name": "SCDJoin"
+				},
+				{
+					"name": "UpdateFilter"
+				},
+				{
+					"name": "UpdateDerivedColumn"
+				},
+				{
+					"name": "alterRow1"
+				},
+				{
+					"name": "InsertFilter"
+				},
+				{
+					"name": "InsertDerivedColumn"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          CustomerID as integer,",
+				"          Name as string,",
+				"          City as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source",
+				"source(output(",
+				"          CustomerSK as integer,",
+				"          CustomerID as integer,",
+				"          Name as string,",
+				"          City as string,",
+				"          StartDate as date,",
+				"          EndDate as date,",
+				"          IsCurrent as boolean",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> Target",
+				"source, Target join(source@CustomerID == Target@CustomerID,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> SCDJoin",
+				"SCDJoin filter(!isNull(Target@CustomerID) && source@City!=Target@City) ~> UpdateFilter",
+				"UpdateFilter derive(EndDate = currentDate(),",
+				"          IsCurrent = 0) ~> UpdateDerivedColumn",
+				"UpdateDerivedColumn alterRow(updateIf(1==1)) ~> alterRow1",
+				"SCDJoin filter(isNull(Target@CustomerID) || source@City!=Target@City) ~> InsertFilter",
+				"InsertFilter derive(StartDate = currentDate(),",
+				"          EndDate = toDate(null()),",
+				"          IsCurrent = 1) ~> InsertDerivedColumn",
+				"alterRow1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:false,",
+				"     updateable:true,",
+				"     upsertable:false,",
+				"     keys:['CustomerSK'],",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     saveOrder: 1,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          CustomerSK,",
+				"          CustomerID = source@CustomerID,",
+				"          Name = Target@Name,",
+				"          City = Target@City,",
+				"          StartDate,",
+				"          EndDate,",
+				"          IsCurrent",
+				"     )) ~> UpdateSink",
+				"InsertDerivedColumn sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     saveOrder: 2,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          CustomerID = source@CustomerID,",
+				"          Name = source@Name,",
+				"          City = source@City,",
+				"          CustomerID = Target@CustomerID,",
+				"          Name = Target@Name,",
+				"          City = Target@City,",
+				"          StartDate,",
+				"          EndDate,",
+				"          IsCurrent",
+				"     )) ~> InsertSink"
+			]
+		}
+	}
+}
