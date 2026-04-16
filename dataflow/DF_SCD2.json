@@ -28,6 +28,10 @@
 					"name": "sink1"
 				},
 				{
+					"dataset": {
+						"referenceName": "DS_SCD_2",
+						"type": "DatasetReference"
+					},
 					"name": "sink2"
 				}
 			],
@@ -61,6 +65,9 @@
 				},
 				{
 					"name": "select2"
+				},
+				{
+					"name": "derivedColumn5"
 				}
 			],
 			"scriptLines": [
@@ -90,7 +97,7 @@
 				"     format: 'table') ~> dimcust",
 				"srccust derive(src_hash = md5(customer_id,customer_name,city,email)) ~> derivedColumn1",
 				"dimcust derive(tgt_hash = md5(customer_id,customer_name,city,email)) ~> derivedColumn2",
-				"derivedColumn1, derivedColumn2 exists(src_hash==tgt_hash,",
+				"derivedColumn5, derivedColumn2 exists(src_hash==tgt_hash,",
 				"     negate:true,",
 				"     broadcast: 'auto')~> exists1",
 				"exists1 derive(start_date = currentDate(),",
@@ -127,6 +134,7 @@
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> select2",
+				"derivedColumn1 derive() ~> derivedColumn5",
 				"select1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
@@ -148,8 +156,25 @@
 				"     )) ~> sink1",
 				"select2 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> sink2"
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          customer_key,",
+				"          customer_id,",
+				"          customer_name,",
+				"          city,",
+				"          email,",
+				"          start_date,",
+				"          end_date,",
+				"          is_current,",
+				"          tgt_hash",
+				"     )) ~> sink2"
 			]
 		}
 	}

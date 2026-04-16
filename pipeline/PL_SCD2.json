@@ -15,6 +15,31 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DF_SCD2",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"srccust": {
+								"P_tableName": "src_cust_IN1726"
+							},
+							"dimcust": {
+								"P_tableName": "dim_cust_IN1726"
+							},
+							"sink1": {
+								"P_tableName": "dim_cust_IN1726"
+							},
+							"sink2": {
+								"P_tableName": "dim_cust_IN1726"
+							}
+						},
+						"linkedServiceParameters": {
+							"sink2": {
+								"schemaLinkedService": {
+									"P_tableName": "dim_cust_IN1726"
+								}
+							}
+						}
+					},
 					"compute": {
 						"coreCount": 8,
 						"computeType": "General"
