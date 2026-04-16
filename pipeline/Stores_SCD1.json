@@ -1,0 +1,49 @@
+{
+	"name": "Stores_SCD1",
+	"properties": {
+		"activities": [
+			{
+				"name": "StoresDataFlow",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "Stores_SCD1",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"sourceStores": {
+								"table": "dim_stores"
+							},
+							"TargetStores": {
+								"table": "DIM_STORES_IN1738"
+							},
+							"StoresInsertsink": {
+								"table": "DIM_STORES_IN1738"
+							},
+							"UpdateSink": {
+								"table": "DIM_STORES_IN1738"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"folder": {
+			"name": "SCD"
+		},
+		"annotations": []
+	}
+}
