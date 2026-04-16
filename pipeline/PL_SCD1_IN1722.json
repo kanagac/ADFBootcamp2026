@@ -17,7 +17,21 @@
 				"typeProperties": {
 					"dataflow": {
 						"referenceName": "DF_SCD1_IN1722",
-						"type": "DataFlowReference"
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"source": {
+								"P_Table_name": "src_cust_IN1722"
+							},
+							"target": {
+								"P_Table_name": "dim_cust_IN1722"
+							},
+							"sink1": {
+								"P_Table_name": "dim_cust_IN1722"
+							},
+							"sink2": {
+								"P_Table_name": "dim_cust_IN1722"
+							}
+						}
 					},
 					"compute": {
 						"coreCount": 8,
