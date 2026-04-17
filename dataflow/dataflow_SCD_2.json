@@ -35,9 +35,17 @@
 			],
 			"sinks": [
 				{
+					"dataset": {
+						"referenceName": "AzureSqlTable1",
+						"type": "DatasetReference"
+					},
 					"name": "sink1"
 				},
 				{
+					"dataset": {
+						"referenceName": "AzureSqlTable1",
+						"type": "DatasetReference"
+					},
 					"name": "sink2"
 				}
 			],
@@ -53,9 +61,6 @@
 				},
 				{
 					"name": "derivedColumn1"
-				},
-				{
-					"name": "split1"
 				},
 				{
 					"name": "select1"
@@ -126,11 +131,10 @@
 				"     matchType:'exact',",
 				"     ignoreSpaces: false,",
 				"     broadcast: 'auto')~> join3",
-				"join3 derive(emp_id = true()) ~> derivedColumn1",
-				"derivedColumn1 split(ERROR_FUNCTION(''),",
-				"     ERROR_FUNCTION(''),",
-				"     disjoint: false) ~> split1@(insert, , )",
-				"split1@insert select(mapColumn(",
+				"join3 derive(emp_id = concat('source1@emp_id',' ','source1@emp_name'),",
+				"          emp_name = upper(source1@emp_name),",
+				"          salary = ERROR_FUNCTION('')) ~> derivedColumn1",
+				" select(mapColumn(",
 				"          {}",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
@@ -142,14 +146,32 @@
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> select2",
 				"split1 derive() ~> derivedColumn2",
-				"select1 sink(allowSchemaDrift: true,",
+				"Target sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> sink1",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          emp_id,",
+				"          emp_name,",
+				"          dept_id,",
+				"          salary",
+				"     )) ~> sink1",
 				"select2 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> sink2"
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink2"
 			]
 		}
 	}
