@@ -18,7 +18,7 @@
 				"type": "string",
 				"defaultValue": " "
 			},
-			"ContainerName": {
+			"Containername": {
 				"type": "string",
 				"defaultValue": " "
 			}
@@ -41,10 +41,11 @@
 					"type": "Expression"
 				},
 				"container": {
-					"value": "@dataset().ContainerName",
+					"value": "@dataset().Containername",
 					"type": "Expression"
 				}
-			}
+			},
+			"firstRowAsHeader": true
 		},
 		"schema": []
 	},
