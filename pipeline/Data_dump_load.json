@@ -1,0 +1,260 @@
+{
+	"name": "Data_dump_load",
+	"properties": {
+		"activities": [
+			{
+				"name": "sales_rep_dump_load",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"writeBehavior": "insert",
+						"sqlWriterUseTableLock": false,
+						"tableOption": "autoCreate",
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference",
+						"parameters": {
+							"tablename": "sales_Rep"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference",
+						"parameters": {
+							"tablename": "sales_Rep_IN1717"
+						}
+					}
+				]
+			},
+			{
+				"name": "customers_dump_load",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"writeBehavior": "insert",
+						"sqlWriterUseTableLock": false,
+						"tableOption": "autoCreate",
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference",
+						"parameters": {
+							"tablename": "Customers_raw"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference",
+						"parameters": {
+							"tablename": "Customers_IN1717"
+						}
+					}
+				]
+			},
+			{
+				"name": "Estimate_dump_load",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"writeBehavior": "insert",
+						"sqlWriterUseTableLock": false,
+						"tableOption": "autoCreate",
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference",
+						"parameters": {
+							"tablename": "Estimate_raw"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference",
+						"parameters": {
+							"tablename": "Estimate_IN1717"
+						}
+					}
+				]
+			},
+			{
+				"name": "Locations_dump_load",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"writeBehavior": "insert",
+						"sqlWriterUseTableLock": false,
+						"tableOption": "autoCreate",
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference",
+						"parameters": {
+							"tablename": "Loactions"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference",
+						"parameters": {
+							"tablename": "Loactions_IN1717"
+						}
+					}
+				]
+			},
+			{
+				"name": "Products_dump_load",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "ExcelSource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "DS_XL",
+						"type": "DatasetReference",
+						"parameters": {
+							"Filename": " "
+						}
+					}
+				]
+			}
+		],
+		"folder": {
+			"name": "Workhop_dump_load"
+		},
+		"annotations": []
+	}
+}
