@@ -6,7 +6,7 @@
 			"sources": [
 				{
 					"dataset": {
-						"referenceName": "DS_CSV",
+						"referenceName": "DS_SQL_TABLE",
 						"type": "DatasetReference"
 					},
 					"name": "source"
@@ -69,7 +69,8 @@
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     ignoreNoFilesFound: false) ~> source",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source",
 				"source(output(",
 				"          CustomerID as integer,",
 				"          Customer_Key as integer,",
