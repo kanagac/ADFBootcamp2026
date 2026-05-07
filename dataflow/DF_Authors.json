@@ -93,13 +93,12 @@
 				"  substring(replace(phone,'-',''),4,3),\r",
 				"  ')-',\r",
 				"  right(replace(phone,'-',''),4)\r",
-				")),'91+(999)-(999)-9999')\r",
-				",",
+				")),'91+(999)-(999)-9999'),",
 				"          Author_Address = coalesce(toString(replace(regexReplace(address, '[0-9]',''),\r",
 				"' ',\r",
 				"','\r",
 				")),'ABC12345'),",
-				"          Author_City = coalesce(toString(address),'N/A'),",
+				"          Author_City = coalesce(toString(city),'N/A'),",
 				"          Author_State = coalesce(toString(upper(replace(state,' ',''))),'N/A'),",
 				"          Author_Zip = coalesce(toString(concat(\r",
 				"    left(rpad(toString(zip), 6, '0'), 2),\r",
@@ -165,6 +164,7 @@
 				"     format: 'table',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
+				"     saveOrder: 2,",
 				"     errorHandlingOption: 'stopOnFirstError',",
 				"     mapColumn(",
 				"          Author_Name,",
@@ -184,6 +184,7 @@
 				"     format: 'table',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
+				"     saveOrder: 1,",
 				"     errorHandlingOption: 'stopOnFirstError') ~> DAuthor"
 			]
 		}
