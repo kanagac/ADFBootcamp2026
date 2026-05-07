@@ -1,0 +1,52 @@
+{
+	"name": "PL_Subscription_IN1716",
+	"properties": {
+		"activities": [
+			{
+				"name": "DF_Subscription_IN1716",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DF_Subscription_IN1716",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"SubscriptionSRC": {
+								"tableName": "SRC_Subscription_IN1716"
+							},
+							"SubscriptionTGT": {
+								"tableName": "Dim_Subscription_SCD2_TGT_IN1716"
+							},
+							"NewRecordsSink": {
+								"tableName": "Dim_Subscription_SCD2_TGT_IN1716"
+							},
+							"ExpiredSink": {
+								"tableName": "Dim_Subscription_SCD2_TGT_IN1716"
+							},
+							"NewVersionSink": {
+								"tableName": "Dim_Subscription_SCD2_TGT_IN1716"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"folder": {
+			"name": "Loading_strategies"
+		},
+		"annotations": []
+	}
+}
