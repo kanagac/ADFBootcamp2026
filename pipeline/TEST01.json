@@ -45,7 +45,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "AzureSqlSource",
-						"sqlReaderQuery": "select count(*) as count from SCD2_Customers_Target_IN1734",
+						"sqlReaderQuery": "select count(*) as count from SCD2_Customers_Target_IN1734\nwhere IsCurrent =1",
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
