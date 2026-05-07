@@ -1,0 +1,192 @@
+{
+	"name": "Test02_Rowcount_IN1734",
+	"properties": {
+		"activities": [
+			{
+				"name": "ausource",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "select count(*) as count from Authors_Source_IN1734",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference",
+						"parameters": {
+							"TableName": "Authors_Source_IN1734"
+						}
+					}
+				}
+			},
+			{
+				"name": "autarget",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "\nselect count(*) as count from Dim_Author_IN1734",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference",
+						"parameters": {
+							"TableName": "Dim_Author_IN1734"
+						}
+					}
+				}
+			},
+			{
+				"name": "Set variable1",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "ausource",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "sourcecount",
+					"value": {
+						"value": "@activity('ausource').output.firstRow.count",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set variable1_copy1",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "autarget",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "Targetcount",
+					"value": {
+						"value": "@activity('autarget').output.firstRow.count",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "If Condition1",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Set variable1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Set variable1_copy1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(variables('sourcecount'), variables('Targetcount'))",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "Set variable3",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "RC_Failed_vaildation",
+								"value": {
+									"value": "TestFailed",
+									"type": "Expression"
+								}
+							}
+						}
+					],
+					"ifTrueActivities": [
+						{
+							"name": "Set variable2",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "RC_Vaildation",
+								"value": {
+									"value": "testPass",
+									"type": "Expression"
+								}
+							}
+						}
+					]
+				}
+			}
+		],
+		"variables": {
+			"sourcecount": {
+				"type": "Integer"
+			},
+			"Targetcount": {
+				"type": "Integer"
+			},
+			"RC_Vaildation": {
+				"type": "String"
+			},
+			"RC_Failed_vaildation": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Testing"
+		},
+		"annotations": []
+	}
+}
