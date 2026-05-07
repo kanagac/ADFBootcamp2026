@@ -56,7 +56,7 @@
 					"source": {
 						"type": "AzureSqlSource",
 						"sqlReaderQuery": {
-							"value": "SELECT COUNT(*) FROM tgt_employee_IN1743",
+							"value": "SELECT COUNT(*) as cnt FROM tgt_employee_IN1743 WHERE is_current=1",
 							"type": "Expression"
 						},
 						"queryTimeout": "02:00:00",
@@ -90,7 +90,7 @@
 				"typeProperties": {
 					"variableName": "sourceCount",
 					"value": {
-						"value": "@activity('Source_Count').output",
+						"value": "@int(activity('Source_Count').output.firstRow.cnt)\n",
 						"type": "Expression"
 					}
 				}
@@ -114,7 +114,7 @@
 				"typeProperties": {
 					"variableName": "targetCount",
 					"value": {
-						"value": "@activity('Target_Count').output",
+						"value": "@int(activity('Target_Count').output.firstRow.cnt)\n",
 						"type": "Expression"
 					}
 				}
