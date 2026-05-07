@@ -1,5 +1,5 @@
 {
-	"name": "LS_SQL_SERVER_SRC",
+	"name": "LS_Src_Type",
 	"type": "Microsoft.DataFactory/factories/linkedservices",
 	"properties": {
 		"annotations": [],
@@ -10,8 +10,8 @@
 			"encrypt": "mandatory",
 			"trustServerCertificate": false,
 			"authenticationType": "SQL",
-			"userName": "Mod_User4",
-			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIkRBVEFGQUNUT1JZQEZERTBGMEVCLUU3OEYtNERCNi1BQTk2LTRDQzAzNkU3RTYwRl9kZGY0MGRkMy0yYTVlLTQ0YTMtOTdjMS1jY2ZlNjEwZmQ2MjEiDQp9"
+			"userName": "Mod_User12",
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIkRBVEFGQUNUT1JZQEZERTBGMEVCLUU3OEYtNERCNi1BQTk2LTRDQzAzNkU3RTYwRl8xN2YxMjA1Ni02YzFmLTRlNzktODQ2ZC0zY2QzYjUzN2FjNTciDQp9"
 		},
 		"connectVia": {
 			"referenceName": "BootcampModuleTest",
