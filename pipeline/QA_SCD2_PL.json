@@ -30,6 +30,9 @@
 							},
 							"InsertSink": {
 								"Tablename": "tgt_employee_IN1743"
+							},
+							"InsertUpdateSink": {
+								"Tablename": "tgt_employee_IN1743"
 							}
 						}
 					},
