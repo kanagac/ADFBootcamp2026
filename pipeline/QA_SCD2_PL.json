@@ -1,0 +1,49 @@
+{
+	"name": "QA_SCD2_PL",
+	"properties": {
+		"activities": [
+			{
+				"name": "QA_SCD_DataFlow",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "QA_SCD2",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"Source": {
+								"Tablename": "src_employee_IN1743"
+							},
+							"Target": {
+								"Tablename": "tgt_employee_IN1743"
+							},
+							"UpdateSink": {
+								"Tablename": "tgt_employee_IN1743"
+							},
+							"InsertSink": {
+								"Tablename": "tgt_employee_IN1743"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"folder": {
+			"name": "QA Testing"
+		},
+		"annotations": []
+	}
+}
