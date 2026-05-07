@@ -36,6 +36,13 @@
 						"type": "DatasetReference"
 					},
 					"name": "InsertSink"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "InsertUpdateSink"
 				}
 			],
 			"transformations": [
@@ -56,6 +63,12 @@
 				},
 				{
 					"name": "UpdateAlterRow"
+				},
+				{
+					"name": "UpdatedInsert"
+				},
+				{
+					"name": "InsertUpdateDerivedColumn"
 				}
 			],
 			"scriptLines": [
@@ -88,14 +101,28 @@
 				"     matchType:'exact',",
 				"     ignoreSpaces: false,",
 				"     broadcast: 'auto')~> QAJoin",
-				"QAJoin filter(isNull(Target@emp_id) || Source@department != Target@department || Source@salary != Target@salary) ~> Insert",
-				"QAJoin filter(Source@department != Target@department || Source@salary != Target@salary) ~> Update",
+				"QAJoin filter(isNull(Target@emp_id)) ~> Insert",
+				"QAJoin filter(!isNull(Target@emp_id) &&",
+				"(",
+				"    Source@department != Target@department ",
+				"    || Source@salary != Target@salary",
+				")",
+				") ~> Update",
 				"Update derive(end_date = currentDate(),",
 				"          is_current = 0) ~> UpdateDerivedColumn",
 				"Insert derive(start_date = currentDate(),",
 				"          end_date = toDate(null()),",
 				"          is_current = 1) ~> InsertDerivedColumn",
 				"UpdateDerivedColumn alterRow(updateIf(1==1)) ~> UpdateAlterRow",
+				"QAJoin filter(!isNull(Target@emp_id) &&",
+				"(",
+				"    Source@department != Target@department ",
+				"    || Source@salary != Target@salary",
+				")",
+				") ~> UpdatedInsert",
+				"UpdatedInsert derive(start_date = currentDate(),",
+				"          end_date = toDate(null()),",
+				"          is_current = 1) ~> InsertUpdateDerivedColumn",
 				"UpdateAlterRow sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
@@ -127,6 +154,26 @@
 				"     format: 'table',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
+				"     saveOrder: 3,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          emp_id = Source@emp_id,",
+				"          emp_name = Source@emp_name,",
+				"          department = Source@department,",
+				"          salary = Source@salary,",
+				"          start_date,",
+				"          end_date,",
+				"          is_current",
+				"     )) ~> InsertSink",
+				"InsertUpdateDerivedColumn sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
 				"     saveOrder: 2,",
 				"     errorHandlingOption: 'stopOnFirstError',",
 				"     mapColumn(",
@@ -137,7 +184,7 @@
 				"          start_date,",
 				"          end_date,",
 				"          is_current",
-				"     )) ~> InsertSink"
+				"     )) ~> InsertUpdateSink"
 			]
 		}
 	}
