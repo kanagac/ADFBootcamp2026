@@ -1,0 +1,142 @@
+{
+	"name": "QA_SCD2",
+	"properties": {
+		"folder": {
+			"name": "QA Testing"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "Source"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "Target"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "UpdateSink"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "InsertSink"
+				}
+			],
+			"transformations": [
+				{
+					"name": "QAJoin"
+				},
+				{
+					"name": "Insert"
+				},
+				{
+					"name": "Update"
+				},
+				{
+					"name": "UpdateDerivedColumn"
+				},
+				{
+					"name": "InsertDerivedColumn"
+				},
+				{
+					"name": "UpdateAlterRow"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          emp_id as integer,",
+				"          emp_name as string,",
+				"          department as string,",
+				"          salary as integer",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> Source",
+				"source(output(",
+				"          emp_sk as integer,",
+				"          emp_id as integer,",
+				"          emp_name as string,",
+				"          department as string,",
+				"          salary as integer,",
+				"          start_date as date,",
+				"          end_date as date,",
+				"          is_current as boolean",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> Target",
+				"Source, Target join(Source@emp_id == Target@emp_id,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> QAJoin",
+				"QAJoin filter(isNull(Target@emp_id) || Source@department != Target@department || Source@salary != Target@salary) ~> Insert",
+				"QAJoin filter(Source@department != Target@department || Source@salary != Target@salary) ~> Update",
+				"Update derive(end_date = currentDate(),",
+				"          is_current = 0) ~> UpdateDerivedColumn",
+				"Insert derive(start_date = currentDate(),",
+				"          end_date = toDate(null()),",
+				"          is_current = 1) ~> InsertDerivedColumn",
+				"UpdateDerivedColumn alterRow(updateIf(1==1)) ~> UpdateAlterRow",
+				"UpdateAlterRow sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:false,",
+				"     updateable:true,",
+				"     upsertable:false,",
+				"     keys:['emp_sk'],",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          emp_sk,",
+				"          emp_id = Target@emp_id,",
+				"          emp_name = Target@emp_name,",
+				"          department = Target@department,",
+				"          salary = Target@salary,",
+				"          start_date,",
+				"          end_date,",
+				"          is_current",
+				"     )) ~> UpdateSink",
+				"InsertDerivedColumn sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          emp_id = Source@emp_id,",
+				"          emp_name = Source@emp_name,",
+				"          department = Source@department,",
+				"          salary = Source@salary,",
+				"          start_date,",
+				"          end_date,",
+				"          is_current",
+				"     )) ~> InsertSink"
+			]
+		}
+	}
+}
