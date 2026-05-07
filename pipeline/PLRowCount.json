@@ -36,14 +36,9 @@
 			{
 				"name": "TgtCount",
 				"type": "Lookup",
-				"dependsOn": [
-					{
-						"activity": "SrcCountVariable",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
+				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -102,6 +97,8 @@
 			{
 				"name": "TgtCountVariable",
 				"type": "SetVariable",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "TgtCount",
@@ -126,6 +123,8 @@
 			{
 				"name": "If Condition_QA",
 				"type": "IfCondition",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "TgtCountVariable",
