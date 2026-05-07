@@ -1,0 +1,180 @@
+{
+	"name": "DF_Subscription_IN1716",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_GENERIC",
+						"type": "DatasetReference"
+					},
+					"name": "SubscriptionSRC"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_GENERIC",
+						"type": "DatasetReference"
+					},
+					"name": "SubscriptionTGT"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_GENERIC",
+						"type": "DatasetReference"
+					},
+					"name": "NewRecordsSink"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_GENERIC",
+						"type": "DatasetReference"
+					},
+					"name": "ExpiredSink"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_GENERIC",
+						"type": "DatasetReference"
+					},
+					"name": "NewVersionSink"
+				}
+			],
+			"transformations": [
+				{
+					"name": "LeftJoin"
+				},
+				{
+					"name": "split1"
+				},
+				{
+					"name": "NewRecords"
+				},
+				{
+					"name": "ExpiredVersion"
+				},
+				{
+					"name": "AlterUpdate"
+				},
+				{
+					"name": "NewUpdatedVersion"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          UserID as integer,",
+				"          UserName as string,",
+				"          SubscriptionPlan as string,",
+				"          MonthlyFee as decimal(5,2),",
+				"          DeviceType as string,",
+				"          Region as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> SubscriptionSRC",
+				"source(output(",
+				"          SurrogateKey as integer,",
+				"          UserID as integer,",
+				"          UserName as string,",
+				"          SubscriptionPlan as string,",
+				"          MonthlyFee as decimal(5,2),",
+				"          DeviceType as string,",
+				"          Region as string,",
+				"          StartDate as timestamp,",
+				"          EndDate as timestamp,",
+				"          IsCurrent as boolean",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> SubscriptionTGT",
+				"SubscriptionSRC, SubscriptionTGT join(SubscriptionSRC@UserID == SubscriptionTGT@UserID,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> LeftJoin",
+				"LeftJoin split(isNull(SubscriptionTGT@UserID),",
+				"     !isNull(SubscriptionTGT@UserID) && (\r",
+				"    SubscriptionSRC@SubscriptionPlan != SubscriptionTGT@SubscriptionPlan &&\r",
+				"    SubscriptionTGT@DeviceType !=  SubscriptionTGT@DeviceType\r",
+				"),",
+				"     !isNull(SubscriptionTGT@UserID) && (\r",
+				"    SubscriptionSRC@SubscriptionPlan != SubscriptionTGT@SubscriptionPlan &&\r",
+				"    SubscriptionTGT@DeviceType !=  SubscriptionTGT@DeviceType\r",
+				"),",
+				"     disjoint: false) ~> split1@(NewRecords, ExpiredRecords, NewVersionRecords, UnchangedRecords)",
+				"split1@NewRecords derive(StartDate = currentDate(),",
+				"          EndDate = toDate(null()),",
+				"          IsCurrent = 1) ~> NewRecords",
+				"split1@ExpiredRecords derive(EndDate = currentDate(),",
+				"          IsCurrent = 0) ~> ExpiredVersion",
+				"ExpiredVersion alterRow(updateIf(true())) ~> AlterUpdate",
+				"split1@NewVersionRecords derive(StartDate = currentDate(),",
+				"          EndDate = toDate(null()),",
+				"          IsCurrent = 1) ~> NewUpdatedVersion",
+				"NewRecords sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          UserID = split1@NewRecords@UserID,",
+				"          UserName = split1@NewRecords@UserName,",
+				"          SubscriptionPlan = split1@NewRecords@SubscriptionPlan,",
+				"          MonthlyFee = split1@NewRecords@MonthlyFee,",
+				"          DeviceType = split1@NewRecords@DeviceType,",
+				"          Region = split1@NewRecords@Region,",
+				"          StartDate,",
+				"          EndDate,",
+				"          IsCurrent",
+				"     )) ~> NewRecordsSink",
+				"AlterUpdate sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:false,",
+				"     updateable:true,",
+				"     upsertable:false,",
+				"     keys:['SurrogateKey'],",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          SurrogateKey,",
+				"          StartDate,",
+				"          EndDate,",
+				"          IsCurrent",
+				"     )) ~> ExpiredSink",
+				"NewUpdatedVersion sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          UserID = split1@NewVersionRecords@UserID,",
+				"          UserName = split1@NewVersionRecords@UserName,",
+				"          SubscriptionPlan = split1@NewVersionRecords@SubscriptionPlan,",
+				"          MonthlyFee = split1@NewVersionRecords@MonthlyFee,",
+				"          DeviceType = split1@NewVersionRecords@DeviceType,",
+				"          Region = split1@NewVersionRecords@Region,",
+				"          StartDate,",
+				"          EndDate,",
+				"          IsCurrent",
+				"     )) ~> NewVersionSink"
+			]
+		}
+	}
+}
