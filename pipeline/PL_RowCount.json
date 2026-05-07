@@ -18,7 +18,7 @@
 					"source": {
 						"type": "AzureSqlSource",
 						"sqlReaderQuery": {
-							"value": "SELECT COUNT(*) AS cnt FROM src_customer_IN1743",
+							"value": "SELECT COUNT(*) AS cnt FROM src_QA_employee_38",
 							"type": "Expression"
 						},
 						"queryTimeout": "02:00:00",
@@ -28,7 +28,7 @@
 						"referenceName": "DS_SQL_TABLE",
 						"type": "DatasetReference",
 						"parameters": {
-							"table": "src_customer_IN1743"
+							"table": "src_QA_employee_38"
 						}
 					}
 				}
@@ -36,7 +36,14 @@
 			{
 				"name": "TgtCount",
 				"type": "Lookup",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "SrcCountVariable",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -44,11 +51,18 @@
 					"secureOutput": false,
 					"secureInput": false
 				},
-				"userProperties": [],
+				"userProperties": [
+					{
+						"name": "TgtTable"
+					}
+				],
 				"typeProperties": {
 					"source": {
 						"type": "AzureSqlSource",
-						"sqlReaderQuery": "SELECT COUNT(*) AS cnt FROM tgt_customer_IN1743",
+						"sqlReaderQuery": {
+							"value": "SELECT COUNT(*) AS cnt FROM tgt_customer_IN1743 WHERE is_current=1",
+							"type": "Expression"
+						},
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
@@ -56,7 +70,7 @@
 						"referenceName": "DS_SQL_TABLE",
 						"type": "DatasetReference",
 						"parameters": {
-							"table": "tgt_customer_IN1743"
+							"table": "tgt_QA_employee_38"
 						}
 					}
 				}
@@ -80,7 +94,7 @@
 				"typeProperties": {
 					"variableName": "SourceCount",
 					"value": {
-						"value": "@activity('SrcCount').output",
+						"value": "@int(activity('SrcCount').output.firstRow.cnt)",
 						"type": "Expression"
 					}
 				}
@@ -104,9 +118,60 @@
 				"typeProperties": {
 					"variableName": "TargetCount",
 					"value": {
-						"value": "@activity('TgtCount').output",
+						"value": "@int(activity('TgtCount').output.firstRow.cnt)",
 						"type": "Expression"
 					}
+				}
+			},
+			{
+				"name": "If Condition_QA",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "TgtCountVariable",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(variables('SourceCount'),variables('TargetCount'))",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "Fail",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "Fail",
+								"value": "FAIL"
+							}
+						}
+					],
+					"ifTrueActivities": [
+						{
+							"name": "Pass",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "Pass",
+								"value": "PASS"
+							}
+						}
+					]
 				}
 			}
 		],
@@ -116,6 +181,12 @@
 			},
 			"TargetCount": {
 				"type": "Integer"
+			},
+			"Pass": {
+				"type": "String"
+			},
+			"Fail": {
+				"type": "String"
 			}
 		},
 		"folder": {
