@@ -1,0 +1,126 @@
+{
+	"name": "PL_RowCount",
+	"properties": {
+		"activities": [
+			{
+				"name": "SrcCount",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "SELECT COUNT(*) AS cnt FROM src_customer_IN1743",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference",
+						"parameters": {
+							"table": "src_customer_IN1743"
+						}
+					}
+				}
+			},
+			{
+				"name": "TgtCount",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "SELECT COUNT(*) AS cnt FROM tgt_customer_IN1743",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference",
+						"parameters": {
+							"table": "tgt_customer_IN1743"
+						}
+					}
+				}
+			},
+			{
+				"name": "SrcCountVariable",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "SrcCount",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "SourceCount",
+					"value": {
+						"value": "@activity('SrcCount').output",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "TgtCountVariable",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "TgtCount",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "TargetCount",
+					"value": {
+						"value": "@activity('TgtCount').output",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"variables": {
+			"SourceCount": {
+				"type": "Integer"
+			},
+			"TargetCount": {
+				"type": "Integer"
+			}
+		},
+		"folder": {
+			"name": "QA_TESTING"
+		},
+		"annotations": []
+	}
+}
