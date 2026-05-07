@@ -1,0 +1,105 @@
+{
+	"name": "Test02_RC_IN1734",
+	"properties": {
+		"activities": [
+			{
+				"name": "Lookup1",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "SELECT top 5\n    s.state,\n    t.Author_State\nFROM Authors_Source_IN1734 s\nJOIN Dim_Author_IN1734 t\nON s.phone=t.Author_Phone\nWHERE\n    (s.state = 'Hyderabad' AND t.Author_State <> 'TS')\n OR (s.state = 'Chennai' AND t.Author_State <> 'TN')\n OR (s.state = 'Mumbai' AND t.Author_State <> 'MH')\n OR (s.state = 'Delhi' AND t.Author_State <> 'DL')\n OR (s.state = 'Bengaluru' AND t.Author_State <> 'KA')\n",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference",
+						"parameters": {
+							"TableName": " "
+						}
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "If Condition1",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Lookup1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@greater(length(activity('Lookup1').output.value),0 )",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "Set variable2",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "RC_Vaildation",
+								"value": {
+									"value": "State Code Matched",
+									"type": "Expression"
+								}
+							}
+						}
+					],
+					"ifTrueActivities": [
+						{
+							"name": "Set variable1",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "RC_Valid",
+								"value": {
+									"value": "State code not matched with cities.",
+									"type": "Expression"
+								}
+							}
+						}
+					]
+				}
+			}
+		],
+		"variables": {
+			"RC_Vaildation": {
+				"type": "String"
+			},
+			"RC_Valid": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Testing"
+		},
+		"annotations": []
+	}
+}
