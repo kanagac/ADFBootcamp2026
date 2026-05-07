@@ -1,0 +1,141 @@
+{
+	"name": "DF_SCD2_QA",
+	"properties": {
+		"folder": {
+			"name": "QA Testing Exercise"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "Source"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "Target"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "UpdateSink"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "InsertSink"
+				}
+			],
+			"transformations": [
+				{
+					"name": "SrcJoinTgt"
+				},
+				{
+					"name": "Insert"
+				},
+				{
+					"name": "Update"
+				},
+				{
+					"name": "UpdateDerivedColumn"
+				},
+				{
+					"name": "UpdateAlterRow"
+				},
+				{
+					"name": "InsertDerivedColumn"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          customer_id as integer,",
+				"          customer_name as string,",
+				"          city as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> Source",
+				"source(output(",
+				"          customer_key as integer,",
+				"          customer_id as integer,",
+				"          customer_name as string,",
+				"          city as string,",
+				"          start_date as date,",
+				"          end_date as date,",
+				"          is_active as integer",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> Target",
+				"Source, Target join(Source@customer_id == Target@customer_id,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> SrcJoinTgt",
+				"SrcJoinTgt filter(isNull(Target@customer_id) || Source@city != Target@city) ~> Insert",
+				"SrcJoinTgt filter(Source@city !=Target@city) ~> Update",
+				"Update derive(end_date = currentDate(),",
+				"          is_active = 0) ~> UpdateDerivedColumn",
+				"UpdateDerivedColumn alterRow(updateIf(1==1)) ~> UpdateAlterRow",
+				"Insert derive(start_date = currentDate(),",
+				"          end_date = toDate(null())\r",
+				",",
+				"          is_active = 1) ~> InsertDerivedColumn",
+				"UpdateAlterRow sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:false,",
+				"     updateable:true,",
+				"     upsertable:false,",
+				"     keys:['customer_key'],",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     saveOrder: 1,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          customer_key,",
+				"          customer_id = Target@customer_id,",
+				"          customer_name = Target@customer_name,",
+				"          city = Target@city,",
+				"          start_date,",
+				"          end_date,",
+				"          is_active",
+				"     )) ~> UpdateSink",
+				"InsertDerivedColumn sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     saveOrder: 2,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          customer_id = Source@customer_id,",
+				"          customer_name = Source@customer_name,",
+				"          city = Source@city,",
+				"          start_date,",
+				"          end_date,",
+				"          is_active",
+				"     )) ~> InsertSink"
+			]
+		}
+	}
+}
