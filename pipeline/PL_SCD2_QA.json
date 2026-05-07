@@ -20,16 +20,16 @@
 						"type": "DataFlowReference",
 						"datasetParameters": {
 							"Source": {
-								"table": "src_customer_IN1743"
+								"table": "src_QA_employee_38"
 							},
 							"Target": {
-								"table": "tgt_customer_IN1743"
+								"table": "tgt_QA_employee_38"
 							},
 							"UpdateSink": {
-								"table": "tgt_customer_IN1743"
+								"table": "tgt_QA_employee_38"
 							},
 							"InsertSink": {
-								"table": "tgt_customer_IN1743"
+								"table": "tgt_QA_employee_38"
 							}
 						}
 					},
