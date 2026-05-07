@@ -1,5 +1,5 @@
 {
-	"name": "PL_Cust_ETL",
+	"name": "PL_Cust_ETL_row_cnt",
 	"properties": {
 		"activities": [
 			{
