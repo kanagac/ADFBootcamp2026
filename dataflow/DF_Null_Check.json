@@ -1,0 +1,63 @@
+{
+	"name": "DF_Null_Check",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE_INPUT",
+						"type": "DatasetReference"
+					},
+					"name": "Source"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE_OUTPUT",
+						"type": "DatasetReference"
+					},
+					"name": "NullRecords"
+				}
+			],
+			"transformations": [
+				{
+					"name": "split1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Author_Key as integer,",
+				"          Author_Name as string,",
+				"          Author_Phone as string,",
+				"          Author_Address as string,",
+				"          Author_City as string,",
+				"          Author_State as string,",
+				"          Author_Zip as string,",
+				"          AU_Contract_Status as string,",
+				"          Start_Date as timestamp,",
+				"          End_Date as timestamp,",
+				"          Is_Active as integer",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> Source",
+				"Source split(isNull(Author_Name),",
+				"     disjoint: false) ~> split1@(Null, NotNull)",
+				"split1@Null sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     recreate:true,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> NullRecords"
+			]
+		}
+	}
+}
