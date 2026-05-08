@@ -1,0 +1,68 @@
+{
+	"name": "dataflow3",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "aggregate1"
+				},
+				{
+					"name": "split1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Store_SK as integer,",
+				"          Store_ID as string,",
+				"          Store_Name as string,",
+				"          Store_State as string,",
+				"          Total_Amount as decimal(10,2),",
+				"          Store_Phone as string,",
+				"          Store_Status as string,",
+				"          Active_Flag as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source1",
+				"source1 aggregate(groupBy(Store_ID),",
+				"     DupCount = toInteger(count())) ~> aggregate1",
+				"aggregate1 split(DupCount>1,",
+				"     disjoint: false) ~> split1@(duplicates)",
+				"split1@duplicates sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          Store_ID,",
+				"          DupCount",
+				"     )) ~> sink1"
+			]
+		}
+	}
+}
