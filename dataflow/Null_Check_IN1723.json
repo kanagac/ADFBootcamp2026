@@ -12,7 +12,7 @@
 						"referenceName": "DS_SQL_TABLE",
 						"type": "DatasetReference"
 					},
-					"name": "source"
+					"name": "sourceTbale"
 				}
 			],
 			"sinks": [
@@ -21,7 +21,7 @@
 						"referenceName": "DS_SQL_TABLE",
 						"type": "DatasetReference"
 					},
-					"name": "nullrecords"
+					"name": "NullRecordsOutput"
 				}
 			],
 			"transformations": [
@@ -38,8 +38,8 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
-				"     format: 'table') ~> source",
-				"source split(isNull(City),",
+				"     format: 'table') ~> sourceTbale",
+				"sourceTbale split(isNull(City),",
 				"     disjoint: false) ~> split1@(null, notnull)",
 				"split1@null sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
@@ -50,7 +50,7 @@
 				"     format: 'table',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     errorHandlingOption: 'stopOnFirstError') ~> nullrecords"
+				"     errorHandlingOption: 'stopOnFirstError') ~> NullRecordsOutput"
 			]
 		}
 	}
