@@ -1,5 +1,5 @@
 {
-	"name": "pipeline8",
+	"name": "rowcountcheck",
 	"properties": {
 		"activities": [
 			{
@@ -17,13 +17,15 @@
 				"typeProperties": {
 					"source": {
 						"type": "AzureSqlSource",
+						"sqlReaderQuery": "select count(*) from src_titles_in1726",
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
 					"dataset": {
 						"referenceName": "DAY_6_SCD1_input",
 						"type": "DatasetReference"
-					}
+					},
+					"firstRowOnly": true
 				}
 			},
 			{
@@ -41,6 +43,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "AzureSqlSource",
+						"sqlReaderQuery": "select count(*) from tgt_titles_in1726",
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
@@ -67,9 +70,52 @@
 						]
 					}
 				],
-				"userProperties": []
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(activity('Lookup1').output.firstRow,activity('Lookup2').output.firstRow)",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "Set variable2",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "result",
+								"value": "False"
+							}
+						}
+					],
+					"ifTrueActivities": [
+						{
+							"name": "Set variable1",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "result",
+								"value": "true"
+							}
+						}
+					]
+				}
 			}
 		],
+		"variables": {
+			"result": {
+				"type": "String"
+			}
+		},
 		"folder": {
 			"name": "QA"
 		},
