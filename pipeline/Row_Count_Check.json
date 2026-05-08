@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "SourceTable",
+				"name": "SourceTable_IN1727",
 				"type": "Lookup",
 				"dependsOn": [],
 				"policy": {
@@ -17,7 +17,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "AzureSqlSource",
-						"sqlReaderQuery": "SELECT COUNT(*) FROM AUTHORS_IN1727;",
+						"sqlReaderQuery": "SELECT COUNT(*) as Count FROM AUTHORS_IN1727;",
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
@@ -25,13 +25,13 @@
 						"referenceName": "DS_SQL_TABLE_INPUT",
 						"type": "DatasetReference",
 						"parameters": {
-							"table_name": "AUTHORS_IN1727"
+							"table_name": " "
 						}
 					}
 				}
 			},
 			{
-				"name": "TargetTable",
+				"name": "TargetTable_IN1727",
 				"type": "Lookup",
 				"dependsOn": [],
 				"policy": {
@@ -45,7 +45,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "AzureSqlSource",
-						"sqlReaderQuery": "SELECT COUNT(*) FROM DIM_AUTHOR_IN1727;",
+						"sqlReaderQuery": "SELECT COUNT(*) as Count FROM DIM_AUTHOR_IN1727;",
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
@@ -53,7 +53,7 @@
 						"referenceName": "DS_SQL_TABLE_INPUT",
 						"type": "DatasetReference",
 						"parameters": {
-							"table_name": "DIM_AUTHOR_IN1727"
+							"table_name": " "
 						}
 					}
 				}
@@ -63,7 +63,7 @@
 				"type": "SetVariable",
 				"dependsOn": [
 					{
-						"activity": "SourceTable",
+						"activity": "SourceTable_IN1727",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -77,17 +77,17 @@
 				"typeProperties": {
 					"variableName": "Source",
 					"value": {
-						"value": "@activity('SourceTable').output.firstRow",
+						"value": "@activity('SourceTable_IN1727').output.firstRow.Count",
 						"type": "Expression"
 					}
 				}
 			},
 			{
-				"name": "TargetRowCount_copy1",
+				"name": "TargetRowCount",
 				"type": "SetVariable",
 				"dependsOn": [
 					{
-						"activity": "TargetTable",
+						"activity": "TargetTable_IN1727",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -101,7 +101,7 @@
 				"typeProperties": {
 					"variableName": "Target",
 					"value": {
-						"value": "@activity('TargetTable').output.firstRow",
+						"value": "@activity('TargetTable_IN1727').output.firstRow.Count",
 						"type": "Expression"
 					}
 				}
@@ -117,7 +117,7 @@
 						]
 					},
 					{
-						"activity": "TargetRowCount_copy1",
+						"activity": "TargetRowCount",
 						"dependencyConditions": [
 							"Succeeded"
 						]
