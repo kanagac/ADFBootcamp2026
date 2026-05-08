@@ -1,0 +1,105 @@
+{
+	"name": "transformation_check",
+	"properties": {
+		"folder": {
+			"name": "QA"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "source2"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "lookup1"
+				},
+				{
+					"name": "split1"
+				},
+				{
+					"name": "select1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          customer_id as integer,",
+				"          customer_name as string,",
+				"          email as string,",
+				"          country as string,",
+				"          created_date as timestamp",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source1",
+				"source(output(",
+				"          customer_id as integer,",
+				"          customer_name as string,",
+				"          email as string,",
+				"          contact as string,",
+				"          Continent as string,",
+				"          country as string,",
+				"          created_date as date,",
+				"          dw_created_at as date",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source2",
+				"source1 derive(Src_contact = customer_name+\"-\"+email) ~> derivedColumn1",
+				"derivedColumn1, source2 lookup(source1@customer_id == source2@customer_id,",
+				"     multiple: false,",
+				"     pickup: 'any',",
+				"     broadcast: 'auto')~> lookup1",
+				"lookup1 split(Src_contact!=contact,",
+				"     disjoint: false) ~> split1@(notpropertransfermation, propertransfermation)",
+				"split1@notpropertransfermation select(mapColumn(",
+				"          customer_id = split1@notpropertransfermation@customer_id,",
+				"          customer_name = split1@notpropertransfermation@customer_name,",
+				"          email = split1@notpropertransfermation@email,",
+				"          country = split1@notpropertransfermation@country,",
+				"          created_date = split1@notpropertransfermation@created_date,",
+				"          Src_contact,",
+				"          contact",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
+			]
+		}
+	}
+}
