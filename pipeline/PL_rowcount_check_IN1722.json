@@ -1,5 +1,5 @@
 {
-	"name": "PL_rowcount_check_IN1725",
+	"name": "PL_rowcount_check_IN1722",
 	"properties": {
 		"activities": [
 			{
@@ -23,10 +23,7 @@
 					},
 					"dataset": {
 						"referenceName": "DS_SQL_TABLE",
-						"type": "DatasetReference",
-						"parameters": {
-							"P_Tablename": " "
-						}
+						"type": "DatasetReference"
 					}
 				}
 			},
@@ -51,10 +48,7 @@
 					},
 					"dataset": {
 						"referenceName": "DS_SQL_TABLE",
-						"type": "DatasetReference",
-						"parameters": {
-							"P_Tablename": " "
-						}
+						"type": "DatasetReference"
 					}
 				}
 			},
