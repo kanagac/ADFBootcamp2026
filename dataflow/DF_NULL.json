@@ -1,0 +1,60 @@
+{
+	"name": "DF_NULL",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_GENERIC",
+						"type": "DatasetReference"
+					},
+					"name": "SRCNull"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_GENERIC",
+						"type": "DatasetReference"
+					},
+					"name": "TEMPSink"
+				}
+			],
+			"transformations": [
+				{
+					"name": "FilterTest"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          SurrogateKey as integer,",
+				"          UserID as integer,",
+				"          UserName as string,",
+				"          SubscriptionPlan as string,",
+				"          MonthlyFee as decimal(5,2),",
+				"          DeviceType as string,",
+				"          Region as string,",
+				"          StartDate as timestamp,",
+				"          EndDate as timestamp,",
+				"          IsCurrent as boolean",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> SRCNull",
+				"SRCNull filter(isNull(UserID)) ~> FilterTest",
+				"FilterTest sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> TEMPSink"
+			]
+		}
+	}
+}
