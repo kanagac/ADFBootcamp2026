@@ -1,5 +1,5 @@
 {
-	"name": "Duplicate_Check_copy1",
+	"name": "Null_Check",
 	"properties": {
 		"activities": [
 			{
@@ -18,7 +18,7 @@
 					"source": {
 						"type": "AzureSqlSource",
 						"sqlReaderQuery": {
-							"value": "SELECT emp_id, COUNT(*) FROM src_QA_employee_38\nGROUP BY emp_id\nHAVING COUNT(*) >1",
+							"value": "SELECT *\nFROM src_QA_employee_38\nWHERE emp_name IS NULL\n",
 							"type": "Expression"
 						},
 						"queryTimeout": "02:00:00",
@@ -57,7 +57,7 @@
 					"source": {
 						"type": "AzureSqlSource",
 						"sqlReaderQuery": {
-							"value": "SELECT emp_id, COUNT(*) FROM tgt_QA_employee_38\nWHERE is_current=1\nGROUP BY emp_id\nHAVING COUNT(*) >1",
+							"value": "SELECT *\nFROM tgt_QA_employee_38\nWHERE emp_name IS NULL",
 							"type": "Expression"
 						},
 						"queryTimeout": "02:00:00",
