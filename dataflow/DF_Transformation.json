@@ -1,0 +1,104 @@
+{
+	"name": "DF_Transformation",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_GENERIC",
+						"type": "DatasetReference"
+					},
+					"name": "SRCTITLES"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_GENERIC",
+						"type": "DatasetReference"
+					},
+					"name": "TGTTITLES"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_GENERIC",
+						"type": "DatasetReference"
+					},
+					"name": "TempSink"
+				}
+			],
+			"transformations": [
+				{
+					"name": "SRCTransformation"
+				},
+				{
+					"name": "LookUp"
+				},
+				{
+					"name": "split1"
+				},
+				{
+					"name": "SelectColumns"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          title_id as string,",
+				"          title_type as string,",
+				"          type as string,",
+				"          pub_id as string,",
+				"          price as string,",
+				"          notes as string,",
+				"          pubdate as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> SRCTITLES",
+				"source(output(",
+				"          Title_Key as integer,",
+				"          Title_ID as string,",
+				"          Title_Desc as string,",
+				"          Type as string,",
+				"          Pub_ID as string,",
+				"          Price as decimal(19,4),",
+				"          Notes as string,",
+				"          Publish_Date as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> TGTTITLES",
+				"SRCTITLES derive(title_id = concat('T-',iifNull(title_id, \"Field Must be Populated\"),'-001')) ~> SRCTransformation",
+				"SRCTransformation, TGTTITLES lookup(SRCTransformation@title_id == TGTTITLES@Title_ID,",
+				"     multiple: false,",
+				"     pickup: 'any',",
+				"     broadcast: 'auto')~> LookUp",
+				"LookUp split(SRCTransformation@title_id != TGTTITLES@Title_ID,",
+				"     disjoint: false) ~> split1@(MismatchedRecords, MatchedRecords)",
+				"split1@MismatchedRecords select(mapColumn(",
+				"          title_id = split1@MismatchedRecords@title_id,",
+				"          title_type,",
+				"          type = split1@MismatchedRecords@type,",
+				"          pub_id = split1@MismatchedRecords@pub_id,",
+				"          price = split1@MismatchedRecords@price,",
+				"          notes = split1@MismatchedRecords@notes,",
+				"          pubdate",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> SelectColumns",
+				"SelectColumns sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> TempSink"
+			]
+		}
+	}
+}
