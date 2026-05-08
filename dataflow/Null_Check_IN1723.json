@@ -1,5 +1,5 @@
 {
-	"name": "nullcheck",
+	"name": "Null_Check_IN1723",
 	"properties": {
 		"folder": {
 			"name": "QA"
@@ -31,20 +31,15 @@
 			],
 			"scriptLines": [
 				"source(output(",
-				"          customer_id as integer,",
-				"          customer_name as string,",
-				"          email as string,",
-				"          contact as string,",
-				"          Continent as string,",
-				"          country as string,",
-				"          created_date as date,",
-				"          dw_created_at as date",
+				"          CustomerID as integer,",
+				"          Name as string,",
+				"          City as string",
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
 				"     format: 'table') ~> source",
-				"source split(isNull(customer_name),",
+				"source split(isNull(City),",
 				"     disjoint: false) ~> split1@(null, notnull)",
 				"split1@null sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
