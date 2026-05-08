@@ -1,0 +1,198 @@
+{
+	"name": "Duplicate_Check_copy1",
+	"properties": {
+		"activities": [
+			{
+				"name": "Source_Count",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "SELECT emp_id, COUNT(*) FROM src_QA_employee_38\nGROUP BY emp_id\nHAVING COUNT(*) >1",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference",
+						"parameters": {
+							"Tablename": "src_QA_employee_38"
+						}
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "Target_Count",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "sourcecount",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "SELECT emp_id, COUNT(*) FROM tgt_QA_employee_38\nWHERE is_current=1\nGROUP BY emp_id\nHAVING COUNT(*) >1",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference",
+						"parameters": {
+							"Tablename": "tgt_QA_employee_38"
+						}
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "sourcecount",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Source_Count",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "sourceCount",
+					"value": {
+						"value": "@activity('Source_Count').output.value",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "TargetCount",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Target_Count",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "targetCount",
+					"value": {
+						"value": "@activity('Target_Count').output.value",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "If Condition1",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "TargetCount",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(variables('sourceCount'), variables('targetCount'))",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "Fail",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "fail",
+								"value": "FAIL"
+							}
+						}
+					],
+					"ifTrueActivities": [
+						{
+							"name": "Print",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "status",
+								"value": {
+									"value": "PASS",
+									"type": "Expression"
+								}
+							}
+						}
+					]
+				}
+			}
+		],
+		"variables": {
+			"sourceCount": {
+				"type": "Array"
+			},
+			"targetCount": {
+				"type": "Array"
+			},
+			"status": {
+				"type": "String"
+			},
+			"fail": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "QA Testing"
+		},
+		"annotations": []
+	}
+}
