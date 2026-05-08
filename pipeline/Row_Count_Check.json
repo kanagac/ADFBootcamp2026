@@ -1,0 +1,183 @@
+{
+	"name": "Row_Count_Check",
+	"properties": {
+		"activities": [
+			{
+				"name": "SourceTable",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "SELECT COUNT(*) FROM AUTHORS_IN1727;",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE_INPUT",
+						"type": "DatasetReference",
+						"parameters": {
+							"table_name": "AUTHORS_IN1727"
+						}
+					}
+				}
+			},
+			{
+				"name": "TargetTable",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "SELECT COUNT(*) FROM DIM_AUTHOR_IN1727;",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE_INPUT",
+						"type": "DatasetReference",
+						"parameters": {
+							"table_name": "DIM_AUTHOR_IN1727"
+						}
+					}
+				}
+			},
+			{
+				"name": "SourceRowCount",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "SourceTable",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "Source",
+					"value": {
+						"value": "@activity('SourceTable').output.firstRow",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "TargetRowCount_copy1",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "TargetTable",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "Target",
+					"value": {
+						"value": "@activity('TargetTable').output.firstRow",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "If Condition",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "SourceRowCount",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "TargetRowCount_copy1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(variables('Source'), variables('Target'))",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "Set variable2",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "Result",
+								"value": "Fail"
+							}
+						}
+					],
+					"ifTrueActivities": [
+						{
+							"name": "Set variable1",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "Result",
+								"value": "Pass"
+							}
+						}
+					]
+				}
+			}
+		],
+		"variables": {
+			"Source": {
+				"type": "Integer"
+			},
+			"Target": {
+				"type": "Integer"
+			},
+			"Result": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Ps_Exercises_IN1727/QA"
+		},
+		"annotations": []
+	}
+}
