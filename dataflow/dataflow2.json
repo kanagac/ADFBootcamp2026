@@ -1,0 +1,93 @@
+{
+	"name": "dataflow2",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "Dimstore"
+				}
+			],
+			"transformations": [
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "select1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Store_ID as integer,",
+				"          Store_Name as string,",
+				"          City as string,",
+				"          State_Name as string,",
+				"          Sales_Amount as decimal(10,2),",
+				"          Tax_Percentage as integer,",
+				"          Phone as string,",
+				"          Open_Status as integer",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source1",
+				"source1 derive(Store_ID = 'STR-' + toString(Store_ID),",
+				"          Store_Name = iif(isNull(Store_Name), 'UNKNOWN', Store_Name),",
+				"          Store_State = iif(State_Name == 'Telangana', 'TS',\r",
+				"iif(State_Name == 'Tamil Nadu', 'TN',\r",
+				"iif(State_Name == 'Maharashtra', 'MH',\r",
+				"iif(State_Name == 'Delhi', 'DL',\r",
+				"iif(State_Name == 'Karnataka', 'KA',\r",
+				"'NA'\r",
+				"))))),",
+				"          Total_Amount = Sales_Amount + (Sales_Amount * Tax_Percentage / 100),",
+				"          Store_Phone = '+91-' + Phone,",
+				"          Store_Status = iif(Open_Status == 1, 'OPEN', 'CLOSED'),",
+				"          Active_Flag = iif(Open_Status == 1, 'Y', 'N')) ~> derivedColumn1",
+				"derivedColumn1 select(mapColumn(",
+				"          Store_ID,",
+				"          Store_Name,",
+				"          Store_State,",
+				"          Total_Amount,",
+				"          Store_Phone,",
+				"          Store_Status,",
+				"          Active_Flag",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          Store_ID,",
+				"          Store_Name,",
+				"          Store_State,",
+				"          Total_Amount,",
+				"          Store_Phone,",
+				"          Store_Status,",
+				"          Active_Flag",
+				"     )) ~> Dimstore"
+			]
+		}
+	}
+}
