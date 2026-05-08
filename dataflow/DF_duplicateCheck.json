@@ -1,5 +1,5 @@
 {
-	"name": "duplicatecheck",
+	"name": "DF_duplicateCheck",
 	"properties": {
 		"folder": {
 			"name": "QA"
