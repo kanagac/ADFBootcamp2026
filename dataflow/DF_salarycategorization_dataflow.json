@@ -6,7 +6,7 @@
 			"sources": [
 				{
 					"dataset": {
-						"referenceName": "DelimitedText2",
+						"referenceName": "DAY_6_SCD1_input",
 						"type": "DatasetReference"
 					},
 					"name": "source1"
@@ -15,7 +15,7 @@
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "DelimitedText3",
+						"referenceName": "DS_SQL_Targetscd1",
 						"type": "DatasetReference"
 					},
 					"name": "sink1"
@@ -28,27 +28,30 @@
 			],
 			"scriptLines": [
 				"source(output(",
-				"          EmpID as short,",
-				"          EmployeeName as string,",
-				"          Department as string,",
-				"          Salary as integer",
+				"          CustomerID as integer,",
+				"          Name as string,",
+				"          City as string",
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     ignoreNoFilesFound: false) ~> source1",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source1",
 				"source1 derive(Salary_Category = case(Salary > 80000 , 'High' , Salary >= 50000 && Salary <= 79999 , 'Medium' , 'Low')) ~> derivedColumn1",
 				"derivedColumn1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
-				"          OrderID as string,",
-				"          CustomerName as string,",
-				"          Product as string,",
-				"          Quantity as string,",
-				"          Amount as string,",
-				"          OrderDate as string",
+				"          CustomerID as integer,",
+				"          Name as string,",
+				"          City as string",
 				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> sink1"
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
 			]
 		}
 	}

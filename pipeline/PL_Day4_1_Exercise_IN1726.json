@@ -17,14 +17,7 @@
 				"typeProperties": {
 					"dataflow": {
 						"referenceName": "DF_salarycategorization_dataflow",
-						"type": "DataFlowReference",
-						"datasetParameters": {
-							"source1": {
-								"Container": " ",
-								"Folder": " ",
-								"file": " "
-							}
-						}
+						"type": "DataFlowReference"
 					},
 					"compute": {
 						"coreCount": 8,
