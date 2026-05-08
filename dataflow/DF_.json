@@ -1,0 +1,17 @@
+{
+	"name": "DF_",
+	"properties": {
+		"folder": {
+			"name": "Testing"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [],
+			"sinks": [],
+			"transformations": [],
+			"scriptLines": [
+				""
+			]
+		}
+	}
+}

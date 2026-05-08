@@ -1,0 +1,71 @@
+{
+	"name": "DF_Test1",
+	"properties": {
+		"folder": {
+			"name": "Testing"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "aggregate1"
+				},
+				{
+					"name": "split1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Customer_ID as integer,",
+				"          Customer_key as integer,",
+				"          Company_Name as string,",
+				"          Delete_Flg as string,",
+				"          Create_Date as timestamp,",
+				"          Date_Last_Modified as timestamp,",
+				"          Created_By as string,",
+				"          Created_Timestamp as timestamp,",
+				"          Last_Updated_By as string,",
+				"          Last_Update_Timestamp as timestamp,",
+				"          Active_Flag as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source1",
+				"source1 aggregate(groupBy(Customer_ID),",
+				"     Count = count(Customer_ID)) ~> aggregate1",
+				"aggregate1 split(Count > 1,",
+				"     disjoint: false) ~> split1@(duplicate, Nonduplicate)",
+				"split1@duplicate sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     recreate:true,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
+			]
+		}
+	}
+}

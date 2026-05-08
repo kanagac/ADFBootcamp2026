@@ -1,0 +1,63 @@
+{
+	"name": "DF_Test2_duplicate",
+	"properties": {
+		"folder": {
+			"name": "Testing"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "aggregate1"
+				},
+				{
+					"name": "split1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          CustomerID as integer,",
+				"          Name as string,",
+				"          City as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source1",
+				"source1 aggregate(groupBy(CustomerID),",
+				"     count = count(CustomerID)) ~> aggregate1",
+				"aggregate1 split(count > 1,",
+				"     disjoint: false) ~> split1@(duplicate, nonDuplicate)",
+				"split1@duplicate sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     recreate:true,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
+			]
+		}
+	}
+}

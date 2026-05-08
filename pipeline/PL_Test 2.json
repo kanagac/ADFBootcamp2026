@@ -1,0 +1,183 @@
+{
+	"name": "PL_Test 2",
+	"properties": {
+		"activities": [
+			{
+				"name": "Lookupforsource",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "SELECT COUNT(*) as count FROM Customer_Source_IN1735",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference",
+						"parameters": {
+							"tablename": "Customer_Source_IN1735"
+						}
+					}
+				}
+			},
+			{
+				"name": "Lookupfortarget",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "SELECT COUNT(*) as count FROM Customer_Target_IN1735",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference",
+						"parameters": {
+							"tablename": "Customer_Target_IN1735"
+						}
+					}
+				}
+			},
+			{
+				"name": "Set variable1",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Lookupforsource",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "sourcecount",
+					"value": {
+						"value": "@activity('Lookupforsource').output.firstRow.count",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set variable2",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Lookupfortarget",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "targetcount",
+					"value": {
+						"value": "@activity('Lookupfortarget').output.firstRow.count",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "If Condition1",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Set variable1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Set variable2",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(variables('sourcecount'), variables('targetcount'))",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "Set variable4",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "Status",
+								"value": "Test Failed"
+							}
+						}
+					],
+					"ifTrueActivities": [
+						{
+							"name": "Set variable3",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "Status",
+								"value": "Test passed"
+							}
+						}
+					]
+				}
+			}
+		],
+		"variables": {
+			"sourcecount": {
+				"type": "Integer"
+			},
+			"targetcount": {
+				"type": "Integer"
+			},
+			"Status": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Testing"
+		},
+		"annotations": []
+	}
+}
