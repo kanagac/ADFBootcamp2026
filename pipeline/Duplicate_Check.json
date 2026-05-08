@@ -1,0 +1,43 @@
+{
+	"name": "Duplicate_Check",
+	"properties": {
+		"activities": [
+			{
+				"name": "DF_Duplicate_Check",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DF_Duplicate_Check",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"Source": {
+								"table_name": "DIM_AUTHOR_IN1727"
+							},
+							"DuplicatedRecords": {
+								"table_name": "Dup_Records_IN1727"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"folder": {
+			"name": "Ps_Exercises_IN1727/QA"
+		},
+		"annotations": []
+	}
+}
