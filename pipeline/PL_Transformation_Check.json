@@ -1,0 +1,53 @@
+{
+	"name": "PL_Transformation_Check",
+	"properties": {
+		"activities": [
+			{
+				"name": "DF_Transformation",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DF_Transformation",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"SRCTITLES": {
+								"tableName": "TITLES"
+							},
+							"TGTTITLES": {
+								"tableName": "DIM_TITLE_IN1716"
+							},
+							"TempSink": {
+								"tableName": "TEMP_Transformation"
+							}
+						},
+						"linkedServiceParameters": {
+							"SRCTITLES": {
+								"schemaLinkedService": {
+									"tableName": "TITLES"
+								}
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"folder": {
+			"name": "ETL_Testing"
+		},
+		"annotations": []
+	}
+}
