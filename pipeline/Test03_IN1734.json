@@ -1,5 +1,5 @@
 {
-	"name": "Test02_Duplicatecheck_IN1734",
+	"name": "Test03_IN1734",
 	"properties": {
 		"activities": [
 			{
@@ -16,14 +16,14 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "DF_Test03_DuplicatesCheck_IN1734",
+						"referenceName": "dataflow2",
 						"type": "DataFlowReference",
 						"datasetParameters": {
-							"DImstore": {
+							"source1": {
 								"TableName": "Store_Source_IN1734"
 							},
-							"DuplicatesLog": {
-								"TableName": "Duplicates_Log_IN1734"
+							"Dimstore": {
+								"TableName": "Dim_Store_IN1734"
 							}
 						}
 					},
@@ -35,11 +35,6 @@
 				}
 			}
 		],
-		"variables": {
-			"TestPass": {
-				"type": "String"
-			}
-		},
 		"folder": {
 			"name": "Testing"
 		},

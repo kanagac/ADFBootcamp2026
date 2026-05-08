@@ -1,5 +1,5 @@
 {
-	"name": "dataflow3",
+	"name": "DF_Test03_DuplicatesCheck_IN1734",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
@@ -9,7 +9,7 @@
 						"referenceName": "DS_SQL_TABLE",
 						"type": "DatasetReference"
 					},
-					"name": "source1"
+					"name": "DImstore"
 				}
 			],
 			"sinks": [
@@ -18,7 +18,7 @@
 						"referenceName": "DS_SQL_TABLE",
 						"type": "DatasetReference"
 					},
-					"name": "sink1"
+					"name": "DuplicatesLog"
 				}
 			],
 			"transformations": [
@@ -43,8 +43,8 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
-				"     format: 'table') ~> source1",
-				"source1 aggregate(groupBy(Store_ID),",
+				"     format: 'table') ~> DImstore",
+				"DImstore aggregate(groupBy(Store_ID),",
 				"     DupCount = toInteger(count())) ~> aggregate1",
 				"aggregate1 split(DupCount>1,",
 				"     disjoint: false) ~> split1@(duplicates)",
@@ -61,7 +61,7 @@
 				"     mapColumn(",
 				"          Store_ID,",
 				"          DupCount",
-				"     )) ~> sink1"
+				"     )) ~> DuplicatesLog"
 			]
 		}
 	}
