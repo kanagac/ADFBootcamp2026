@@ -1,0 +1,65 @@
+{
+	"name": "DF_Duplicate_Check",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_GENERIC",
+						"type": "DatasetReference"
+					},
+					"name": "TGTStream"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_GENERIC",
+						"type": "DatasetReference"
+					},
+					"name": "TargetSink"
+				}
+			],
+			"transformations": [
+				{
+					"name": "Aggregate"
+				},
+				{
+					"name": "FilterCondition"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          SurrogateKey as integer,",
+				"          UserID as integer,",
+				"          UserName as string,",
+				"          SubscriptionPlan as string,",
+				"          MonthlyFee as decimal(5,2),",
+				"          DeviceType as string,",
+				"          Region as string,",
+				"          StartDate as timestamp,",
+				"          EndDate as timestamp,",
+				"          IsCurrent as boolean",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> TGTStream",
+				"TGTStream aggregate(groupBy(UserID),",
+				"     COUNT = count(UserID)) ~> Aggregate",
+				"Aggregate filter(COUNT > 1) ~> FilterCondition",
+				"FilterCondition sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> TargetSink"
+			]
+		}
+	}
+}
