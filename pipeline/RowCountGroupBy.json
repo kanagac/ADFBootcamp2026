@@ -67,7 +67,7 @@
 						"referenceName": "DS_SQL_TABLE",
 						"type": "DatasetReference",
 						"parameters": {
-							"Tablename": "tgt_QA_employee_38"
+							"Tablename": "tgt_employee_IN1743"
 						}
 					},
 					"firstRowOnly": false
