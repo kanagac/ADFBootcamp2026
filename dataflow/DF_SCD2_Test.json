@@ -1,0 +1,192 @@
+{
+	"name": "DF_SCD2_Test",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_GENERIC",
+						"type": "DatasetReference"
+					},
+					"name": "SRCCustomer"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_GENERIC",
+						"type": "DatasetReference"
+					},
+					"name": "TGTCustomer"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_GENERIC",
+						"type": "DatasetReference"
+					},
+					"name": "sinkInsert"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_GENERIC",
+						"type": "DatasetReference"
+					},
+					"name": "sinkUpsert"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_GENERIC",
+						"type": "DatasetReference"
+					},
+					"name": "SinkInsertversion"
+				}
+			],
+			"transformations": [
+				{
+					"name": "LeftJoin"
+				},
+				{
+					"name": "deriveFlag"
+				},
+				{
+					"name": "conditionalSplit"
+				},
+				{
+					"name": "deriveNewRow"
+				},
+				{
+					"name": "alterRowInsert"
+				},
+				{
+					"name": "deriveOldRow"
+				},
+				{
+					"name": "alterRowUpsert"
+				},
+				{
+					"name": "deriveNewVersion"
+				},
+				{
+					"name": "alterRowInsertNewVersion"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          customer_id as integer,",
+				"          name as string,",
+				"          email as string,",
+				"          city as string,",
+				"          segment as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> SRCCustomer",
+				"source(output(",
+				"          surrogate_key as integer,",
+				"          customer_id as integer,",
+				"          name as string,",
+				"          email as string,",
+				"          city as string,",
+				"          segment as string,",
+				"          start_date as date,",
+				"          end_date as date,",
+				"          is_current as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     query: 'SELECT * FROM  dim_customers_IN1716 WHERE is_current = 1',",
+				"     format: 'query') ~> TGTCustomer",
+				"SRCCustomer, TGTCustomer join(SRCCustomer@customer_id == TGTCustomer@customer_id,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> LeftJoin",
+				"LeftJoin derive(flg = case(\r",
+				"    isNull(TGTCustomer@customer_id), 'New',\r",
+				"    (\r",
+				"        SRCCustomer@name != TGTCustomer@name ||\r",
+				"        SRCCustomer@city != TGTCustomer@city ||\r",
+				"        SRCCustomer@segment !=TGTCustomer@segment\r",
+				"    ),'Changed', 'Unchanged'\r",
+				")) ~> deriveFlag",
+				"deriveFlag split(flg == 'New',",
+				"     flg == 'Changed',",
+				"     disjoint: false) ~> conditionalSplit@(isNew, isChanged, isUnchanged)",
+				"conditionalSplit@isNew derive(start_date = currentDate(),",
+				"          end_date = toDate(null()),",
+				"          is_current = 1) ~> deriveNewRow",
+				"deriveNewRow alterRow(insertIf(true())) ~> alterRowInsert",
+				"conditionalSplit@isChanged derive(end_date = currentDate(),",
+				"          is_current = 0) ~> deriveOldRow",
+				"deriveOldRow alterRow(upsertIf(true())) ~> alterRowUpsert",
+				"conditionalSplit@isChanged derive(start_date = currentDate(),",
+				"          end_date = toDate(null()),",
+				"          is_current = 1) ~> deriveNewVersion",
+				"deriveNewVersion alterRow(insertIf(true())) ~> alterRowInsertNewVersion",
+				"alterRowInsert sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     saveOrder: 3,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          customer_id = conditionalSplit@isNew@customer_id,",
+				"          name = conditionalSplit@isNew@name,",
+				"          email = conditionalSplit@isNew@email,",
+				"          city = conditionalSplit@isNew@city,",
+				"          segment = conditionalSplit@isNew@segment,",
+				"          start_date,",
+				"          end_date,",
+				"          is_current",
+				"     )) ~> sinkInsert",
+				"alterRowUpsert sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:false,",
+				"     updateable:false,",
+				"     upsertable:true,",
+				"     keys:['surrogate_key'],",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     saveOrder: 1,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          surrogate_key,",
+				"          start_date,",
+				"          end_date,",
+				"          is_current",
+				"     )) ~> sinkUpsert",
+				"alterRowInsertNewVersion sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     saveOrder: 2,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          customer_id = conditionalSplit@isChanged@customer_id,",
+				"          name = conditionalSplit@isChanged@name,",
+				"          email = conditionalSplit@isChanged@email,",
+				"          city = conditionalSplit@isChanged@city,",
+				"          segment = conditionalSplit@isChanged@segment,",
+				"          start_date,",
+				"          end_date,",
+				"          is_current",
+				"     )) ~> SinkInsertversion"
+			]
+		}
+	}
+}
